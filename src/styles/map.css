@@ -1,0 +1,689 @@
+/* ============================================================================
+   The map surface.
+
+   The composition is a screen-printed poster: six hard diagonal bands of
+   colour across the whole page, and the map sitting on top of them as a plain
+   cream sheet running almost to the edge. What a reader sees of the bands is a
+   thin colour margin — enough to set the mood, not enough to compete with the
+   state. The sheet carries no rule of its own; a black frame around a black
+   frame was only ever taking width away from the map.
+
+   Inside the sheet the paint order is a press run: the land (one mint plate
+   under one gentle gradient), the district hairlines, the coastline, the pins.
+
+   Three layers left this file and are worth knowing about before any of them
+   is reintroduced:
+
+     - **The offset plate.** A green copy of the silhouette shifted by
+       `--plate-offset-*`, sitting behind the sheet as the depth model. Against
+       a coastline as ragged as the Konkan it did not read as registration; it
+       read as a green fringe welded to the south-east and a detached sliver
+       north of Nandurbar. Offset registration is now used only on rectangles,
+       where it works.
+     - **Taluka hairlines.** 356 sub-district borders. The pilot covers one
+       district; the other 35 paid for line work nobody could read, and en
+       masse it crazed the state like old glaze.
+     - **The records hatch.** It turned Amravati into a dark blob at exactly
+       the spot seven pins need to be legible. See `DistrictPath`.
+   ========================================================================= */
+
+.map-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  /* The poster ground. Six bands, hard stops, one diagonal. */
+  background-color: var(--color-canvas);
+  background-image: var(--gradient-canvas);
+}
+
+/* What is left of the viewport once the news band has taken its strip off the
+   top. The sheet is positioned against this rather than against the page, so
+   the band pushes the map down instead of covering it — a strip laid over the
+   top of the state would have hidden Nandurbar and Dhule behind chrome, which
+   is exactly the trade a fixed overlay makes and never admits to. */
+.map-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The paper's tooth, over the bands rather than under them — flat colour at
+   this size wants a little noise or it reads as a screenshot of a colour
+   picker. */
+.map-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The sheet. Everything interactive lives inside it.
+
+   It used to be a card: a heavy black rule all the way round and a solid ink
+   plate behind it. At this size that reads as a frame within a frame — the
+   bands outside are already doing the framing, and the black rule only stole
+   width from the state.
+
+   It used to be inset by a few pixels so the colour bands showed as a printed
+   margin all the way round. That margin is gone: at this size it was a ribbon
+   of six colours drawing the eye to the edge of the screen and away from the
+   state, and every pixel it took was a pixel of map. The bands are still under
+   here — `.map-page` still paints them, and they are still what the sheet is
+   printed on — the sheet simply now covers them. Nothing about the composition
+   changed except how much of the ground shows, which is none. */
+.map-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: var(--color-surface);
+  /* The camera owns every gesture inside the frame. */
+  touch-action: none;
+}
+
+/* --- Inside the sheet ----------------------------------------------------- */
+
+/* Drafting paper. Two rules at two scales, the coarser one twice the weight —
+   the same convention a survey sheet uses for its minor and major grid. */
+.map-sheet-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    linear-gradient(to right, rgb(20 18 12 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(20 18 12 / 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgb(20 18 12 / 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(20 18 12 / 0.028) 1px, transparent 1px);
+  background-size:
+    132px 132px,
+    132px 132px,
+    22px 22px,
+    22px 22px;
+}
+
+.map-tooth {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- The surface --------------------------------------------------------- */
+
+/* No grab hand. The camera still pans on drag, but a hand cursor sitting under
+   the pointer across the entire screen made the whole page look like something
+   you were meant to be dragging, and turned the map into a toy. The pins are
+   the only things here that claim to be clickable, and they are the only
+   things that change the cursor. */
+.map-surface {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  height: 100%;
+  width: 100%;
+  cursor: default;
+}
+
+/* The one exception to "no grab hand": while a drag is actually happening the
+   pointer says so. A resting hand cursor turns the whole page into something
+   you are meant to be dragging; a hand that only appears mid-drag is feedback,
+   and steering a zoomed-in view without it is guesswork. */
+.map-frame[data-panning] .map-surface,
+.map-frame[data-panning] .map-district,
+.map-frame[data-panning] .signal-marker,
+.map-frame[data-panning] .cluster-marker {
+  cursor: grabbing;
+}
+
+/* `transform-box` is set inline by the component; motion overwrites whatever is
+   declared here. The pivot stays at the view-box centre, which is what the
+   camera maths in `use-map-camera.ts` is written around. */
+.map-camera {
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* --- The sheet ----------------------------------------------------------- */
+
+/* The fill is the `#map-land-fill` gradient, set as an attribute in
+   `MapCanvas` — a `fill` declaration here would win over it. */
+.map-sheet {
+  pointer-events: none;
+}
+
+/* --- Line work ----------------------------------------------------------- */
+
+/* Borders and hit areas. There is no fill, no hover fill and no selected state
+   by design — see `DistrictPath`. The transparent fill is load-bearing:
+   `fill: none` would not hit-test, and the sheet needs the pointer events. */
+.map-district {
+  fill: transparent;
+  stroke: var(--color-line-district);
+  stroke-width: 0.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: all;
+  /* The land used to do nothing when clicked and the cursor said so. It picks
+     itself out now — records or no records — so the pointer says that instead. */
+  cursor: pointer;
+  animation: district-arrive 820ms var(--ease-out-soft) backwards;
+}
+
+/* The district the open record stands in.
+
+   Its own layer above the hairlines rather than a state on `.map-district`,
+   because the shapes are painted largest-first so small districts stay
+   hoverable — as a state, a lit Mumbai City would have Thane's border drawn
+   over the top of it. See `MapCanvas`.
+
+   Full ink at coastline weight: the one moment an internal border is allowed
+   to be as strong as the state's edge, because it is briefly answering the
+   same question. The wash under it is barely there on purpose — the pins
+   standing on that district are what the reader clicked, and a real tint
+   behind them buries them. */
+.map-district-lit {
+  fill: var(--color-district-lit);
+  stroke: var(--color-line-district-lit);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+  animation: district-lit 240ms var(--ease-out-soft);
+}
+
+@keyframes district-lit {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* The state's outer line, heaviest on the sheet — though "heaviest" here is a
+   hairline and a half. The silhouette is already carried by the change from
+   cream to mint; the line only has to keep the edge crisp. */
+.map-coast {
+  fill: none;
+  stroke: var(--color-ink-900);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+@keyframes district-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- The plate that follows the pointer ---------------------------------- */
+
+.map-readout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 14;
+  pointer-events: none;
+}
+
+.map-readout-card {
+  /* `transform` holds the anchor offset; `translate` is free to animate. */
+  transform: translate(-50%, calc(-100% - 22px));
+  translate: 0 6px;
+  opacity: 0;
+  max-width: 20rem;
+  padding: 0.45rem 0.8rem 0.5rem;
+  border: var(--rule-ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-cream-50);
+  box-shadow: var(--shadow-plate-sm);
+  transition:
+    opacity 140ms var(--ease-out-soft),
+    translate 240ms var(--ease-spring);
+}
+
+.map-readout[data-visible] .map-readout-card {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Near the top of the frame the plate hangs below the pointer instead, and
+   rises into place from above rather than from below. */
+.map-readout[data-below] .map-readout-card {
+  transform: translate(-50%, 24px);
+  translate: 0 -6px;
+}
+
+.map-readout[data-below][data-visible] .map-readout-card {
+  translate: 0 0;
+}
+
+/* A district: one word, set in the Marathi display face. */
+.district-readout-card {
+  padding: 0.35rem 0.9rem 0.4rem;
+}
+
+.district-readout-name {
+  font-family: var(--font-marathi);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+/* --- The left rail ------------------------------------------------------- */
+
+/* Two plates in a column: the legend, and under it the one thing on this
+   screen that asks the reader for something. They share a rail rather than
+   being positioned independently because the legend's height is the data's —
+   sectors with nothing in them are not drawn — so anything pinned below it by
+   a fixed offset would drift the moment the map covered a ninth sector.
+
+   Inert to the pointer as a whole; the only thing in here that takes a click
+   is the lead plate's button, which says so itself. */
+.map-rail {
+  position: absolute;
+  z-index: 12;
+  top: clamp(0.85rem, 2.2vh, 1.5rem);
+  left: clamp(0.85rem, 1.8vw, 1.5rem);
+  display: flex;
+  width: clamp(15rem, 20vw, 18.5rem);
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.7rem;
+  pointer-events: none;
+}
+
+/* --- Brand plate --------------------------------------------------------- */
+
+.brand-plate {
+  position: relative;
+  overflow: hidden;
+  border: var(--rule-ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-cream-50);
+  box-shadow: var(--shadow-plate);
+  pointer-events: none;
+}
+
+/* The wordmark sits on the highlight yellow, the way the reference board puts
+   its one important card on a colour block. It is the only large area of
+   saturated colour inside the card, which is what makes it the first thing
+   read. */
+.brand-head {
+  padding: 0.85rem 1.2rem 0.9rem;
+  border-bottom: var(--rule-ink);
+  background: var(--color-accent);
+}
+
+.brand-body {
+  padding: 0.9rem 1.2rem 1rem;
+}
+
+/* One line, always. The wordmark is the plate's whole identity, so it is set
+   to the width it has rather than allowed to wrap into a stack — a two-line
+   logotype in a card this small reads as an overflow, not a design. The size
+   tracks the plate's own clamp so the line lands inside the padding at every
+   width it can take. */
+.brand-title {
+  font-family: var(--font-marathi);
+  font-size: clamp(1.35rem, 1.75vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.24;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--color-ink-900);
+}
+
+/* On the yellow block the verb cannot be brass, so it is the brand green — the
+   one place the old palette's accent still appears. */
+.brand-title-verb {
+  /* `:lang(mr)` in the base layer sets Devanagari a shade larger than its
+     neighbours; on one line that would make the verb 2% taller than the noun
+     beside it. */
+  font-size: inherit;
+  color: var(--color-deccan-600);
+}
+
+/* "In the last 48 hours, nine things moved Maharashtra forward." The line the
+   plate is really for: the tally under it says how much is pinned, which is an
+   editorial number, and this says how much the state did. Set in the Marathi
+   display face at reading size — it is a sentence, not a caption, and it is
+   the first thing under the wordmark. */
+.brand-pulse {
+  margin-bottom: 0.7rem;
+  font-family: var(--font-marathi);
+  /* Set at reading size and in full ink. At 15px and muted it was being read
+     as a caption under the wordmark — which is the one thing it is not: it is
+     the plate's actual claim, and the tally under it is the footnote. */
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.brand-count {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+}
+
+/* The chip's padding is deliberately lopsided.
+
+   Devanagari ink is not centred in its line box. "९ नोंदी" carries an anusvāra
+   and an ī-mātrā above the shirorekhā and nothing at all below the baseline,
+   so the glyphs crowd the top of the box and leave the font's whole descender
+   allowance empty underneath them. Padded symmetrically — which is what this
+   was — the chip therefore prints the number visibly high, with a band of
+   mint under it and none above. The extra weight on top is an optical
+   correction, not a layout one: it re-centres the ink, which is the only part
+   of this anybody can see. Re-measure it if the face ever changes. */
+.brand-count-figure {
+  display: inline-block;
+  padding: 0.28rem 0.5rem 0.12rem;
+  border: 1px solid var(--color-ink-900);
+  border-radius: var(--radius-xs);
+  background: var(--color-mint-300);
+  font-family: var(--font-marathi);
+  font-size: 1.0625rem;
+  line-height: 1;
+  color: var(--color-ink-900);
+}
+
+.brand-count-where {
+  font-size: var(--text-caption);
+  color: var(--color-text-subtle);
+}
+
+/* "selected out of 25" — the pins are a curated seven, and the plate says so
+   rather than letting the tally imply the pilot holds only seven notices. */
+.brand-note {
+  margin-top: 0.35rem;
+  font-size: var(--text-micro);
+  color: var(--color-text-subtle);
+}
+
+.brand-rule {
+  height: 1px;
+  margin: 0.85rem 0 0.75rem;
+  background: var(--gradient-rule);
+}
+
+.brand-sectors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.brand-sector-row {
+  display: grid;
+  grid-template-columns: 1.75rem 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+/* The sector plate carrying the sector icon — the pin's collar, at legend
+   size. Round, because the mark on the map is round: this list is a key to
+   those marks, and a rounded square standing for a disc reads as a different
+   object rather than as the same one smaller. Big enough that the glyph inside
+   is legible on its own, which at 1.15rem it was not. */
+.brand-sector-icon {
+  display: grid;
+  height: 1.75rem;
+  width: 1.75rem;
+  place-items: center;
+  border: 1.5px solid var(--color-ink-900);
+  border-radius: 50%;
+  background: var(--sector);
+  color: var(--color-ink-900);
+}
+
+.brand-sector-count {
+  font-family: var(--font-marathi);
+  color: var(--color-text);
+}
+
+/* --- Lead plate ---------------------------------------------------------- */
+
+/* "Something happening near you?" — a whole card rather than a line of text,
+   because the map is a field of clickable things and a link among them does
+   not read as one. Same press as the legend above it: cream, black rule, one
+   solid offset shadow. See `LeadPlate` for why it is not folded into the
+   legend. */
+.lead-plate {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.55rem 0.7rem;
+  padding: 0.8rem 0.9rem 0.85rem;
+  border: var(--rule-ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-cream-50);
+  /* The same plate offset the legend above it carries, not the small one. The
+     two sit in one rail a few pixels apart, and a 2px shadow under a 5px one
+     did not read as a quieter card — it read as the same card printed twice
+     with the registration slipping. Cards in a stack are cut from one stock. */
+  box-shadow: var(--shadow-plate);
+}
+
+/* The same disc the legend's sector rows use, so the plate is visibly one of
+   the same family of objects — but on the pale accent rather than a sector
+   pastel, because this one stands for no sector. */
+.lead-plate-icon {
+  display: grid;
+  height: 1.75rem;
+  width: 1.75rem;
+  place-items: center;
+  border: 1.5px solid var(--color-ink-900);
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-ink-900);
+}
+
+.lead-plate-prompt {
+  font-family: var(--font-marathi);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.lead-plate-hint {
+  margin-top: 0.2rem;
+  font-size: var(--text-micro);
+  line-height: 1.45;
+  color: var(--color-text-subtle);
+}
+
+/* The only thing on the rail that takes a pointer. Full width of the text
+   column and on the highlight yellow — the second most saturated block on the
+   sheet after the wordmark, which is the weight an invitation should carry
+   without competing with a pin. */
+.lead-plate-cta {
+  grid-column: 2;
+  padding: 0.4rem 0.75rem 0.45rem;
+  border: var(--rule-ink);
+  border-radius: var(--radius-xs);
+  background: var(--color-accent);
+  font-family: var(--font-marathi);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--color-ink-900);
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    background-color 160ms var(--ease-out-soft),
+    transform 160ms var(--ease-spring);
+}
+
+.lead-plate-cta:hover {
+  background: var(--color-sun-400);
+}
+
+.lead-plate-cta:active {
+  transform: translateY(1px);
+}
+
+.lead-plate-cta:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* --- Chrome -------------------------------------------------------------- */
+
+.map-controls {
+  position: absolute;
+  right: clamp(0.85rem, 2.4vw, 1.75rem);
+  bottom: clamp(0.85rem, 2.4vw, 1.75rem);
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0.2rem;
+  border: var(--rule-ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-cream-50);
+  box-shadow: var(--shadow-plate-sm);
+}
+
+.map-controls-rule {
+  height: 1px;
+  margin: 0 0.3rem;
+  background: var(--color-line-strong);
+}
+
+.map-controls button {
+  display: grid;
+  height: 2.125rem;
+  width: 2.125rem;
+  place-items: center;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 180ms var(--ease-out-soft),
+    background-color 180ms var(--ease-out-soft),
+    transform 180ms var(--ease-spring);
+}
+
+.map-controls button:hover {
+  background: var(--color-accent);
+  color: var(--color-ink-900);
+}
+
+.map-controls button:active {
+  transform: scale(0.9);
+}
+
+.map-attribution {
+  position: absolute;
+  left: clamp(0.85rem, 2.4vw, 1.75rem);
+  bottom: clamp(0.85rem, 2.4vw, 1.75rem);
+  z-index: 11;
+  max-width: 30rem;
+  font-size: var(--text-micro);
+  line-height: 1.45;
+  color: var(--color-text-subtle);
+  pointer-events: none;
+}
+
+/* --- Narrow screens ------------------------------------------------------ */
+
+@media (max-width: 64rem) {
+  .map-rail {
+    width: auto;
+    right: clamp(0.85rem, 1.8vw, 1.5rem);
+  }
+
+  /* On a phone the legend is a header, not a card, and the invitation under it
+     becomes a single line with a button — the hint is the first thing to go,
+     because the button already says what it does. */
+  .lead-plate {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.55rem 0.5rem 0.7rem;
+  }
+
+  .lead-plate-hint {
+    display: none;
+  }
+
+  .lead-plate-cta {
+    grid-column: 3;
+  }
+
+  .brand-head,
+  .brand-body {
+    padding: 0.7rem 1rem 0.8rem;
+  }
+
+  /* On a phone the plate is a header, not a card: the legend is the first
+     thing to go. */
+  .brand-note,
+  .brand-rule,
+  .brand-sectors {
+    display: none;
+  }
+
+  .brand-title {
+    font-size: 1.4rem;
+  }
+
+  .brand-pulse {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .brand-count {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 40rem) {
+  .map-page {
+    /* Fewer, wider bands: at phone width six of them read as stripes on a
+       deckchair rather than as a frame. */
+    background-image: linear-gradient(
+      118deg,
+      var(--color-mint-300) 0%,
+      var(--color-mint-300) 34%,
+      var(--color-sun-300) 34%,
+      var(--color-sun-300) 67%,
+      var(--color-coral-300) 67%,
+      var(--color-coral-300) 100%
+    );
+  }
+
+  .map-controls {
+    /* The record sheet owns the bottom of the screen; the zoom cluster moves
+       up out of its way. */
+    bottom: auto;
+    top: 50%;
+    translate: 0 -50%;
+    right: 0.75rem;
+  }
+
+  .map-controls button {
+    height: 2.375rem;
+    width: 2.375rem;
+  }
+
+  .map-attribution {
+    right: 4rem;
+    max-width: none;
+  }
+}

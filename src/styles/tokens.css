@@ -1,0 +1,358 @@
+/* ============================================================================
+   Design tokens — "SURVEY PRESS"
+
+   A printed survey sheet, screen-printed rather than laser-toned: flat blocks
+   of colour, hard black rules, and a solid offset shadow where something lifts
+   off the page. No blur, no glow, no glass.
+
+   The system used to be cream paper on a cream ground with one green and one
+   brass, and it read as a government form. The fix is not to paint the state
+   in six colours — that turns a map into a chart. It is to put the colour
+   where colour belongs:
+
+     THE PAGE      loud. Diagonal bands of the six poster colours, running
+                   corner to corner behind everything.
+     THE SHEET     one colour. The map sits on a cream card with a heavy black
+                   rule and a hard black shadow, and the state inside it is a
+                   single mint plate throughout — no district tints, no hatch.
+     THE MARKS     saturated. Five status inks, ten sector plates, and
+                   nothing else on the sheet is allowed to be coloured.
+
+   Two tiers:
+     1. PRIMITIVES  (--color-mint-*, --color-cream-*) — the raw ramps.
+        Never reach for these in a component.
+     2. SEMANTICS   (--color-canvas, --color-accent) — what components use.
+   ========================================================================= */
+
+@theme static {
+  /* --- 1. PRIMITIVES ------------------------------------------------------ */
+
+  /* ---- The poster set ---------------------------------------------------
+     Six hues lifted from the reference board, each with a light plate for
+     filling an area and a deep ink for anything that has to sit under a black
+     hairline and hold 13px type. Plates are areas; inks are marks. Never the
+     other way round: an ink used as a large fill turns the page into a
+     billboard, and a plate used as text fails contrast at every size. */
+
+  /* Mint — the land, and the calmest of the six. */
+  --color-mint-100: #e2f5e0;
+  --color-mint-200: #c3e9bf;
+  --color-mint-300: #a9e2a4;
+  --color-mint-400: #6cc177;
+  --color-mint-600: #14713f;
+
+  /* Peach. */
+  --color-peach-100: #fdeed6;
+  --color-peach-300: #fbd9a5;
+  --color-peach-500: #e0a54b;
+
+  /* Coral — warm, urgent, and the reason nothing else needs to be red. */
+  --color-coral-100: #fee4de;
+  --color-coral-300: #fca79a;
+  --color-coral-500: #e2542e;
+
+  /* Lavender. */
+  --color-lavender-100: #ece5fb;
+  --color-lavender-300: #c5b3f0;
+  --color-lavender-500: #6b4fd0;
+
+  /* Blossom — the magenta. Used sparingly; it is the loudest thing here. */
+  --color-blossom-100: #fce0f8;
+  --color-blossom-300: #f2a3ea;
+  --color-blossom-500: #b93aa8;
+
+  /* Sun — the highlight yellow. The reference's one true accent block. */
+  --color-sun-100: #fff6cc;
+  --color-sun-300: #ffe44d;
+  --color-sun-400: #f5cf16;
+  --color-sun-600: #9a7a00;
+
+  /* Indigo — the cool ink. No plate: it only ever appears as a mark. */
+  --color-indigo-300: #98a2ea;
+  --color-indigo-500: #3e4bd1;
+  --color-indigo-600: #2c37a5;
+
+  /* Teal — the second cool ink, for work that is finished and running. */
+  --color-teal-500: #0e7c86;
+
+  /* ---- Three later plates -----------------------------------------------
+     Added when the pilot grew past one district and the notices stopped being
+     all land acquisition. Each had to clear the six above it at pin size, so
+     they are pushed away from their nearest neighbour rather than dropped into
+     a gap: sky is bluer than indigo, clay is pinker than peach, moss is
+     yellower than mint. Plates only — none of the three is ever a mark. */
+
+  /* Sky — water, drainage, sanitation. */
+  --color-sky-100: #dcf0fa;
+  --color-sky-300: #8ecfe8;
+
+  /* Clay — housing and settlement. */
+  --color-clay-100: #f7e3d3;
+  --color-clay-300: #e0b48f;
+
+  /* Moss — land, environment, minor minerals. */
+  --color-moss-100: #eaf2d8;
+  --color-moss-300: #b9cf8a;
+
+  /* Cream — the card stock every panel and the map sheet are cut from. */
+  --color-cream-50: #fffdf2;
+  --color-cream-100: #fdf8e3;
+  --color-cream-200: #f7f0d6;
+  --color-cream-300: #ece3c4;
+  --color-cream-400: #d8ceac;
+
+  /* Ink — warm near-black. Every rule, every letter, every shadow. Not pure
+     #000: on a cream ground pure black vibrates, and this does not. */
+  --color-ink-900: #14120c;
+  --color-ink-800: #2a261c;
+  --color-ink-700: #4a4436;
+  --color-ink-500: #746c58;
+  --color-ink-400: #948b74;
+
+  /* Deccan — the brand green. Kept from the old palette because it is the one
+     colour the wordmark owns, and it is the "completed" ink. */
+  --color-deccan-400: #3d6f5a;
+  --color-deccan-500: #1d4a3c;
+  --color-deccan-600: #143529;
+
+  /* --- 2. SEMANTICS ------------------------------------------------------- */
+
+  /* Ground. `canvas` is the flat fallback behind `--gradient-canvas`; the two
+     must stay close in value, because the fallback is what a print stylesheet
+     and any screenshot pipeline get. */
+  --color-canvas: var(--color-peach-100);
+
+  /* Surfaces are card stock, opaque, never glass. */
+  --color-surface: var(--color-cream-100);
+  --color-surface-raised: var(--color-cream-50);
+  --color-surface-sunken: var(--color-cream-200);
+  --color-surface-hover: var(--color-cream-200);
+
+  /* The state: one mint plate, edge to edge, at every zoom. */
+  --color-land: var(--color-mint-300);
+  --color-land-deep: var(--color-mint-200);
+
+  /* Lines. The product's structure is black rules, not grey ones — a hairline
+     at 14% alpha was what made the old sheet look like a form. */
+  --color-line: rgb(20 18 12 / 0.16);
+  --color-line-strong: rgb(20 18 12 / 0.34);
+  --color-line-ink: rgb(20 18 12 / 0.72);
+  --color-line-hard: var(--color-ink-900);
+
+  /* District borders are the exception to "structure is black rules". They are
+     the only line work drawn *inside* a filled shape, there are 36 of them, and
+     at panel weight they turned the state into a net with the map caught in it.
+     The coastline carries the state's edge; these only have to divide. */
+  --color-line-district: rgb(20 18 12 / 0.22);
+
+  /* The district holding whatever the reader has open. The border goes to full
+     ink at coastline weight — the one time an internal line is allowed to be
+     as strong as the state's edge, because it is briefly answering the same
+     question the edge does: where am I. The wash under it is deliberately
+     almost nothing; a district is 1/36th of the sheet and any real tint at
+     that size buries the pins standing on it, which are what the reader came
+     for. */
+  --color-line-district-lit: var(--color-ink-900);
+  --color-district-lit: rgb(255 228 77 / 0.22);
+
+  /* Text — three levels, and no fourth. */
+  --color-text: var(--color-ink-900);
+  --color-text-muted: var(--color-ink-700);
+  --color-text-subtle: var(--color-ink-500);
+  --color-text-inverse: var(--color-cream-50);
+
+  /* Accent — the highlight yellow, used as a block behind something rather
+     than as a colour for it. Text on it is always ink. */
+  --color-accent: var(--color-sun-300);
+  --color-accent-soft: var(--color-sun-100);
+  --color-accent-deep: var(--color-sun-600);
+  --color-accent-wash: rgb(255 228 77 / 0.34);
+  --color-focus: var(--color-indigo-500);
+
+  /* Status — the ONE thing on the sheet that carries colour by meaning, in the
+     order work moves through: declared (cool) → funded (yellow) → building
+     (hot) → built → running. The ramp warms as money arrives and cools again
+     once the thing exists. All five are inks, all five hold a black rule. */
+  --color-status-announced: var(--color-indigo-500);
+  --color-status-sanctioned: var(--color-sun-400);
+  --color-status-progress: var(--color-coral-500);
+  --color-status-completed: var(--color-deccan-500);
+  --color-status-operational: var(--color-teal-500);
+
+  /* Sector — the collar behind a pin head and the chip in the panel. Pastel on
+     purpose and small on purpose: the status ink sits inside it and has to
+     win. This is the only categorical colour in the product.
+
+     Ten of them is more than one pastel band comfortably holds, so the spacing
+     is deliberate rather than lucky. Among the seven sectors that currently
+     carry records the closest two are ~20 ΔE apart, which is clear at pin
+     size. The tight pairs — moss against mint, clay against peach, both ~14 —
+     are with energy, manufacturing and research, and neither district has a
+     single record in any of the three, so those plates never appear beside
+     each other on the map. Publish a record in one of them and re-check the
+     pairing before trusting it; the icon inside the collar is the fallback,
+     not the plate. */
+  --color-sector-infrastructure: var(--color-lavender-300);
+  --color-sector-transportation: var(--color-coral-300);
+  --color-sector-energy: var(--color-sun-300);
+  --color-sector-public-systems: var(--color-blossom-300);
+  --color-sector-manufacturing: var(--color-peach-300);
+  --color-sector-research: var(--color-mint-300);
+  --color-sector-agriculture: var(--color-mint-400);
+  --color-sector-water: var(--color-sky-300);
+  --color-sector-housing: var(--color-clay-300);
+  --color-sector-environment: var(--color-moss-300);
+
+  /* --- 3. GRADIENTS ------------------------------------------------------- */
+
+  /* The page: six hard-edged diagonal bands, corner to corner. Hard stops on
+     purpose — a soft blend of six hues is mud, and this system is screen
+     print. The map card sits on top and covers the middle of it, so what a
+     reader actually sees is a colour border framing the sheet. */
+  --gradient-canvas: linear-gradient(
+    118deg,
+    var(--color-mint-300) 0%,
+    var(--color-mint-300) 17%,
+    var(--color-peach-300) 17%,
+    var(--color-peach-300) 34%,
+    var(--color-sun-300) 34%,
+    var(--color-sun-300) 50%,
+    var(--color-coral-300) 50%,
+    var(--color-coral-300) 67%,
+    var(--color-blossom-300) 67%,
+    var(--color-blossom-300) 83%,
+    var(--color-lavender-300) 83%,
+    var(--color-lavender-300) 100%
+  );
+
+  /* The state. A single colour asked for, and a single colour given — this is
+     one hue with a few points of shade across it so the plate is not dead
+     flat under a 3000px silhouette. */
+  --gradient-land: linear-gradient(
+    155deg,
+    var(--color-mint-300) 0%,
+    var(--color-mint-200) 100%
+  );
+
+  /* Used on type and on rules only — never as a fill for a shape that means
+     something. A gradient here is emphasis, not data. */
+  --gradient-press: linear-gradient(
+    100deg,
+    var(--color-deccan-500) 0%,
+    var(--color-deccan-400) 38%,
+    var(--color-sun-600) 100%
+  );
+
+  /* A hairline that fades out at both ends — the house divider. */
+  --gradient-rule: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-line-strong) 16%,
+    var(--color-line-strong) 84%,
+    transparent
+  );
+
+  /* --- 4. TYPOGRAPHY ------------------------------------------------------ */
+
+  /* Display sizes are fluid; everything below `lead` is fixed, because UI text
+     that resizes with the viewport is just text you can't align to anything. */
+
+  --text-display: clamp(2.5rem, 1.1rem + 4.8vw, 4.5rem);
+  --text-display--line-height: 0.94;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 500;
+
+  --text-title: clamp(1.6rem, 1rem + 1.9vw, 2.375rem);
+  --text-title--line-height: 1.06;
+  --text-title--letter-spacing: -0.02em;
+  --text-title--font-weight: 500;
+
+  --text-heading: 1.1875rem;
+  --text-heading--line-height: 1.28;
+  --text-heading--letter-spacing: -0.012em;
+  --text-heading--font-weight: 600;
+
+  --text-lead: 1.0625rem;
+  --text-lead--line-height: 1.62;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.65;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.05em;
+
+  /* The all-caps mono label that runs through the whole product — the sheet
+     number on a survey drawing. */
+  --text-eyebrow: 0.625rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.24em;
+  --text-eyebrow--font-weight: 500;
+
+  /* --- 5. SHAPE, DEPTH, MOTION -------------------------------------------- */
+
+  /* Squarer than the last system. Printed matter has corners. */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  /* How far the second plate sits off the first. One number, used everywhere
+     registration is drawn, so the whole sheet is misprinted consistently.
+     Rectangles only — the map tried this and it read as a green fringe stuck
+     to the Konkan. */
+  --plate-offset-x: 5px;
+  --plate-offset-y: 6px;
+
+  /* Every panel edge in the product. Heavy enough to hold a saturated plate
+     next to a pastel one without the two bleeding into each other. */
+  --rule-ink: 1.5px solid var(--color-ink-900);
+  --rule-ink-heavy: 2px solid var(--color-ink-900);
+  --rule-hair: 1px solid var(--color-line-strong);
+
+  /* The house shadow: a hard offset plate in ink, no blur. This is the whole
+     depth model — there is no elevation scale and no ambient light. */
+  --shadow-plate-sm: 2px 3px 0 var(--color-ink-900);
+  --shadow-plate: var(--plate-offset-x) var(--plate-offset-y) 0 var(--color-ink-900);
+  --shadow-plate-lg: 7px 9px 0 var(--color-ink-900);
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Overshoots very slightly. The product's "buttery" comes from here. */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-rise: rise 0.7s var(--ease-out-soft) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Fonts are mapped inline so utilities emit the next/font variable directly and
+   never fight the cascade with next/font's own class on <html>.
+
+   Five faces, each with one job:
+     display    Fraunces           — editorial serif, optical-size axis
+     sans       Manrope            — the UI voice
+     devanagari Anek Devanagari    — Marathi UI + body
+     marathi    Tiro Dev. Marathi  — Marathi headlines, drawn for Marathi
+     mono       JetBrains Mono     — eyebrows, sheet numbers, figures */
+@theme inline {
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-devanagari: var(--font-anek-devanagari), var(--font-manrope), sans-serif;
+  --font-marathi: var(--font-tiro-marathi), var(--font-anek-devanagari), serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}

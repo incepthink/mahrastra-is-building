@@ -1,0 +1,733 @@
+{
+  "meta": {
+    "scrapedAt": "2026-08-18T23:24:00.547Z",
+    "count": 51,
+    "attribution": {
+      "content": {
+        "label": "Pune District Administration (pune.gov.in)",
+        "url": "https://pune.gov.in/en/",
+        "note": "Public notices reproduced from the official district portal (NIC S3WaaS)."
+      },
+      "geocoding": {
+        "label": "© OpenStreetMap contributors",
+        "url": "https://www.openstreetmap.org/copyright",
+        "note": "Coordinates are inferred from place names via Nominatim, not published by the district."
+      }
+    }
+  },
+  "facilities": [
+    {
+      "id": "pun-fac-hospitals-e4b85b73",
+      "name": "Aundh E.S.I.C Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Telco Road, Near Chinchwad Railway Station,, Pune, Maharashtra 411019",
+      "pincode": "411019",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-e15e7344",
+      "name": "Aundh Government Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Vidyapeeth Rd, Ward No. 8, Pune University, Aundh, Pune, Maharashtra 411007",
+      "pincode": "411007",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-605e6ca7",
+      "name": "Dr Bandorawalla Government Leprosy Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Kondhwa Bk, Pune, Maharashtra 411048",
+      "pincode": "411048",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-44bfe717",
+      "name": "ESI Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Western Maharashtra Region, Survey No. 689 / 690, Panchdeep Bhavan, ESI Corporation Building, Bibwewadi, Pune, Maharashtra 411037",
+      "pincode": "411037",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-ac59c70b",
+      "name": "Jehangir Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "No. 32, Sasoon Road, Pune - 411001 Get Directions Landmark: NEAR Pune Railway Station",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-bb26e853",
+      "name": "Kamla Nehru Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Mangalwar Peth, Near Kasba Post Office, Pune, Maharashtra 411002",
+      "pincode": "411002",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-11773660",
+      "name": "Officer Family Ward Command hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Pune Cantonment, Pune, Maharashtra 411040",
+      "pincode": "411040",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-3264c782",
+      "name": "Regional Mental Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "R N G Road, Vishrantwadi, Phulenagar, Near RTO Office, Pune, Maharashtra 411006",
+      "pincode": "411006",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-23455996",
+      "name": "Sahyadri Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "S N. 89 & 90 , Plot No. 54, Lokmanya Colony, Kothrud, Pune 411038, Maharashtra, India",
+      "pincode": "411038",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-hospitals-af03cc68",
+      "name": "Savitribai Phule Prsuti Graha",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Shop No.718, Chhatrapati Shivaji Maharaj Rd, Guruwar Peth, Pune, Maharashtra 411041",
+      "pincode": "411041",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-0080381d",
+      "name": "Army Public School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "C/O Training Battalion-2, Beg & Centre, Dighi Camp Pune, Maharashtra, Pune, Maharashtra 411015",
+      "pincode": "411015",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-610cd24a",
+      "name": "D.A.V. Public School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "S.NO 157, Plot no 31, Seasons Road, Raagdari Society, Aundh, Pune, Maharashtra 411007",
+      "pincode": "411007",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-7381fd2b",
+      "name": "Delhi Public School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Nyati Estate Road, Nyati County, Mohammed Wadi, Pune, Maharashtra 411060",
+      "pincode": "411060",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-79bd2a06",
+      "name": "Kendriya Vidyalaya Ganeshkhind",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Vidyapeeth Road, Armament Colony, Ganeshkhind, Pune, Maharashtra 411007",
+      "pincode": "411007",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-1c588bac",
+      "name": "Kendriya Vidyalaya Southern Command",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Tarapore Road, Near Parasi Gym Khana, Camp, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-9f41dda0",
+      "name": "MIT School of Government",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "S. No. 124, Paud Road, Kothrud, Rambaug Colony, Pune, Maharashtra 411038",
+      "pincode": "411038",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-4a5602ca",
+      "name": "Pune International School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Survey No. 33/2, Road Number 14, Vidyanagar, Tingre Nagar, Pune, Maharashtra 411032",
+      "pincode": "411032",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-464d81fb",
+      "name": "Pune Police Public School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Opp Rahul Theatre, Police Headquarters, Police Ground, Shivaji Nagar Narveer Tanvi aji Wadi, Shivajinagar, Pune, Maharashtra 411005",
+      "pincode": "411005",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-schools-2c0c9321",
+      "name": "St. Mary’s School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "5B, General Bhagat Marg, Camp, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-ac1c1490",
+      "name": "AISSMS College of Engineering",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "1 Kennedy Road, Near R.T.O Office, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-ad407393",
+      "name": "College of Engineering",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Wellesley Road, Shivajinagar, Pune, Maharashtra 411005",
+      "pincode": "411005",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-afa83f3a",
+      "name": "College of Military Engineering",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Old Mumbai Pune Hwy, Dapodi, Pimpri-Chinchwad, Maharashtra 411031",
+      "pincode": "411031",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-a78c8a6b",
+      "name": "Cusrow Wadia Institute of Technology",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "19, Bundgarden Road, Sangamvadi, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-a13aa5e7",
+      "name": "Fergusson College",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Road, Shivajinagar, Pune, Maharashtra 411004",
+      "pincode": "411004",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-589fa529",
+      "name": "MIT College of Engineering",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "S.No.124, Paud Road, Kothrud, Pune, Maharashtra 411038",
+      "pincode": "411038",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-a72dad57",
+      "name": "Modern College of Arts, Science and Commerce",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Modern Engineering College Road, Shivajinagar, Pune, Maharashtra 411005",
+      "pincode": "411005",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-1266c06f",
+      "name": "Nowrosjee Wadia College",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "19, Bund Garden Road, Central Excise Colony, Sangamvadi, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-2b8bed26",
+      "name": "Savitribai Phule Pune University",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Ganeshkhind, Pune, Maharashtra 411007",
+      "pincode": "411007",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-colleges-713b943f",
+      "name": "Sinhgad College of Engineering",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "S. No. 44/1, Vadgaon Budruk, Off. Sinhgad Road, Pune, Maharashtra 411041",
+      "pincode": "411041",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-municipality-ae4c836e",
+      "name": "Pimpri Chinchwad Muncipal Corporation",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "Address: Pimpri Chinchwad Mahanagarpalika Bhavan Mumbai-Pune Road, Pimpri, Pune, 411018",
+      "pincode": "411018",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-municipality-6c652ef3",
+      "name": "Pune Municipal Corporation",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "Address: PMC Main Building, Congress House Road, Near Mangla Theatre, Shivajinagar, Pune, Maharashtra 411005",
+      "pincode": "411005",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-electricity-4927fb72",
+      "name": "MSEB Office",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Lane Number 11, Chandralok Nagari, Dahanukar Colony, Kothrud, Pune, Maharashtra 411038",
+      "pincode": "411038",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-electricity-5bcc5fb4",
+      "name": "MSEB Power House",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Rasta Peth, Pune, Maharashtra 411011",
+      "pincode": "411011",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-electricity-aea19286",
+      "name": "MSEDCL Ltd Office",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Galli Number 3, Wadarvadi, Pune, Maharashtra 411004",
+      "pincode": "411004",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-banks-2602a8f4",
+      "name": "Axis Bank",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "N Main Rd, Liberty Phase 2, Ragvilas Society, Koregaon Park, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-banks-38ca292c",
+      "name": "HDFC Bank",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "15A/1, Gr Flr, Hotel Gulmohar, Sadhu Vaswani Rd, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-banks-3d2593af",
+      "name": "Indian Overseas Bank – Regional Office",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "51,, 759, FC Rd, Deccan Gymkhana, Pune, Maharashtra 411004",
+      "pincode": "411004",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-banks-3b48b604",
+      "name": "Lokmangal Bank Of Maharashtra Main Branch",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "Narveer Tanaji Wadi, Shivajinagar, Pune, Maharashtra 411005",
+      "pincode": "411005",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-banks-97c9649f",
+      "name": "PDCC Bank Head Office",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "Sadhu Vaswani Chowk, Agarkar Nagar, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-banks-295df495",
+      "name": "SBI NRI Branch Koregaon Park",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "1, Koregaon Park Road, Vasani Nagar, Koregaon Park, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-banks-0eb95873",
+      "name": "SBI Treasury Branch",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "SBI, Near Collector Office, Somwar Peth, Pune, Maharashtra 411011",
+      "pincode": "411011",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-postal-f4e065dd",
+      "name": "General Post Office",
+      "kind": "postal",
+      "kindLabel": "Post offices",
+      "address": "Sadhu Vaswani Chouk, Modi Colony, Pune 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/postal/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-cb923f7e",
+      "name": "Akanksha Organization",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "Bhalekar Chawl, Erandwane, Pune, Maharashtra 411004",
+      "pincode": "411004",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-32531f8e",
+      "name": "Bharatiya Samaj Seva Kendra",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "Plot No. 373, Bertha Varada, 6th Lane, North Main Road, Koregaon Park, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-0572c964",
+      "name": "Chetana Mahila Vikas Kendra",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "9 NPS Line, Behind Wonder Car Garrage, Pulgate, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-c323fe92",
+      "name": "Children’s Future India",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "Prashant Nagar, Lokamanya Nagar, Navi Peth, Sadashiv Peth, Pune, Maharashtra 411030",
+      "pincode": "411030",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-a7e813db",
+      "name": "Global Vision NGO",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "Office No. 513/515, 5th Floor, Sterling Center, Opp. Hotel Arora Tower, MG Road, Camp, Pune, Maharashtra 411001",
+      "pincode": "411001",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-2a5b1629",
+      "name": "Helpage India ( N G O)",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "S. No. 9/67, Phule Nagar,, Behind Alandi Road R.T.O. Ground,, Near Bodhichitta Vihar, Pune, Maharashtra 411006",
+      "pincode": "411006",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-502b4041",
+      "name": "Jai Bhoomiputra Gramin Vikas Pratishthan",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "At/post- Anthurne, Sable Vasti no. 1, Taluka Indapur, Pune- 413114",
+      "pincode": "413114",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-a4ea5737",
+      "name": "Seva Sahayog Foundation",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "18 Vrundavan Society, Pathik Bungalow, Near Shri Shri Ravi Shankar Vidya Mandir, Navi Peth, Mhatre Bridge, Pune, Maharashtra 411030",
+      "pincode": "411030",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    },
+    {
+      "id": "pun-fac-ngos-c60e22c6",
+      "name": "The Akanksha Foundation",
+      "kind": "ngos",
+      "kindLabel": "NGOs",
+      "address": "Address of Akanksha Foundation is New Thermax Building Next to Sai Chambers Old Bombay Pune Highway Road, Wakdewadi, Pune, Maharashtra",
+      "district": "Pune",
+      "provenance": {
+        "sourceUrl": "https://pune.gov.in/en/public-utility-category/ngos/",
+        "sourceLabel": "NGOs",
+        "scrapedAt": "2026-08-18T23:24:00.547Z"
+      }
+    }
+  ]
+}

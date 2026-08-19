@@ -1,0 +1,773 @@
+/* ============================================================================
+   Pins and the record panel.
+
+   Both are printed objects: flat fills, black rules, and a solid offset plate
+   where something lifts off the sheet.
+
+   Two colours carry meaning, and they are kept on separate surfaces rather than
+   stacked on one mark. The sector's pastel plate is the *map's* colour: it
+   fills a pin's head, the legend chip that keys it, the record panel's header
+   and the mark on it, and a reader can match any one of those against any other
+   by area alone. The status ink is the *panel's* colour: the leading edge, the
+   stage meter, an urgent deadline, a chip on a counter badge, the dot on a
+   hover plate. A pin used to carry both — plate outside, ink in — and the ink
+   won, so the map looked like it used a different palette from its own legend.
+   ========================================================================= */
+
+/* --- Pins ---------------------------------------------------------------- */
+
+/* The one thing on the map that is actually clickable, and so the one thing
+   that changes the cursor. */
+.signal-marker {
+  cursor: pointer;
+  outline: none;
+}
+
+.signal-marker > g {
+  animation: signal-stake 520ms var(--ease-spring) backwards;
+  transform-origin: 0 0;
+}
+
+@keyframes signal-stake {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The anchor: the record's exact coordinate. Seven fanned pins share one patch
+   of ground here, so the target ring is held back for hover and selection —
+   seven rings on one dot is a smudge, one ring answers "which of these is
+   mine". */
+.signal-target {
+  fill: none;
+  stroke: var(--color-ink-900);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity 180ms var(--ease-out-soft);
+}
+
+.signal-marker:hover .signal-target,
+.signal-marker:focus-visible .signal-target,
+.signal-marker[data-selected] .signal-target {
+  opacity: 0.85;
+}
+
+.signal-anchor {
+  fill: var(--color-ink-900);
+}
+
+.signal-body {
+  transition: transform 240ms var(--ease-spring);
+}
+
+.signal-marker:hover .signal-body,
+.signal-marker:focus-visible .signal-body,
+.signal-marker[data-selected] .signal-body {
+  transform: translateY(-3px);
+}
+
+/* The stem runs along whatever angle the displacement produced — see
+   `lib/map/spread.ts`. */
+.signal-stem {
+  fill: none;
+  stroke: var(--color-ink-900);
+  stroke-width: 1.3;
+  opacity: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The head. One disc in the sector's pastel plate, which the component sets
+   inline — the colour the brand plate's legend keys, and the only colour a pin
+   carries. The status collar that used to ring it is gone; see `SignalMarker`
+   for where status went. */
+.signal-head {
+  stroke: var(--color-ink-900);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Only the open record wears the outer ring, so "which one am I reading" is
+   answerable from the map without looking at the panel. */
+.signal-head-ring {
+  fill: none;
+  stroke: var(--color-ink-900);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.82);
+  transition:
+    opacity 220ms var(--ease-out-soft),
+    transform 260ms var(--ease-spring);
+}
+
+.signal-marker[data-selected] .signal-head-ring,
+.signal-marker:focus-visible .signal-head-ring {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.signal-marker:focus-visible .signal-head-ring {
+  stroke: var(--color-focus);
+  stroke-width: 2.5;
+}
+
+/* Every sector plate is a pastel, so the glyph on it is always dark. It used
+   to flip between cream and ink because the disc under it was a saturated
+   status colour; now that the disc is the sector's own plate there is nothing
+   to flip for. */
+.signal-icon {
+  color: var(--color-ink-900);
+  pointer-events: none;
+}
+
+.signal-hit {
+  fill: transparent;
+}
+
+/* --- Counters ------------------------------------------------------------ */
+
+/* Several records on one patch of ground, drawn as one badge. It is a
+   statement about the current view rather than about the data, so it borrows
+   none of the pin's vocabulary: no sector plate, no status ink, no glyph. What
+   it borrows is the product's depth model — a solid ink plate offset behind a
+   cream disc, the same misregistration every panel uses — because a stack of
+   sheets is exactly what it is. See `ClusterMarker`. */
+.cluster-marker {
+  cursor: pointer;
+  outline: none;
+}
+
+.cluster-marker > g {
+  animation: signal-stake 520ms var(--ease-spring) backwards;
+  transform-origin: 0 0;
+}
+
+/* Hollow, unlike a pin's anchor: the badge stands at the middle of the group,
+   which is a point no notice actually named. */
+.cluster-anchor {
+  fill: var(--color-cream-50);
+  stroke: var(--color-ink-900);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+
+.cluster-body {
+  transition: transform 240ms var(--ease-spring);
+}
+
+.cluster-marker:hover .cluster-body,
+.cluster-marker:focus-visible .cluster-body {
+  transform: translateY(-3px);
+}
+
+.cluster-plate {
+  fill: var(--color-ink-900);
+}
+
+.cluster-head {
+  fill: var(--color-accent);
+  stroke: var(--color-ink-900);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.cluster-marker:hover .cluster-head,
+.cluster-marker:focus-visible .cluster-head {
+  fill: var(--color-accent-soft);
+}
+
+.cluster-marker:focus-visible .cluster-head {
+  stroke: var(--color-focus);
+  stroke-width: 2.5;
+}
+
+.cluster-count {
+  font-family: var(--font-marathi);
+  font-size: 21px;
+  fill: var(--color-ink-900);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* One square per record, in its status ink — "four notices, two sanctioned"
+   rather than just "four". */
+.cluster-chips {
+  pointer-events: none;
+}
+
+.cluster-chips rect {
+  stroke: var(--color-ink-900);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+/* --- The plate over a counter -------------------------------------------- */
+
+.cluster-readout-card {
+  max-width: 19rem;
+}
+
+.cluster-readout-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: var(--text-caption);
+  color: var(--color-text-subtle);
+}
+
+.cluster-readout-head strong {
+  font-family: var(--font-marathi);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--color-text);
+}
+
+.cluster-readout-list {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  list-style: none;
+}
+
+.cluster-readout-list li {
+  display: grid;
+  grid-template-columns: 0.5rem 1fr;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--text-caption);
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+.cluster-readout-dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  border: 1px solid var(--color-ink-900);
+  border-radius: 1px;
+  background: var(--color-status-announced);
+}
+
+.cluster-readout-dot[data-tone="sanctioned"] { background: var(--color-status-sanctioned); }
+.cluster-readout-dot[data-tone="progress"] { background: var(--color-status-progress); }
+.cluster-readout-dot[data-tone="completed"] { background: var(--color-status-completed); }
+.cluster-readout-dot[data-tone="operational"] { background: var(--color-status-operational); }
+
+.cluster-readout-more {
+  margin-top: 0.3rem;
+  padding-left: 0.95rem;
+  font-size: var(--text-micro);
+  color: var(--color-text-subtle);
+}
+
+.cluster-readout-hint {
+  margin-top: 0.45rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--color-line-strong);
+  font-size: var(--text-micro);
+  color: var(--color-text-subtle);
+}
+
+/* --- The plate over a pin ------------------------------------------------ */
+
+.signal-readout-card {
+  max-width: 18rem;
+  padding: 0.55rem 0.8rem 0.6rem;
+}
+
+.signal-readout-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--text-micro);
+  letter-spacing: 0.04em;
+  color: var(--color-text-subtle);
+}
+
+.signal-readout-dot {
+  height: 0.55rem;
+  width: 0.55rem;
+  border: 1px solid var(--color-ink-900);
+  border-radius: 1px;
+  background: var(--color-status-announced);
+}
+
+.signal-readout-status[data-tone="sanctioned"] .signal-readout-dot { background: var(--color-status-sanctioned); }
+.signal-readout-status[data-tone="progress"] .signal-readout-dot { background: var(--color-status-progress); }
+.signal-readout-status[data-tone="completed"] .signal-readout-dot { background: var(--color-status-completed); }
+.signal-readout-status[data-tone="operational"] .signal-readout-dot { background: var(--color-status-operational); }
+
+.signal-readout-title {
+  margin-top: 0.3rem;
+  font-family: var(--font-marathi);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.signal-readout-place {
+  margin-top: 0.25rem;
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+/* ============================================================================
+   The record — one sheet, about a screenful.
+
+   Everything hangs off two custom properties. `--tone` is the status ink of
+   the open record: it paints the leading edge, the disc of the record mark,
+   the stage meter's current node and the deadline when that deadline is near.
+   `--sector` is the record's pastel plate: it paints the header ground and the
+   meaning block. Between them they reproduce the pin — plate behind, ink in
+   front, sector glyph on top — so the panel and the mark that opened it are
+   the same object at two sizes. Nothing else in here takes a colour from the
+   data.
+   ========================================================================= */
+
+.record {
+  --tone: var(--color-accent);
+
+  position: absolute;
+  z-index: 20;
+  top: clamp(0.85rem, 2.2vh, 1.5rem);
+  right: clamp(0.85rem, 1.8vw, 1.5rem);
+  bottom: clamp(0.85rem, 2.2vh, 1.5rem);
+  display: flex;
+  width: clamp(20rem, 27vw, 25rem);
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--rule-ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-cream-50);
+  box-shadow: var(--shadow-plate);
+  /* The frame locks gestures for the camera; the panel takes its own back. */
+  touch-action: auto;
+}
+
+/* The record's status, painted down the panel's leading edge. */
+.record-edge {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 6px;
+  border-right: 1px solid var(--color-ink-900);
+  background: var(--tone);
+}
+
+.record-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 3;
+  display: grid;
+  height: 1.75rem;
+  width: 1.75rem;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease-out-soft),
+    border-color 160ms var(--ease-out-soft),
+    background-color 160ms var(--ease-out-soft);
+}
+
+.record-close:hover {
+  border-color: var(--color-ink-900);
+  background: var(--color-accent);
+  color: var(--color-ink-900);
+}
+
+/* --- Head ---------------------------------------------------------------- */
+
+/* The head sits on the sector's plate, so the panel opens in the same colour
+   as the collar of the pin that opened it — the one colour block on the right
+   of the screen, answering the yellow one on the left. */
+.record-head {
+  padding: 1.2rem 1.35rem 1.1rem 1.7rem;
+  border-bottom: var(--rule-ink);
+  background: var(--sector, var(--color-surface));
+}
+
+/* The mark and the two words that name it, on one line. */
+.record-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding-right: 2rem;
+}
+
+/* The pin's head, at panel size: one disc in the sector plate, the black rule
+   round it, the sector glyph on it — the same three things `SignalMarker`
+   draws and in the same order. It sits on the header's own sector plate, so
+   what lifts it off the ground is the offset ink plate every other raised
+   object in the product uses rather than a second colour.
+
+   The small status square that used to sit here shared the status ink and
+   nothing else, so it never read as the same mark as the pin. */
+.record-mark {
+  display: grid;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex: none;
+  place-items: center;
+  border: 1.5px solid var(--color-ink-900);
+  border-radius: 50%;
+  background: var(--sector, var(--color-surface));
+  color: var(--color-ink-900);
+  box-shadow: 2px 3px 0 var(--color-ink-900);
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-micro);
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.record-status {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.record-meta-sep {
+  height: 0.7rem;
+  width: 1px;
+  background: var(--color-line-strong);
+}
+
+.record-title {
+  margin-top: 0.85rem;
+  font-family: var(--font-marathi);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: -0.005em;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.record-place {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+.record-place svg {
+  flex: none;
+  color: var(--color-text-subtle);
+}
+
+/* --- Body ---------------------------------------------------------------- */
+
+.record-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.1rem 1.35rem 1.35rem 1.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* --- The stage meter ------------------------------------------------------
+   Five stages on one rail: declared → sanctioned → building → built →
+   running. The rail behind the current node is filled; the nodes behind it are
+   filled in their own status inks, so the meter and the legend on the brand
+   plate speak the same colour language. Nothing here claims a date for any
+   stage — the district publishes notices, not schedules. */
+
+.record-stage {
+  padding: 0.9rem 0.55rem 0.8rem;
+  border: 1px solid var(--color-ink-900);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface);
+}
+
+.stage-track {
+  position: relative;
+}
+
+.stage-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* The rail runs between the first and last node centres — each node sits at
+   the centre of a fifth, so that is 10% to 90%. */
+.stage-rail,
+.stage-rail-fill {
+  position: absolute;
+  top: 0.375rem;
+  left: 10%;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.stage-rail {
+  right: 10%;
+  background: var(--color-cream-400);
+}
+
+/* `--reached` is the fraction of the ladder covered, set by `StageMeter`. */
+.stage-rail-fill {
+  width: calc(80% * var(--reached, 0));
+  background: var(--color-ink-900);
+  transform-origin: left;
+  animation: stage-fill 620ms var(--ease-out-soft) 120ms backwards;
+}
+
+@keyframes stage-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.stage-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.stage-node {
+  height: 0.85rem;
+  width: 0.85rem;
+  border: 1px solid var(--color-ink-900);
+  border-radius: 1px;
+  background: var(--color-cream-100);
+}
+
+/* Stages already passed wear their own ink. */
+.stage-step[data-state="done"] .stage-node {
+  background: var(--step);
+}
+
+/* The current stage is the one thing on the meter that is bigger than the
+   others, plus a plate offset — at a glance the eye lands on it before it
+   reads a single label. */
+.stage-step[data-state="now"] .stage-node {
+  height: 1.2rem;
+  width: 1.2rem;
+  margin-top: -0.175rem;
+  border: 2px solid var(--color-ink-900);
+  background: var(--step);
+  box-shadow: 2px 2px 0 var(--color-ink-900);
+}
+
+/* Five Marathi words across one panel-width row. They were 9px, which is under
+   the size Devanagari can carry its matras at — the marks that tell `सुरू` from
+   `पूर्ण` were not being drawn at all, so the row was five grey smudges. At
+   12px they are readable, and `कार्यरत` — the longest of the five — still
+   clears its column with room to spare once the box's own side padding is
+   pulled in, which is what that is for. */
+.stage-word {
+  font-family: var(--font-marathi);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: nowrap;
+  color: var(--color-text-subtle);
+}
+
+.stage-step[data-state="now"] .stage-word {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.stage-step[data-state="done"] .stage-word {
+  color: var(--color-text-muted);
+}
+
+/* --- Gist and meaning ---------------------------------------------------- */
+
+.record-gist {
+  font-size: var(--text-body);
+  line-height: 1.72;
+  color: var(--color-text);
+}
+
+/* "What this means for you", set apart from the summary above it. The gist
+   reports a document; this reads one, and the two should not run together as
+   though a reader could not tell which is which. It takes the sector plate so
+   the block belongs to the same record without borrowing the status ink, which
+   in this panel only ever means "how far along". */
+.record-meaning {
+  padding: 0.75rem 0.9rem 0.85rem;
+  border: 1px solid var(--color-ink-900);
+  border-radius: var(--radius-xs);
+  background: var(--sector, var(--color-surface));
+  box-shadow: 2px 2px 0 var(--color-ink-900);
+}
+
+.record-meaning-label {
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-900);
+}
+
+.record-meaning-text {
+  margin-top: 0.35rem;
+  font-size: var(--text-caption);
+  line-height: 1.66;
+  color: var(--color-ink-900);
+}
+
+/* --- Facts --------------------------------------------------------------- */
+
+.record-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.record-fact {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.record-fact[data-wide] {
+  grid-template-columns: 1fr;
+  gap: 0.2rem;
+}
+
+.record-fact dt {
+  font-size: var(--text-micro);
+  letter-spacing: 0.06em;
+  color: var(--color-text-subtle);
+}
+
+.record-fact dd {
+  font-size: var(--text-caption);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+/* A deadline is the one fact that can become urgent, so it is the one fact
+   allowed to change colour. */
+.record-fact[data-state="closing"] dd {
+  color: var(--color-coral-500);
+  font-weight: 600;
+}
+
+.record-fact[data-state="closed"] dd {
+  color: var(--color-text-subtle);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* --- Foot ---------------------------------------------------------------- */
+
+.record-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1rem 1.35rem 0.9rem 1.7rem;
+  border-top: var(--rule-ink);
+  background: var(--color-surface-sunken);
+}
+
+.record-source {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border: var(--rule-ink);
+  border-radius: var(--radius-xs);
+  background: var(--color-accent);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--color-ink-900);
+  box-shadow: var(--shadow-plate-sm);
+  transition:
+    transform 160ms var(--ease-out-soft),
+    box-shadow 160ms var(--ease-out-soft);
+}
+
+/* Presses into the sheet: the plate slides under the button rather than the
+   button lifting off it. */
+.record-source:hover {
+  transform: translate(3px, 4px);
+  box-shadow: 0 0 0 var(--color-ink-900);
+}
+
+.record-source svg {
+  flex: none;
+}
+
+/* The second thing in the foot, and deliberately the quieter one: a rule and
+   a word rather than another yellow plate. Two filled buttons stacked would
+   read as two equal choices, and they are not — almost everyone here wants the
+   notice, and this is for the few who spot something wrong in it. */
+.record-report {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-line-strong);
+  transition:
+    color 160ms var(--ease-out-soft),
+    border-color 160ms var(--ease-out-soft),
+    background-color 160ms var(--ease-out-soft);
+}
+
+.record-report:hover {
+  border-color: var(--color-ink-900);
+  background: var(--color-cream-50);
+  color: var(--color-ink-900);
+  text-decoration-color: transparent;
+}
+
+.record-report svg {
+  flex: none;
+}
+
+
+/* --- Narrow screens: the record becomes a sheet -------------------------- */
+
+@media (max-width: 64rem) {
+  .record {
+    top: auto;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+    max-height: 74dvh;
+    border-radius: var(--radius-md);
+  }
+}

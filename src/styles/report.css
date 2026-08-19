@@ -1,0 +1,467 @@
+/* ============================================================================
+   The report sheet — "something on this record is wrong".
+
+   Same press as everything else: a cream card with a hard black rule, one
+   solid offset shadow, and exactly one saturated block — the record's sector
+   plate behind the heading, so the dialog is visibly the same object as the
+   panel it came out of rather than a system prompt dropped over the map.
+
+   The controls are drawn rather than borrowed. The radio is a square that
+   fills with ink, the way the stage meter's nodes fill; the inputs are ruled
+   boxes that take the highlight yellow on focus, the way the buttons do.
+   Nothing in here blurs or glows.
+   ========================================================================= */
+
+.report-layer {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  display: grid;
+  padding: clamp(1rem, 4vh, 2.5rem) clamp(1rem, 4vw, 2.5rem);
+  place-items: center;
+}
+
+/* Ink, not smoke. A blurred scrim would be the one soft edge in a product made
+   entirely of hard ones; this is the page seen through a printed screen. */
+.report-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(20 18 12 / 0.52);
+}
+
+.report-sheet {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(30rem, 100%);
+  max-height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--rule-ink-heavy);
+  border-radius: var(--radius-sm);
+  background: var(--color-cream-50);
+  box-shadow: var(--shadow-plate-lg);
+}
+
+.report-close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 3;
+  display: grid;
+  height: 1.75rem;
+  width: 1.75rem;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--color-ink-800);
+  cursor: pointer;
+  transition:
+    border-color 160ms var(--ease-out-soft),
+    background-color 160ms var(--ease-out-soft);
+}
+
+.report-close:hover {
+  border-color: var(--color-ink-900);
+  background: var(--color-cream-50);
+}
+
+/* --- Head ---------------------------------------------------------------- */
+
+.report-head {
+  padding: 1.15rem 1.35rem 1.05rem;
+  border-bottom: var(--rule-ink);
+  background: var(--sector, var(--color-accent));
+}
+
+.report-title {
+  padding-right: 1.75rem;
+  font-family: var(--font-marathi);
+  font-size: 1.3125rem;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--color-ink-900);
+  text-wrap: balance;
+}
+
+.report-intro {
+  margin-top: 0.4rem;
+  font-size: var(--text-caption);
+  line-height: 1.6;
+  color: var(--color-ink-800);
+}
+
+/* --- Body ---------------------------------------------------------------- */
+
+.report-scroll {
+  overflow-y: auto;
+  padding: 1.1rem 1.35rem 1.25rem;
+}
+
+/* The record under discussion, boxed like a form's reference line. The sheet
+   covers the panel, so by the time somebody is typing they can no longer see
+   what they clicked. */
+.report-subject {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.8rem 0.65rem;
+  border: 1px solid var(--color-ink-900);
+  border-left: 4px solid var(--color-ink-900);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface);
+}
+
+.report-subject-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.report-subject-title {
+  font-family: var(--font-marathi);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.report-subject-place {
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+  margin-top: 1.05rem;
+}
+
+.report-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+}
+
+.report-label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0;
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--color-ink-900);
+}
+
+/* "ऐच्छिक" — a chip rather than a parenthesis, so the eye can skip it. */
+.report-optional {
+  padding: 0.05rem 0.35rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-micro);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-text-subtle);
+}
+
+.report-hint {
+  font-size: var(--text-caption);
+  line-height: 1.5;
+  color: var(--color-text-subtle);
+}
+
+/* --- The choice list ----------------------------------------------------- */
+
+.report-kinds {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.25rem;
+}
+
+/* Whole rows are the target, not the 14px square at the left of them. */
+.report-kind {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition:
+    border-color 150ms var(--ease-out-soft),
+    background-color 150ms var(--ease-out-soft);
+}
+
+.report-kind:hover {
+  background: var(--color-surface);
+}
+
+/* The native control is kept for the keyboard and the accessibility tree, and
+   painted over — `display: none` would take both away. */
+.report-kind input {
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.report-kind-box {
+  position: relative;
+  display: block;
+  height: 0.9rem;
+  width: 0.9rem;
+  flex: none;
+  border: 1.5px solid var(--color-ink-900);
+  border-radius: var(--radius-xs);
+  background: var(--color-cream-50);
+}
+
+/* Filled, not ticked: a solid square inside a square is the mark this press
+   makes everywhere else — see the stage meter's nodes. */
+.report-kind-box::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 1px;
+  background: var(--color-ink-900);
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 140ms var(--ease-out-soft),
+    transform 140ms var(--ease-spring);
+}
+
+.report-kind input:checked ~ .report-kind-box::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.report-kind:has(input:checked) {
+  border-color: var(--color-ink-900);
+  background: var(--color-accent-soft);
+}
+
+.report-kind:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.report-kind-word {
+  font-size: var(--text-caption);
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+/* --- Ruled boxes --------------------------------------------------------- */
+
+.report-input {
+  width: 100%;
+  margin-top: 0.15rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--color-ink-900);
+  border-radius: var(--radius-xs);
+  background: var(--color-cream-50);
+  font: inherit;
+  font-size: var(--text-caption);
+  line-height: 1.6;
+  color: var(--color-text);
+  resize: vertical;
+  transition:
+    background-color 160ms var(--ease-out-soft),
+    box-shadow 160ms var(--ease-out-soft);
+}
+
+.report-input::placeholder {
+  color: var(--color-ink-400);
+}
+
+/* Focus lands as the house highlight behind the box plus the offset plate —
+   the same "this is the live one" language the buttons use. */
+.report-input:focus {
+  background: var(--color-accent-soft);
+  box-shadow: var(--shadow-plate-sm);
+}
+
+/* --- Foot ---------------------------------------------------------------- */
+
+/* Outside the scroller, so the two buttons stay put on a phone where the form
+   is taller than the sheet. */
+.report-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.35rem 0.9rem;
+  border-top: var(--rule-ink);
+  background: var(--color-surface-sunken);
+}
+
+.report-note {
+  font-size: var(--text-micro);
+  line-height: 1.45;
+  color: var(--color-text-subtle);
+}
+
+.report-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.report-cancel {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    border-color 160ms var(--ease-out-soft),
+    color 160ms var(--ease-out-soft);
+}
+
+.report-cancel:hover {
+  border-color: var(--color-ink-900);
+  color: var(--color-ink-900);
+}
+
+.report-submit {
+  padding: 0.55rem 1.1rem;
+  border: var(--rule-ink);
+  border-radius: var(--radius-xs);
+  background: var(--color-accent);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: var(--color-ink-900);
+  cursor: pointer;
+  box-shadow: var(--shadow-plate-sm);
+  transition:
+    transform 160ms var(--ease-out-soft),
+    box-shadow 160ms var(--ease-out-soft);
+}
+
+/* Presses into the sheet, like the notice link on the panel. */
+.report-submit:hover {
+  transform: translate(2px, 3px);
+  box-shadow: 0 0 0 var(--color-ink-900);
+}
+
+/* --- Narrow screens ------------------------------------------------------ */
+
+@media (max-width: 40rem) {
+  .report-layer {
+    align-items: end;
+    padding: 0.75rem;
+  }
+
+  .report-sheet {
+    width: 100%;
+    max-height: 88dvh;
+  }
+
+  .report-head,
+  .report-scroll,
+  .report-foot {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  /* The note is a footnote, and a footnote is what goes when the buttons need
+     the whole width. */
+  .report-foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+  }
+
+  .report-actions {
+    justify-content: flex-end;
+  }
+}
+
+/* --- The lead sheet's sector picker -------------------------------------- */
+
+/* Ten sectors is too many for the stacked radio rows a correction uses — that
+   list is four items and reads as a sentence, this one would be a column half
+   the sheet tall. So it wraps, and each option carries the sector's own disc:
+   the same mark, at the same size, as the legend row on the map behind the
+   sheet. Choosing one is choosing where the pin would go rather than picking a
+   word off a list.
+
+   Everything else — the hidden native control, the ink border and pale accent
+   on the chosen one, the focus ring — is the report sheet's, because these are
+   the same object. */
+.lead-sectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.lead-sector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.55rem 0.25rem 0.3rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-xs);
+  background: var(--color-cream-50);
+  cursor: pointer;
+  transition:
+    border-color 150ms var(--ease-out-soft),
+    background-color 150ms var(--ease-out-soft);
+}
+
+/* The native control is kept for the keyboard and the accessibility tree, and
+   painted over — `display: none` would take both away. */
+.lead-sector input {
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lead-sector-icon {
+  display: grid;
+  height: 1.4rem;
+  width: 1.4rem;
+  flex: none;
+  place-items: center;
+  border: 1.5px solid var(--color-ink-900);
+  border-radius: 50%;
+  background: var(--sector);
+  color: var(--color-ink-900);
+}
+
+.lead-sector-word {
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.lead-sector:hover {
+  border-color: var(--color-ink-900);
+}
+
+.lead-sector:has(input:checked) {
+  border-color: var(--color-ink-900);
+  background: var(--color-accent-soft);
+}
+
+.lead-sector:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

@@ -1,0 +1,913 @@
+{
+  "meta": {
+    "scrapedAt": "2026-08-18T14:03:44.242Z",
+    "count": 65,
+    "attribution": {
+      "content": {
+        "label": "Amravati District Administration (amravati.gov.in)",
+        "url": "https://amravati.gov.in/en/",
+        "note": "Public notices reproduced from the official district portal (NIC S3WaaS)."
+      },
+      "geocoding": {
+        "label": "© OpenStreetMap contributors",
+        "url": "https://www.openstreetmap.org/copyright",
+        "note": "Coordinates are inferred from place names via Nominatim, not published by the district."
+      }
+    }
+  },
+  "facilities": [
+    {
+      "id": "amv-fac-hospitals-370dc55c",
+      "name": "Baheti Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Amba Peth, Kanwar Nagar, Guruchhaya Colony, Amravati- 444601",
+      "phone": "0721 267 7200",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-b1a966b6",
+      "name": "Chintamani Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Lane No.2, Bhau Colony, Radha Nagar, Amravati- 444604",
+      "phone": "0721 255 1143",
+      "pincode": "444604",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-ec725ec3",
+      "name": "Deshmukh Eye Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Khaperde Gardens , Irwin square , Netradan Road, Amravati- 444602",
+      "phone": "0721 266 3151",
+      "pincode": "444602",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-36023e4b",
+      "name": "District Government General Hospital Irwin Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Amravati, 444606",
+      "phone": "0721 266 3339",
+      "pincode": "444606",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-8eaf4fa6",
+      "name": "District Government General Hospital Irwin Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Government hospital in Amravati, India Address: Khaparde Bagicha, Maltekdi, Amravati, Maharashtra 444606",
+      "phone": "0721 266 3339",
+      "pincode": "444606",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-35bce669",
+      "name": "District Women Hospital (Dafrin)",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Government hospital Amravati, Shrikrishna Peth, Amravati-444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-ae554a7c",
+      "name": "DR HEDGEWAR HOSPITAL",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Badnera Rd, Mudholkar Peth, Amravati- 444601",
+      "phone": "0721 256 6585",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-2f726e81",
+      "name": "Dr. Murkey Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "14) Dr. Murkey Hospital Walcut Compound, Amravati- 444601",
+      "phone": "0721 257 9045",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-84f8accd",
+      "name": "Hitech Critical Care & Bonde Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Rajapeth, Amravati,- 444605",
+      "phone": "0721 267 6416",
+      "pincode": "444605",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-hospitals-0cbf0cd6",
+      "name": "Manas Clinic",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Vivekanand Colony, Amravati, Maharashtra 444606",
+      "pincode": "444606",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-d115b07b",
+      "name": "Abhyasa English School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Panchavati, Nagpur Road, Amravati Ph. No 0721-2660206",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-860ac57a",
+      "name": "Arunodaya School and Junior Science College",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Dhanwantari Colony, Navsaari, Amravati, Maharashtra",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-c197af0d",
+      "name": "Edify School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Near Khatri Hospital, Amravati – 444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-deb7d591",
+      "name": "Gandhi Vidyalaya, Badnera , Amravati",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Juni Basti, Amravati, Maharashtra",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-cb2b566d",
+      "name": "Golden Kids English High School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Shivaji Nagar, Amravati, Maharashtra.",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-a6371c26",
+      "name": "Gyan Mata High School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Amravati – 444601 Ph. No 0721 – 2550103",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-faadf3bc",
+      "name": "Holy Cross Convent School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Amravati – 444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-cb3e5edd",
+      "name": "Indo Public School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Ahead of Amravati University, Mardi road, Amravati-444901 Ph. No 0721- 2711098",
+      "pincode": "444901",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-0b0b5b35",
+      "name": "Jawahar Navodaya Vidyalaya",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "Navsari, Amravati Ph. No 0721- 577010",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-schools-b311235c",
+      "name": "Maharishi Public School",
+      "kind": "schools",
+      "kindLabel": "Schools",
+      "address": "New Ring Road, Opposite Hotel Rajput, Navsari, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/schools/",
+        "sourceLabel": "Schools",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-052bc54d",
+      "name": "Bharatiya Vidya Mandirs Bharatiya Mahavidyalaya, Amravati, Maharashtra",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Bharatiya Vidya Mandirs Bharatiya Mahavidyalaya, Amravati, Ambadevi Road, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-cf9cf7c1",
+      "name": "Brijlal Biyani Science College, Amravati, Maharashtra",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-c06384b8",
+      "name": "G H RAISONI COLLEGE OF ENGINEERING AND MANAGEMENT",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Anjangaon Bari Road, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-0eb3530a",
+      "name": "Government College of Engineering , Amravati",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Government College of Engineering Kathora Naka, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-85386726",
+      "name": "IBSS COLLEGE OF ENGINEERING",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Mardi Road, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-f8e29941",
+      "name": "PR POTE COLLEGE OF ENGINEERING AND MANAGEMENT",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Pote Estate, Kathora Road, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-d2d7fc69",
+      "name": "PROF RAM MEGHE COLLEGE OF ENGINEERING & MANAGEMENT",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "MSH6, Badnera, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-0798f58e",
+      "name": "Sant Gadge Baba Amravati University, Amravati",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Tapovan Road, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-e22515dc",
+      "name": "SHRI HVP MANDAL’S COLLEGE OF ENGINEERING AND TECHNOLOGY",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-colleges-0f91b752",
+      "name": "Shri Shivaji Science College, Amravati",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Morshi Road, Gadge Nagar, Amravati, Maharashtra",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-2780161d",
+      "name": "Municipal Corporation, Amravati",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444601 Ph No. 0721 – 2561569",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-f1f76c58",
+      "name": "Municipal Council Achalpur",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444806 Ph No - 07223 - 222448",
+      "pincode": "444806",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-e55607d9",
+      "name": "Municipal Council Anjangaon Surji",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444705 Ph No - 07224 - 242042",
+      "pincode": "444705",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-943fdb2a",
+      "name": "Municipal Council Chandur Railway",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "– 444904 Ph No - 07222 - 254058",
+      "pincode": "444904",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-9c1fc32b",
+      "name": "Municipal Council Chandurbazar",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444704 Ph No - 07227 - 243211",
+      "pincode": "444704",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-475b9728",
+      "name": "Municipal Council Chikhaldara",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444807 Ph No - 07220 – 230248",
+      "pincode": "444807",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-e69ccb34",
+      "name": "Municipal Council Daryapur",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444803 Ph No - 07224 - 234237",
+      "pincode": "444803",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-f1dad14b",
+      "name": "Municipal Council Dhamangaon Railway",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "– 444709 Ph No - 07222 - 237050",
+      "pincode": "444709",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-2410eb31",
+      "name": "Municipal Council Morshi",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444702 Ph No - 07228 – 222249",
+      "pincode": "444702",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-municipality-cecd80a0",
+      "name": "Municipal Council Shendurjana Ghat",
+      "kind": "municipality",
+      "kindLabel": "Municipal bodies",
+      "address": "- 444907 Ph No - 07229-238121",
+      "pincode": "444907",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/municipality/",
+        "sourceLabel": "Municipal bodies",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-electricity-62e45a2d",
+      "name": "Mahavitaran Camp",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Amravati – 444602 Ph. No 0721 - 2662467",
+      "pincode": "444602",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-electricity-62e0720c",
+      "name": "Mahavitaran Cotton Market Road",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Amravati – 444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-electricity-5aa6a858",
+      "name": "Mahavitaran Gadgenagar",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Amravati – 444603 Ph. No 0721 – 2661699",
+      "pincode": "444603",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-electricity-9c500530",
+      "name": "Mahavitaran Jawahar Gate",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Amravati – 444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-electricity-3f8bd498",
+      "name": "Mahavitaran Rajapeth",
+      "kind": "electricity",
+      "kindLabel": "Electricity offices",
+      "address": "Rajapeth Amravati – 444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/electricity/",
+        "sourceLabel": "Electricity offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-b7c75ff3",
+      "name": "Axis Bank",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "GULSHAN TOWER, MOFUSSIL PLOTS, NEAR PANCHSHEEL TALKIES, N H NO:6, NEAR JAISTAMBH CHOWK",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-9bd09835",
+      "name": "Bank of India",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "Jaistamb chowk Amravati-444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-ceb2b155",
+      "name": "Bank Of Maharashtra",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "Smt M Kastures Bldg Rukmini Nagar Square Rd Amravati 444602",
+      "pincode": "444602",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-8100ce89",
+      "name": "Central Bank Of India",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "SAHAKAR BHAVAN, MORSHI ROAD AMRAVATI",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-93e01809",
+      "name": "Central Bank Of India",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "KAKANI OIL MILL COMPOUND, DHARAMDYA COTTON MKT. ROAD",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-e438bdbe",
+      "name": "HDFC Bank",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "Rasik Plaza, , Jai Stambh Square, Morshi Road, AMRAVATI",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-f92e3ee0",
+      "name": "ICICI Bank",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "GROUND FLOOR, VIMACO TOWERS, BUS STAND ROAD, AMRAVATI",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-54a69d9c",
+      "name": "State Bank Of Inadia",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "Old Biyani College Road Tapowan Road Distt Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-abdb54bf",
+      "name": "State Bank Of India",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "Nr. Shyam Talkies, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-banks-c09a404a",
+      "name": "Union Bank Of India",
+      "kind": "banks",
+      "kindLabel": "Banks",
+      "address": "TANK COMPLEX, 1ST FLOOR, RAJKAMAL SQUARE, PB NO.7, Amravati",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/banks/",
+        "sourceLabel": "Banks",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-7d5486a7",
+      "name": "Achalpur",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code- 444806",
+      "pincode": "444806",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-1812b4e4",
+      "name": "Amravati",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Amtravati Pin Code- 444601",
+      "pincode": "444601",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-95acd13e",
+      "name": "Anjangaon Surji",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444705",
+      "pincode": "444705",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-8e22ff31",
+      "name": "Bhatkuli",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444602",
+      "pincode": "444602",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-57ceeaba",
+      "name": "Chandur Railway",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444904",
+      "pincode": "444904",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-c9360e99",
+      "name": "Chandurbazar",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444704",
+      "pincode": "444704",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-f1fd42ba",
+      "name": "Chikhaldara",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444807",
+      "pincode": "444807",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-1071dd4d",
+      "name": "Daryapur",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444803",
+      "pincode": "444803",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-bd41a7e4",
+      "name": "Dhamangaon Railway",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444709",
+      "pincode": "444709",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    },
+    {
+      "id": "amv-fac-post-79425e0f",
+      "name": "Dharni",
+      "kind": "post",
+      "kindLabel": "Post offices",
+      "address": "Pin Code - 444702",
+      "pincode": "444702",
+      "district": "Amravati",
+      "provenance": {
+        "sourceUrl": "https://amravati.gov.in/en/public-utility-category/post/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-18T14:03:44.242Z"
+      }
+    }
+  ]
+}

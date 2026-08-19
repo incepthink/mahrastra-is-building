@@ -1,0 +1,55 @@
+{
+  "note": "Records published to the map. A record reaches the public surface by appearing here and nowhere else. Each row names the district file it is read from, and may state the sector it belongs to when the scraper's keyword rule got it wrong — the data's own caveat says category is derived from notice wording and 'needs editorial confirmation', so an override is the confirmation, recorded with its reason. Nothing here invents a record: every id exists in that district's signals.json with its own source link.",
+  "selection": "One record per sector, best first, across both pilot districts. Infrastructure is deliberately a single pin: Amravati publishes twenty-five near-identical land-acquisition notices and putting them all on the map said 'something is happening in Vidarbha' and nothing else. The other sectors are what the two districts actually have — a ring road and a national highway, a sewage plant and a tanker tender, a Housing-for-All plot list, an irrigation project, a new Collector's office, and a sand-group clearance.",
+  "records": [
+    {
+      "district": "amravati",
+      "id": "amv-land-acquisition-832713f3",
+      "note": "The single infrastructure pin. Village-precision, plain-Marathi card, notice window open into 2027 — the best-evidenced of the twenty-five."
+    },
+    {
+      "district": "pune",
+      "id": "pun-land-acquisition-awards-2ecee1e0",
+      "note": "Pune Ring Road, Alandi. An award, so the acquisition is being executed rather than proposed."
+    },
+    {
+      "district": "pune",
+      "id": "pun-land-acquisition-awards-deac4aa1",
+      "note": "NH-548-D at Shikrapur. A second transport record because it is a different project at a different stage, not a repeat of the first."
+    },
+    {
+      "district": "pune",
+      "id": "pun-notice-e6360393",
+      "category": "water",
+      "why": "The notice acquires land 'for STP and 12m road'. The keyword rule saw the road and filed it under transportation; the sewage treatment plant is what is being built."
+    },
+    {
+      "district": "amravati",
+      "id": "amv-announcements-ab18c385",
+      "category": "water",
+      "why": "Drinking-water supply by tanker to scarcity-affected villages. The rule matched 'water supply' inside the infrastructure pattern; the subject is water, not construction."
+    },
+    {
+      "district": "amravati",
+      "id": "amv-announcements-9643f3b7",
+      "category": "housing",
+      "why": "Housing for All 2022 at Mauja Sawaipura. The rule matched 'housing' inside the infrastructure pattern, which is where every Amravati housing notice ended up."
+    },
+    {
+      "district": "pune",
+      "id": "pun-land-acquisition-awards-2b054c7a",
+      "note": "Nira Devghar irrigation project at Parhar Khurd, Bhor — the scheme is named by the notice itself."
+    },
+    {
+      "district": "amravati",
+      "id": "amv-announcements-30d17f56",
+      "note": "A new Additional District Collector office at Achalpur — a public system being created, stated plainly by the notice."
+    },
+    {
+      "district": "amravati",
+      "id": "amv-announcements-18ddb163",
+      "category": "environment",
+      "why": "Environmental consultants appointed for clearance of the district's sand groups. The rule fell through to the public-systems default; the notice is about environmental clearance of minor minerals."
+    }
+  ]
+}

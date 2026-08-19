@@ -1,0 +1,379 @@
+"use client";
+
+import { MotionConfig, useMotionValue, useMotionValueEvent } from "motion/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import { BrandPlate } from "./brand-plate";
+import { ClusterReadout } from "./cluster-readout";
+import { DistrictReadout } from "./district-readout";
+import { LeadPlate } from "./lead-plate";
+import { MapCanvas } from "./map-canvas";
+import { MapControls } from "./map-controls";
+import { SignalLayer } from "./signal-layer";
+import { SignalReadout } from "./signal-readout";
+import { useMapCamera } from "./use-map-camera";
+import { SignalPanel } from "@/components/signals";
+import { districtIdOf } from "@/data/districts";
+import { buildMarkers, clusterMembers } from "@/lib/map/cluster";
+import { MR } from "@/lib/signals/marathi";
+import type { DistrictShape, MapGeometry } from "@/types/map";
+import type { PlacedSignal, SignalPulse } from "@/types/signal";
+
+/** Half the name plate's widest state, used to keep it inside the frame. */
+const PLATE_REACH = 152;
+/** Above this the plate would run off the top, so it flips under the pointer. */
+const PLATE_HEIGHT = 210;
+/** How far the pin may be enlarged on small screens before it dominates. */
+const MAX_PIN_UNIT = 3;
+/**
+ * How much the zoom has to move before the markers are laid out again, as a
+ * fraction of an octave. Clustering only changes at thresholds, so re-running
+ * it on every animation frame would be a re-render per frame to produce the
+ * same answer; a twelfth of a doubling is finer than any threshold the reader
+ * can see crossing.
+ */
+const RELAYOUT_STEP = 1 / 12;
+
+type MaharashtraMapProps = {
+  geometry: MapGeometry;
+  /** The curated set — the records that get a pin. */
+  signals: PlacedSignal[];
+  /** How many records are published in total, pinned or not. The plate says so
+   *  rather than letting seven pins imply the pilot holds seven notices. */
+  published: number;
+  /** How much has landed recently, for the line above the tally. Null when the
+   *  pipeline has seen nothing lately and there is no honest number to give. */
+  pulse: SignalPulse | null;
+};
+
+/**
+ * Owns what the map is doing — what is under the pointer, which record is
+ * open, where the camera is looking. `MapCanvas` owns what it looks like.
+ *
+ * The camera is now driven by the reader alone. Opening a record used to fly
+ * the view to the pin and closing it flew back, which meant every click
+ * re-framed the whole state and you lost your place; the panel opens beside
+ * whatever you were already looking at instead. Zoom is the wheel, the pinch
+ * and the two buttons, and nothing else moves the map.
+ */
+export function MaharashtraMap({
+  geometry,
+  signals,
+  published,
+  pulse,
+}: MaharashtraMapProps) {
+  const { svgRef, camera, isPanning, hasDragged, zoomBy, reset, surfaceProps } =
+    useMapCamera(geometry.size);
+
+  const frameRef = useRef<HTMLDivElement>(null);
+  const frameBox = useRef<DOMRect | null>(null);
+  const [pointed, setPointed] = useState<DistrictShape | null>(null);
+  const [pointedSignal, setPointedSignal] = useState<PlacedSignal | null>(null);
+  const [plateBelow, setPlateBelow] = useState(false);
+  const [pinUnit, setPinUnit] = useState(1);
+  const [openSignal, setOpenSignal] = useState<PlacedSignal | null>(null);
+  const [pointedCluster, setPointedCluster] = useState<PlacedSignal[] | null>(null);
+  const [openCluster, setOpenCluster] = useState<string | null>(null);
+  /** The district the reader clicked, records or none. See `pickDistrict`. */
+  const [pickedDistrict, setPickedDistrict] = useState<string | null>(null);
+  // Starts at the camera's rest zoom so the first client render reproduces the
+  // server's markers exactly. See `buildMarkers`.
+  const [zoom, setZoom] = useState(1);
+  const laidOutAt = useRef(1);
+
+  // A zoom that crosses a bracket is a different view, and a cluster opened in
+  // the old one is describing a group that may no longer exist. Let it close.
+  useMotionValueEvent(camera.scale, "change", (value) => {
+    if (Math.abs(Math.log2(value / laidOutAt.current)) < RELAYOUT_STEP) return;
+
+    laidOutAt.current = value;
+    setZoom(value);
+    setOpenCluster(null);
+  });
+
+  const markers = useMemo(
+    () => buildMarkers(signals, zoom / pinUnit, openCluster),
+    [openCluster, pinUnit, signals, zoom],
+  );
+
+  /**
+   * The districts the reader's current selection stands in.
+   *
+   * Opening a record used to leave the state looking exactly as it did — the
+   * panel named a place and the map said nothing about where that was, so a
+   * reader who did not already know their districts had to hunt for the pin
+   * they had just clicked. Lighting the border answers "where is this" in the
+   * one place the question is asked. A counter lights every district its
+   * members cover, because a group straddling a boundary is a fact about the
+   * group.
+   *
+   * A directly clicked district joins them, and it joins them whether or not
+   * it holds a single record. That is the whole point: "is anything happening
+   * near me" is the question a reader arrives with, and a district that
+   * refuses to respond to a click reads as a broken map rather than as an
+   * empty one. The highlight is the answer "nothing here yet" — said clearly,
+   * in the place the question was asked.
+   */
+  const lit = useMemo(() => {
+    const chosen = new Set([
+      ...(openSignal ? [openSignal.signal.id] : []),
+      ...clusterMembers(openCluster),
+    ]);
+
+    const districts = signals
+      .filter(({ signal }) => chosen.has(signal.id))
+      .map(({ signal }) => districtIdOf(signal.district));
+
+    return new Set(pickedDistrict ? [...districts, pickedDistrict] : districts);
+  }, [openCluster, openSignal, pickedDistrict, signals]);
+
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+
+    const measure = () => {
+      const box = frame.getBoundingClientRect();
+      frameBox.current = box;
+
+      // `preserveAspectRatio="xMidYMid meet"` fits the viewBox by its tighter
+      // axis. Pins counter-scale by the result, so a pin is the same number of
+      // CSS pixels on a phone as on a desktop instead of shrinking with the
+      // map — which is what keeps it a real touch target.
+      const perPixel = Math.min(
+        geometry.size[0] / Math.max(box.width, 1),
+        geometry.size[1] / Math.max(box.height, 1),
+      );
+
+      setPinUnit(Math.min(MAX_PIN_UNIT, Math.max(1, perPixel)));
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(frame);
+    window.addEventListener("scroll", measure, true);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", measure, true);
+    };
+  }, [geometry.size]);
+
+  /** Motion values, not state — the plate follows the cursor without re-rendering. */
+  const trackPointer = useCallback(
+    (event: { clientX: number; clientY: number }) => {
+      const box = frameBox.current;
+      if (!box) return;
+
+      const top = event.clientY - box.top;
+
+      pointerX.set(clampToFrame(event.clientX - box.left, box.width));
+      pointerY.set(top);
+      // React bails out when the value is unchanged, so this is a no-op for
+      // all but the two moves that actually cross the threshold.
+      setPlateBelow(top < PLATE_HEIGHT);
+    },
+    [pointerX, pointerY],
+  );
+
+  const enter = useCallback(
+    (district: DistrictShape) => {
+      if (isPanning) return;
+      setPointed(district);
+    },
+    [isPanning],
+  );
+
+  const leave = useCallback((district: DistrictShape) => {
+    setPointed((current) => (current?.id === district.id ? null : current));
+  }, []);
+
+  const closeSignal = useCallback(() => setOpenSignal(null), []);
+
+  /** Everything the reader can currently have picked out, let go at once. */
+  const clearSelection = useCallback(() => {
+    setOpenSignal(null);
+    setOpenCluster(null);
+    setPickedDistrict(null);
+  }, []);
+
+  /**
+   * Click the land: pick that district out, or let it go if it was already
+   * the one picked.
+   *
+   * It closes an open record on the way, because the two are answers to the
+   * same question — "where am I looking" — and two districts lit at once for
+   * two different reasons is a map arguing with itself. A drag that ended over
+   * a district is a pan, not a click, so `hasDragged` gets the first word.
+   */
+  const pickDistrict = useCallback(
+    (district: DistrictShape) => {
+      if (hasDragged()) return;
+
+      setOpenSignal(null);
+      setOpenCluster(null);
+      setPickedDistrict((current) => (current === district.id ? null : district.id));
+    },
+    [hasDragged],
+  );
+
+  /** Fold an open cluster back into its badge, or open the one just clicked. */
+  const toggleCluster = useCallback(
+    (id: string) => {
+      if (hasDragged()) return;
+
+      setPointedCluster(null);
+      setPickedDistrict(null);
+      setOpenCluster((current) => (current === id ? null : id));
+    },
+    [hasDragged],
+  );
+
+  const enterCluster = useCallback(
+    (members: PlacedSignal[], event: React.PointerEvent<SVGGElement>) => {
+      if (isPanning) return;
+      trackPointer(event);
+      setPointedCluster(members);
+    },
+    [isPanning, trackPointer],
+  );
+
+  const leaveCluster = useCallback(() => setPointedCluster(null), []);
+
+  const enterSignal = useCallback(
+    (placed: PlacedSignal, event: React.PointerEvent<SVGGElement>) => {
+      if (isPanning) return;
+      trackPointer(event);
+      setPointedSignal(placed);
+    },
+    [isPanning, trackPointer],
+  );
+
+  const leaveSignal = useCallback((placed: PlacedSignal) => {
+    setPointedSignal((current) =>
+      current?.signal.id === placed.signal.id ? null : current,
+    );
+  }, []);
+
+  /** Open the record where it is. The camera does not move. */
+  const selectSignal = useCallback(
+    (placed: PlacedSignal) => {
+      if (hasDragged()) return;
+
+      // The record lights its own district; a district picked out by hand
+      // before this would leave two lit for two different reasons.
+      setPickedDistrict(null);
+      setOpenSignal((current) =>
+        current?.signal.id === placed.signal.id ? null : placed,
+      );
+    },
+    [hasDragged],
+  );
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <div
+        ref={frameRef}
+        className="map-frame"
+        data-panning={isPanning || undefined}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") clearSelection();
+          if (event.key === "+" || event.key === "=") zoomBy(1.5);
+          if (event.key === "-") zoomBy(1 / 1.5);
+        }}
+      >
+        {/* The page the map is printed on: one cool gradient carried by
+            `.map-frame` itself, a faint drafting grid over it, and the tooth of
+            the paper. The two blurred washes that used to drift here are gone —
+            a blur is a screen effect, and this sheet is printed. */}
+        <div className="map-sheet-grid" aria-hidden />
+        <div className="map-tooth" aria-hidden />
+
+        <MapCanvas
+          geometry={geometry}
+          svgRef={svgRef}
+          camera={camera}
+          surfaceProps={surfaceProps}
+          lit={lit}
+          onGroundClick={(event) => {
+            // A click that lands on the ground rather than on a pin.
+            if (event.target !== event.currentTarget || hasDragged()) return;
+
+            clearSelection();
+          }}
+          onPointerEnter={enter}
+          onLeave={leave}
+          onMove={trackPointer}
+          onSelectDistrict={pickDistrict}
+        >
+          <SignalLayer
+            markers={markers}
+            scale={camera.scale}
+            selectedId={openSignal?.signal.id ?? null}
+            unit={pinUnit}
+            onSelect={selectSignal}
+            onOpenCluster={toggleCluster}
+            onEnter={enterSignal}
+            onLeave={leaveSignal}
+            onEnterCluster={enterCluster}
+            onLeaveCluster={leaveCluster}
+            onMove={trackPointer}
+          />
+        </MapCanvas>
+
+        {/* The legend, and under it — deliberately outside it — the one thing
+            on this screen that asks the reader for something. Stacked in a rail
+            rather than positioned apart because the legend's height is the
+            data's: sectors with nothing in them are not drawn. */}
+        <div className="map-rail">
+          <BrandPlate signals={signals} published={published} pulse={pulse} />
+          <LeadPlate />
+        </div>
+
+        {/* One plate at a time: whatever is on top of the ground under the
+            pointer outranks the district it happens to be standing on. */}
+        <DistrictReadout
+          district={pointedSignal || pointedCluster ? null : pointed}
+          x={pointerX}
+          y={pointerY}
+          below={plateBelow}
+        />
+        <SignalReadout
+          signal={pointedSignal?.signal ?? null}
+          x={pointerX}
+          y={pointerY}
+          below={plateBelow}
+        />
+        <ClusterReadout
+          members={pointedCluster}
+          x={pointerX}
+          y={pointerY}
+          below={plateBelow}
+        />
+
+        <SignalPanel
+          signal={openSignal?.signal ?? null}
+          onClose={closeSignal}
+        />
+
+        <MapControls
+          onZoomIn={() => zoomBy(1.6)}
+          onZoomOut={() => zoomBy(1 / 1.6)}
+          onReset={reset}
+        />
+
+        <p className="map-attribution" lang="mr">
+          {MR.boundaryNote}
+        </p>
+      </div>
+    </MotionConfig>
+  );
+}
+
+function clampToFrame(value: number, frameWidth: number): number {
+  if (frameWidth < PLATE_REACH * 2) return frameWidth / 2;
+
+  return Math.min(frameWidth - PLATE_REACH, Math.max(PLATE_REACH, value));
+}
