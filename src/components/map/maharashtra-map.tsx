@@ -11,13 +11,20 @@ import { MapCanvas } from "./map-canvas";
 import { MapControls } from "./map-controls";
 import { SignalLayer } from "./signal-layer";
 import { SignalReadout } from "./signal-readout";
+import { StatewideBadge } from "./statewide-badge";
 import { useMapCamera } from "./use-map-camera";
 import { SignalPanel } from "@/components/signals";
 import { districtIdOf } from "@/data/districts";
 import { buildMarkers, clusterMembers } from "@/lib/map/cluster";
 import { MR } from "@/lib/signals/marathi";
 import type { DistrictShape, MapGeometry } from "@/types/map";
-import type { PlacedSignal, SignalPulse } from "@/types/signal";
+import type {
+  MapScope,
+  PlacedSignal,
+  Signal,
+  SignalPulse,
+  StatewideSignal,
+} from "@/types/signal";
 
 /** Half the name plate's widest state, used to keep it inside the frame. */
 const PLATE_REACH = 152;
@@ -36,14 +43,18 @@ const RELAYOUT_STEP = 1 / 12;
 
 type MaharashtraMapProps = {
   geometry: MapGeometry;
-  /** The curated set — the records that get a pin. */
-  signals: PlacedSignal[];
+  /** The curated set — the district records, already projected. */
+  signals: PlacedSignal<Signal>[];
   /** How many records are published in total, pinned or not. The plate says so
    *  rather than letting seven pins imply the pilot holds seven notices. */
   published: number;
   /** How much has landed recently, for the line above the tally. Null when the
    *  pipeline has seen nothing lately and there is no honest number to give. */
   pulse: SignalPulse | null;
+  /** The records that apply to the whole state — policies and schemes, each on
+   *  a point chosen by hand rather than found. They take the sheet over from
+   *  the district pins, never share it with them. */
+  statewide: PlacedSignal<StatewideSignal>[];
 };
 
 /**
@@ -61,6 +72,7 @@ export function MaharashtraMap({
   signals,
   published,
   pulse,
+  statewide,
 }: MaharashtraMapProps) {
   const { svgRef, camera, isPanning, hasDragged, zoomBy, reset, surfaceProps } =
     useMapCamera(geometry.size);
@@ -76,6 +88,16 @@ export function MaharashtraMap({
   const [openCluster, setOpenCluster] = useState<string | null>(null);
   /** The district the reader clicked, records or none. See `pickDistrict`. */
   const [pickedDistrict, setPickedDistrict] = useState<string | null>(null);
+  /**
+   * Which question the map is answering. See `MapScope`.
+   *
+   * A mode rather than a filter: in `state` the pins are not dimmed or
+   * reordered, they are gone, because the three records on screen are not in
+   * any of those places - they are in all of them. The camera is left exactly
+   * where the reader had it, so coming back returns to the same view rather
+   * than to a reset one.
+   */
+  const [scope, setScope] = useState<MapScope>("district");
   // Starts at the camera's rest zoom so the first client render reproduces the
   // server's markers exactly. See `buildMarkers`.
   const [zoom, setZoom] = useState(1);
@@ -91,9 +113,34 @@ export function MaharashtraMap({
     setOpenCluster(null);
   });
 
+  /**
+   * Whichever set the map is currently about, laid out as markers.
+   *
+   * The same builder for both, which is the point: a statewide record is drawn
+   * as the pin a district record gets, clusters the way one does, and opens the
+   * same panel. What changes between the two views is not how a record is drawn
+   * but which set is on the sheet — the district pins are gone in the statewide
+   * view, not dimmed, because the three policies on screen are not in any of
+   * those places, they are in all of them.
+   */
   const markers = useMemo(
-    () => buildMarkers(signals, zoom / pinUnit, openCluster),
-    [openCluster, pinUnit, signals, zoom],
+    () =>
+      buildMarkers(
+        scope === "state" ? statewide : signals,
+        zoom / pinUnit,
+        openCluster,
+      ),
+    [openCluster, pinUnit, scope, signals, statewide, zoom],
+  );
+
+  /** Where in the statewide set the open record sits, or -1 when the panel is
+   *  closed or showing a district record. Feeds the panel's stepper. */
+  const stateIndex = useMemo(
+    () =>
+      scope === "state" && openSignal
+        ? statewide.findIndex((placed) => placed.signal.id === openSignal.signal.id)
+        : -1,
+    [openSignal, scope, statewide],
   );
 
   /**
@@ -115,6 +162,11 @@ export function MaharashtraMap({
    * in the place the question was asked.
    */
   const lit = useMemo(() => {
+    // Nothing is picked out while the state is the subject: lighting one
+    // district would say a policy happens there rather than everywhere. The
+    // sheet answers as a whole - see `[data-scope="state"]` in `map.css`.
+    if (scope === "state") return new Set<string>();
+
     const chosen = new Set([
       ...(openSignal ? [openSignal.signal.id] : []),
       ...clusterMembers(openCluster),
@@ -125,7 +177,7 @@ export function MaharashtraMap({
       .map(({ signal }) => districtIdOf(signal.district));
 
     return new Set(pickedDistrict ? [...districts, pickedDistrict] : districts);
-  }, [openCluster, openSignal, pickedDistrict, signals]);
+  }, [openCluster, openSignal, pickedDistrict, scope, signals]);
 
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -192,12 +244,48 @@ export function MaharashtraMap({
 
   const closeSignal = useCallback(() => setOpenSignal(null), []);
 
-  /** Everything the reader can currently have picked out, let go at once. */
+  /**
+   * Everything the reader can currently have picked out, let go at once -
+   * including the statewide view, which is a selection like any other. Escape
+   * and a click on empty ground are the two gestures that mean "never mind",
+   * and one of them leaving the map in a mode the reader was trying to leave
+   * is how a map starts feeling stuck.
+   */
   const clearSelection = useCallback(() => {
     setOpenSignal(null);
     setOpenCluster(null);
     setPickedDistrict(null);
+    setScope("district");
   }, []);
+
+  /** Into the statewide view and back out. Either direction lets go of whatever
+   *  was open: the record the reader had is not in the set they are about to be
+   *  shown, and a panel that survives the switch describes the view they left. */
+  const toggleScope = useCallback(() => {
+    setOpenSignal(null);
+    setOpenCluster(null);
+    setPickedDistrict(null);
+    setScope((current) => (current === "state" ? "district" : "state"));
+  }, []);
+
+  /**
+   * Steps the statewide panel, wrapping at both ends so neither arrow is ever a
+   * dead button.
+   *
+   * The pins are the navigation now, and on a wide screen the stepper is only a
+   * convenience. On a phone it is the navigation: the panel is a sheet over the
+   * whole map, so the other two pins are underneath it and there is nothing to
+   * click between.
+   */
+  const stepStatewide = useCallback(
+    (by: number) => {
+      const total = statewide.length;
+      if (!total) return;
+
+      setOpenSignal(statewide[(Math.max(stateIndex, 0) + by + total) % total]);
+    },
+    [stateIndex, statewide],
+  );
 
   /**
    * Click the land: pick that district out, or let it go if it was already
@@ -214,6 +302,7 @@ export function MaharashtraMap({
 
       setOpenSignal(null);
       setOpenCluster(null);
+      setScope("district");
       setPickedDistrict((current) => (current === district.id ? null : district.id));
     },
     [hasDragged],
@@ -278,6 +367,7 @@ export function MaharashtraMap({
         ref={frameRef}
         className="map-frame"
         data-panning={isPanning || undefined}
+        data-scope={scope}
         onKeyDown={(event) => {
           if (event.key === "Escape") clearSelection();
           if (event.key === "+" || event.key === "=") zoomBy(1.5);
@@ -328,8 +418,32 @@ export function MaharashtraMap({
             rather than positioned apart because the legend's height is the
             data's: sectors with nothing in them are not drawn. */}
         <div className="map-rail">
-          <BrandPlate signals={signals} published={published} pulse={pulse} />
-          <LeadPlate />
+          <BrandPlate
+            signals={signals}
+            statewide={statewide}
+            scope={scope}
+            published={published}
+            pulse={pulse}
+          />
+
+          {/* The invitation and the way into the statewide view, docked
+              together. On a desktop they sit under the legend as the bottom of
+              one column; on a phone the rail splits and this pair is what
+              lands on the bottom edge, side by side, where a thumb is. The
+              badge used to be pinned to the frame's own bottom-left corner and
+              had no relationship to anything — it now reads as the third card
+              of the stack it was always a sibling of. */}
+          <div className="map-rail-dock">
+            <LeadPlate />
+
+            {statewide.length ? (
+              <StatewideBadge
+                count={statewide.length}
+                active={scope === "state"}
+                onToggle={toggleScope}
+              />
+            ) : null}
+          </div>
         </div>
 
         {/* One plate at a time: whatever is on top of the ground under the
@@ -353,9 +467,27 @@ export function MaharashtraMap({
           below={plateBelow}
         />
 
+        {/* One panel for whichever pin was clicked, in either view. The two
+            sets are never on the sheet together, so there is only ever one
+            record open and never a question of which panel this is.
+
+            The stepper is added only in the statewide view, where the set is
+            small, fixed and worth walking. A district record does not get one:
+            the map is the navigation there, and a next arrow would invent an
+            order the pins do not have. */}
         <SignalPanel
           signal={openSignal?.signal ?? null}
           onClose={closeSignal}
+          step={
+            scope === "state" && stateIndex >= 0
+              ? {
+                  index: stateIndex,
+                  total: statewide.length,
+                  onPrev: () => stepStatewide(-1),
+                  onNext: () => stepStatewide(1),
+                }
+              : undefined
+          }
         />
 
         <MapControls

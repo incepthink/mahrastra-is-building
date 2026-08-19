@@ -5,12 +5,12 @@ import { useState } from "react";
 
 import { STATUS_META } from "@/lib/design/status";
 import { headlineMr, placeMr } from "@/lib/signals/marathi";
-import type { Signal } from "@/types/signal";
+import type { AnySignal } from "@/types/signal";
 
 const FOLLOW = { stiffness: 520, damping: 42, mass: 0.6 } as const;
 
 type SignalReadoutProps = {
-  signal: Signal | null;
+  signal: AnySignal | null;
   x: MotionValue<number>;
   y: MotionValue<number>;
   /** Flip under the pointer — there is no room for the plate above it. */
@@ -22,12 +22,17 @@ type SignalReadoutProps = {
  * throughout, held over while it fades — but a pin needs three lines rather
  * than one: a district name tells you nothing about whether the record under
  * your cursor is worth opening.
+ *
+ * Takes either kind of record. A statewide pin stands on a chosen point rather
+ * than a found one, and this is the first place that has to not lie about it —
+ * `placeMr` answers `संपूर्ण महाराष्ट्र` for those, so the plate names the reach
+ * of the policy and never the district the pin happens to be sitting in.
  */
 export function SignalReadout({ signal, x, y, below }: SignalReadoutProps) {
   const followX = useSpring(x, FOLLOW);
   const followY = useSpring(y, FOLLOW);
 
-  const [shown, setShown] = useState<Signal | null>(signal);
+  const [shown, setShown] = useState<AnySignal | null>(signal);
   const [wasVisible, setWasVisible] = useState(false);
 
   if (signal && signal.id !== shown?.id) setShown(signal);

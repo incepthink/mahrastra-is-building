@@ -4,7 +4,14 @@ import { motion } from "motion/react";
 
 import { CATEGORIES } from "@/data/categories";
 import { countMr, districtMr, pulseMr, toDevanagari, MR } from "@/lib/signals/marathi";
-import type { PlacedSignal, SignalCategoryId, SignalPulse } from "@/types/signal";
+import type {
+  MapScope,
+  PlacedSignal,
+  Signal,
+  SignalCategoryId,
+  SignalPulse,
+  StatewideSignal,
+} from "@/types/signal";
 
 const RISE = {
   hidden: { opacity: 0, y: 12 },
@@ -12,8 +19,13 @@ const RISE = {
 };
 
 type BrandPlateProps = {
-  /** The curated set — exactly what is pinned on the map. */
-  signals: PlacedSignal[];
+  /** The curated set — the district records, exactly as pinned. */
+  signals: PlacedSignal<Signal>[];
+  /** The records that apply to the whole state, counted when the map is
+   *  showing them instead. */
+  statewide: PlacedSignal<StatewideSignal>[];
+  /** Which of the two sets the map is currently about. */
+  scope: MapScope;
   /** How many records are published in the pilot altogether. */
   published: number;
   /** Recent activity across the whole pipeline, or null when there is none to
@@ -42,8 +54,21 @@ type BrandPlateProps = {
  * The tally counts **what is pinned**, not what is published, and the line
  * under it says how many were published.
  */
-export function BrandPlate({ signals, published, pulse }: BrandPlateProps) {
-  const tally = countByCategory(signals);
+export function BrandPlate({
+  signals,
+  statewide,
+  scope,
+  published,
+  pulse,
+}: BrandPlateProps) {
+  // The legend is a statement about whatever the map is currently showing, so
+  // it counts that set and nothing else. In the statewide view the two lines
+  // that describe the district pipeline — how much landed recently, how many
+  // notices the nine were chosen from — are not merely wrong, they are about a
+  // different corpus, so neither is drawn.
+  const state = scope === "state";
+  const records = (state ? statewide : signals).map((placed) => placed.signal);
+  const tally = countByCategory(records);
   const districts = new Set(signals.map((placed) => placed.signal.district));
 
   return (
@@ -69,22 +94,28 @@ export function BrandPlate({ signals, published, pulse }: BrandPlateProps) {
             somebody arriving cold wants to know first. It counts the whole
             scraped corpus, not the pins, and names its own window; when the
             window is empty the line is simply not drawn. */}
-        {pulse ? (
+        {state ? (
+          <motion.p className="brand-pulse" variants={RISE} transition={{ duration: 0.7 }}>
+            {MR.statewideIntro}
+          </motion.p>
+        ) : pulse ? (
           <motion.p className="brand-pulse" variants={RISE} transition={{ duration: 0.7 }}>
             {pulseMr(pulse)}
           </motion.p>
         ) : null}
 
         <motion.p className="brand-count" variants={RISE} transition={{ duration: 0.7 }}>
-          <span className="brand-count-figure">{countMr(signals.length)}</span>
+          <span className="brand-count-figure">{countMr(records.length)}</span>
           <span className="brand-count-where">
-            {districts.size === 1
-              ? `${districtMr([...districts][0])} ${MR.district}`
-              : `${toDevanagari(districts.size)} ${MR.district}`}
+            {state
+              ? MR.allMaharashtra
+              : districts.size === 1
+                ? `${districtMr([...districts][0])} ${MR.district}`
+                : `${toDevanagari(districts.size)} ${MR.district}`}
           </span>
         </motion.p>
 
-        {published > signals.length ? (
+        {!state && published > signals.length ? (
           <motion.p className="brand-note" variants={RISE} transition={{ duration: 0.7 }}>
             {toDevanagari(published)} {MR.selectedFrom}
           </motion.p>
@@ -112,13 +143,15 @@ export function BrandPlate({ signals, published, pulse }: BrandPlateProps) {
   );
 }
 
-function countByCategory(signals: PlacedSignal[]): Record<SignalCategoryId, number> {
+function countByCategory(
+  records: { category: SignalCategoryId }[],
+): Record<SignalCategoryId, number> {
   const tally = Object.fromEntries(
     CATEGORIES.map((category) => [category.id, 0]),
   ) as Record<SignalCategoryId, number>;
 
-  signals.forEach(({ signal }) => {
-    tally[signal.category] += 1;
+  records.forEach((record) => {
+    tally[record.category] += 1;
   });
 
   return tally;

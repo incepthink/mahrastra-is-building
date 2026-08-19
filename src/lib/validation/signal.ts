@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { SIGNAL_STATUSES } from "@/types/signal";
-import type { DataAttribution, Signal } from "@/types/signal";
+import type { DataAttribution, Signal, StatewideSignal } from "@/types/signal";
 
 /** Brief §5: records live in local files, so the schema is the only gate
  *  between a scraper run and the map. Unknown keys are dropped, not rejected —
@@ -101,4 +101,31 @@ export const signalFileSchema = z.object({
     attribution: attributionSchema,
   }),
   signals: z.array(signalSchema),
+});
+
+/**
+ * A statewide record: the same schema with the addressing fields taken out.
+ *
+ * Derived from `signalSchema` rather than written beside it so the two can
+ * never drift — a field added to a record is a field a policy record gets too,
+ * and the only difference between them stays the one difference that is real.
+ * `scope` is required and literal: a file of these is a claim that everything
+ * in it applies to the whole state, and the claim is made per record.
+ *
+ * `coordinates` stays required, and it is still the only field in here that
+ * was chosen rather than found. A policy has no district, taluka or locality —
+ * those three go — but it does need somewhere to be drawn, so the file carries
+ * a hand-picked point per record. See `StatewideSignal`.
+ */
+export const statewideSignalSchema = signalSchema
+  .omit({ district: true, taluka: true, locality: true })
+  .extend({ scope: z.literal("state") }) satisfies z.ZodType<StatewideSignal, unknown>;
+
+export const statewideFileSchema = z.object({
+  meta: z.object({
+    scope: z.literal("state"),
+    updatedAt: z.string().optional(),
+    attribution: attributionSchema,
+  }),
+  signals: z.array(statewideSignalSchema),
 });

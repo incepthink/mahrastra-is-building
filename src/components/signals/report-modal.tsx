@@ -3,11 +3,11 @@
 import { ModalSheet } from "./modal-sheet";
 import { categoryOf } from "@/lib/signals/format";
 import { headlineMr, placeMr, MR, REPORT_KINDS } from "@/lib/signals/marathi";
-import type { Signal } from "@/types/signal";
+import type { AnySignal } from "@/types/signal";
 
 type ReportModalProps = {
   /** The record being reported on. */
-  signal: Signal | null;
+  signal: AnySignal | null;
   open: boolean;
   onClose: () => void;
 };

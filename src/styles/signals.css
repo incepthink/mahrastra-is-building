@@ -719,12 +719,29 @@
 }
 
 /* The second thing in the foot, and deliberately the quieter one: a rule and
-   a word rather than another yellow plate. Two filled buttons stacked would
-   read as two equal choices, and they are not — almost everyone here wants the
-   notice, and this is for the few who spot something wrong in it. */
-.record-report {
+   a word rather than another yellow plate. Two filled buttons here would read
+   as choices equal to the notice, and they are not — almost everyone came for
+   the notice, and these are for the reader who already has it: one who spotted
+   something wrong in it, one who wants to pass it on.
+
+   The two share a look and differ only by their glyph, because they are the
+   same weight of offer. Giving either a plate would make the other read as an
+   afterthought. */
+.record-actions {
   display: flex;
-  width: 100%;
+  gap: 0.4rem;
+}
+
+/* Equal halves whatever the labels measure — a zero basis rather than auto, so
+   "शेअर करा" does not take the narrower half for being the shorter word. The
+   min-width lets both shrink rather than overflow the sheet on a phone. */
+.record-actions > .record-action {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.record-action {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
@@ -746,14 +763,14 @@
     background-color 160ms var(--ease-out-soft);
 }
 
-.record-report:hover {
+.record-action:hover {
   border-color: var(--color-ink-900);
   background: var(--color-cream-50);
   color: var(--color-ink-900);
   text-decoration-color: transparent;
 }
 
-.record-report svg {
+.record-action svg {
   flex: none;
 }
 
@@ -770,4 +787,60 @@
     max-height: 74dvh;
     border-radius: var(--radius-md);
   }
+}
+
+/* --- Stepping through a set ----------------------------------------------
+   Only the statewide view uses this: three policies with no pins to click
+   between them, so the panel carries its own way from one to the next. It sits
+   above the head as its own strip on the sunken ground, so the sector plate
+   below it still reads as the top of the record rather than as the second band
+   of a striped panel. */
+
+.record-step {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  /* Clears the close button, which is absolutely positioned over this strip. */
+  padding: 0.4rem 2.5rem 0.4rem 1.7rem;
+  border-bottom: var(--rule-ink);
+  background: var(--color-surface-sunken);
+}
+
+.record-step-arrow {
+  display: grid;
+  height: 1.6rem;
+  width: 1.6rem;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease-out-soft),
+    border-color 160ms var(--ease-out-soft),
+    background-color 160ms var(--ease-out-soft);
+}
+
+.record-step-arrow:hover {
+  border-color: var(--color-ink-900);
+  background: var(--color-accent);
+  color: var(--color-ink-900);
+}
+
+.record-step-count {
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+/* The head, body and foot of whichever record the stepper is on. It fills the
+   panel so the foot still sits on the bottom edge while only the body
+   scrolls — the plate is one object, and the record inside it is what
+   changes. */
+.record-sheet {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
 }

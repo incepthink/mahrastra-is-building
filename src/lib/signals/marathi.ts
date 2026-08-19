@@ -2,7 +2,7 @@ import { differenceInCalendarDays, isValid, parseISO } from "date-fns";
 
 import { DISTRICTS, districtIdOf } from "@/data/districts";
 import { categoryOf } from "@/lib/signals/format";
-import type { Signal, SignalPulse } from "@/types/signal";
+import type { AnySignal, SignalPulse, StatewideSignal } from "@/types/signal";
 
 /**
  * Everything the interface says, in Marathi.
@@ -23,6 +23,8 @@ export const MR = {
   daysAgo: "दिवसांपूर्वी संपली",
   openNotice: "मूळ सूचना पाहा",
   report: "माहिती कळवा",
+  /** Sits beside it: posting a record onward, rather than telling us about it. */
+  share: "शेअर करा",
   /** The report dialog — telling us something on a record looks wrong. */
   reportTitle: "या नोंदीत काही चुकीचं आहे?",
   reportIntro: "खाली थोडक्यात सांगा. आम्ही मूळ सूचनेशी पडताळून पाहू.",
@@ -43,6 +45,11 @@ export const MR = {
   leadPrompt: "तुमच्या भागात काही घडतंय?",
   leadHint: "रस्ता, पाणी योजना, नवा प्रकल्प — आम्हाला कळवा.",
   leadCta: "इथे क्लिक करा",
+  /** The same button on a phone, where the plate collapses to a pill beside the
+   *  statewide badge and the prompt above it is no longer there to be read.
+   *  "Click here" alone would then name no destination, so the short form says
+   *  the thing itself rather than the gesture. */
+  leadCtaShort: "माहिती कळवा",
   leadTitle: "तुमच्याकडे एखादी माहिती आहे?",
   leadIntro: "खाली थोडक्यात सांगा. आम्ही पडताळून पाहू आणि मगच नकाशावर घेऊ.",
   leadKind: "कोणत्या प्रकारची माहिती?",
@@ -64,6 +71,19 @@ export const MR = {
   /** On a cluster badge — clicking fans it out rather than opening a record. */
   openCluster: "सर्व नोंदी पाहण्यासाठी क्लिक करा",
   district: "जिल्हा",
+  /* The badge in the corner of the sheet, and what it switches the map to.
+     `statewide` names the thing; `statewideHint` says what clicking does, and
+     changes once it is on, because a pressed toggle whose label still describes
+     the way in is a toggle nobody can find the way out of. */
+  statewide: "महाराष्ट्रभर",
+  statewideHint: "राज्यभरच्या नोंदी",
+  statewideBack: "जिल्ह्यांकडे परत",
+  /** Where a statewide record is — said in full rather than left blank. */
+  allMaharashtra: "संपूर्ण महाराष्ट्र",
+  /** Stands in for the pulse line while the map is showing the state. */
+  statewideIntro: "राज्यभर लागू होणारी धोरणं आणि योजना.",
+  prevRecord: "मागील नोंद",
+  nextRecord: "पुढील नोंद",
   /** The ticker across the top of the page, and the plate that names it. */
   newsLabel: "ताज्या नोंदी",
   newsAria: "ताज्या नोंदींची पट्टी",
@@ -141,6 +161,17 @@ export function deadlineState(
   return days <= 30 ? "closing" : "open";
 }
 
+/**
+ * Whether this record belongs to the whole state rather than to a place on it.
+ *
+ * The discriminant is `scope`, which only a statewide record carries — a
+ * district record is left exactly as the scraper wrote it rather than being
+ * given a field whose only job is to say "not that other thing".
+ */
+export function isStatewide(signal: AnySignal): signal is StatewideSignal {
+  return "scope" in signal && signal.scope === "state";
+}
+
 /** The Marathi name of a district, looked up from the English one the scraper
  *  recorded. Falls back to what it was given rather than rendering a gap. */
 export function districtMr(name: string | undefined): string {
@@ -158,8 +189,9 @@ export function districtMr(name: string | undefined): string {
  * government site feel machine-made. Without a card we fall back to the
  * district alone, which is at least wholly Marathi.
  */
-export function placeMr(signal: Signal): string {
+export function placeMr(signal: AnySignal): string {
   if (signal.card?.placeMr) return signal.card.placeMr;
+  if (isStatewide(signal)) return MR.allMaharashtra;
 
   const district = districtMr(signal.district);
 
@@ -167,12 +199,12 @@ export function placeMr(signal: Signal): string {
 }
 
 /** The headline: the AI's short line if there is one, else the notice's own. */
-export function headlineMr(signal: Signal): string {
+export function headlineMr(signal: AnySignal): string {
   return signal.card?.headline ?? signal.titleMr ?? signal.title;
 }
 
 /** One or two sentences of plain Marathi. */
-export function gistMr(signal: Signal): string {
+export function gistMr(signal: AnySignal): string {
   return signal.card?.gist ?? signal.summaryMr ?? signal.summary;
 }
 
@@ -186,7 +218,7 @@ export function gistMr(signal: Signal): string {
  * is exactly the invention the enrichment prompt forbids, so a record without
  * a card simply has no impact line.
  */
-export function impactMr(signal: Signal): string | null {
+export function impactMr(signal: AnySignal): string | null {
   return signal.card?.impact ?? null;
 }
 
@@ -198,12 +230,12 @@ export function impactMr(signal: Signal): string | null {
  * of English in the middle of a Marathi panel is the seam that makes a
  * government page feel machine-made. Better no row than that row.
  */
-export function agencyMr(signal: Signal): string | null {
+export function agencyMr(signal: AnySignal): string | null {
   return signal.card?.agencyMr ?? null;
 }
 
 /** `पायाभूत सुविधा` — the sector, in Marathi, for the chip line. */
-export function categoryMr(signal: Signal): string {
+export function categoryMr(signal: AnySignal): string {
   return categoryOf(signal.category).labelMr;
 }
 

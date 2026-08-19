@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "scope": "state",
+    "updatedAt": "2026-08-19",
+    "note": "Records that apply to the whole state rather than to a place on it. Unlike the district files, this one is not scraped: there are three records, each read by hand from the Government Resolution or the cabinet release that announced it, and each carries the link to that document. Nothing here is inferred — the figures, dates and eligibility windows below are the ones the source states, and where a source does not state something (an implementing department, a tariff) the field is left out rather than guessed.",
+    "caveats": [
+      "The Marathi cards are written by hand from the source document, not by the AI pass that writes the district cards.",
+      "The coordinates on a statewide record are a placement, not a finding. A policy has no district and no address — the point is chosen by hand so the record has somewhere to be drawn, one per division so the set spreads across the map. The panel and the hover plate both say 'संपूर्ण महाराष्ट्र' for the place, and neither ever reads the point back as a location.",
+      "Status is read from the document — a cabinet decision or an issued GR is 'sanctioned', a budget or policy announcement without one is 'announced'."
+    ],
+    "attribution": {
+      "content": {
+        "label": "महाराष्ट्र शासन — शासन निर्णय व मंत्रिमंडळ निर्णय",
+        "url": "https://gr.maharashtra.gov.in/",
+        "note": "Government Resolutions from the state GR portal; cabinet decisions from official government news releases. Each record links its own source."
+      }
+    }
+  },
+  "signals": [
+    {
+      "id": "mh-karjmukti-2026",
+      "scope": "state",
+      "coordinates": [76.3, 19.2],
+      "slug": "पुण्यश्लोक-अहिल्यादेवी-होळकर-शेतकरी-कर्जमुक्ती-योजना-2026",
+      "title": "पुण्यश्लोक अहिल्यादेवी होळकर शेतकरी कर्जमुक्ती योजना, २०२६",
+      "titleMr": "पुण्यश्लोक अहिल्यादेवी होळकर शेतकरी कर्जमुक्ती योजना, २०२६",
+      "summary": "थकबाकीदार शेतकऱ्यांना कर्जमुक्ती व नियमित परतफेड करणाऱ्या शेतकऱ्यांना प्रोत्साहनपर लाभ देण्याबाबतचा शासन निर्णय, दिनांक २ जून २०२६.",
+      "summaryMr": "थकबाकीदार शेतकऱ्यांना कर्जमुक्ती व नियमित परतफेड करणाऱ्या शेतकऱ्यांना प्रोत्साहनपर लाभ देण्याबाबतचा शासन निर्णय, दिनांक २ जून २०२६.",
+      "category": "agriculture",
+      "status": "sanctioned",
+      "publishedAt": "2026-06-02",
+      "implementingAgency": "Co-operation, Marketing and Textiles Department, Government of Maharashtra",
+      "outcome": "Crop-loan waiver of up to ₹2 lakh per farmer, and an incentive of up to ₹50,000 for farmers who repaid on time.",
+      "evidenceLabel": "शासन निर्णय (PDF) — gr.maharashtra.gov.in",
+      "evidenceUrl": "https://gr.maharashtra.gov.in/Site/Upload/Government%20Resolutions/Marathi/202606022015467802.pdf",
+      "provenance": {
+        "sourceId": "gr",
+        "sourceLabel": "महाराष्ट्र शासन निर्णय",
+        "sourceUrl": "https://gr.maharashtra.gov.in/",
+        "sourceTitle": "पुण्यश्लोक अहिल्यादेवी होळकर शेतकरी कर्जमुक्ती योजना, 2026",
+        "noticeType": "शासन निर्णय",
+        "titleEn": "Punyashlok Ahilyadevi Holkar Shetkari Karjmukti Yojana, 2026",
+        "summaryEn": "Cabinet decision of 2 June 2026, issued as a GR by the Co-operation, Marketing and Textiles Department (क्र. कृकमा.0526/प्र.क्र.93/का.2-स). Short-term crop loans drawn between 1 April 2019 and 31 March 2025, outstanding as of 30 September 2025 and unpaid as of 31 March 2026, are waived up to ₹2 lakh of combined principal and interest per farmer across all bank accounts, irrespective of landholding size. Farmers who repaid regularly receive an incentive of up to ₹50,000. Restructured crop loans converted to medium-term loans are included.",
+        "detailUrl": "https://gr.maharashtra.gov.in/"
+      },
+      "confidence": {
+        "category": "stated",
+        "status": "stated",
+        "agency": "stated"
+      },
+      "card": {
+        "headline": "थकीत पीक कर्ज असलेल्या शेतकऱ्यांना दोन लाखांपर्यंत कर्जमुक्ती",
+        "gist": "१ एप्रिल २०१९ ते ३१ मार्च २०२५ या काळात घेतलेलं आणि ३० सप्टेंबर २०२५ अखेर थकीत राहिलेलं अल्पमुदत पीक कर्ज — मुद्दल आणि व्याजासह दोन लाख रुपयांपर्यंत — शासन माफ करणार आहे. नियमित परतफेड करणाऱ्या शेतकऱ्यांना ५० हजार रुपयांपर्यंत प्रोत्साहनपर लाभ मिळेल. याबाबतचा शासन निर्णय २ जून २०२६ रोजी निघाला.",
+        "impact": "जमीन धारणेचं क्षेत्र कितीही असो, पात्र शेतकऱ्याच्या कर्जखात्यावर लाभ जमा होईल आणि थकबाकीमुळे बंद झालेला नव्या पीक कर्जाचा मार्ग पुन्हा खुला होईल.",
+        "placeMr": "संपूर्ण महाराष्ट्र",
+        "agencyMr": "सहकार, पणन व वस्त्रोद्योग विभाग, महाराष्ट्र शासन"
+      },
+      "needsTranslation": false,
+      "needsReview": false
+    },
+    {
+      "id": "mh-rural-drinking-water-policy-2026",
+      "scope": "state",
+      "coordinates": [79.3, 20.6],
+      "slug": "महाराष्ट्र-ग्रामीण-पेयजल-धोरण-2026",
+      "title": "महाराष्ट्र ग्रामीण पेयजल धोरण २०२६",
+      "titleMr": "महाराष्ट्र ग्रामीण पेयजल धोरण २०२६",
+      "summary": "गावांना शाश्वत व शुद्ध पिण्याचं पाणी मिळावं यासाठीच्या ग्रामीण पेयजल धोरणाला १६ जून २०२६ रोजी राज्य मंत्रिमंडळाची मान्यता.",
+      "summaryMr": "गावांना शाश्वत व शुद्ध पिण्याचं पाणी मिळावं यासाठीच्या ग्रामीण पेयजल धोरणाला १६ जून २०२६ रोजी राज्य मंत्रिमंडळाची मान्यता.",
+      "category": "water",
+      "status": "sanctioned",
+      "publishedAt": "2026-06-16",
+      "implementingAgency": "Government of Maharashtra",
+      "outcome": "A standing policy for sustainable rural drinking-water supply, replacing scheme-by-scheme planning.",
+      "evidenceLabel": "मंत्रिमंडळ निर्णय — newsonair.gov.in",
+      "evidenceUrl": "https://newsonair.gov.in/maharashtra-cabinet-approves-rural-drinking-water-policy-nagpur-medical-cyclotron-project/",
+      "provenance": {
+        "sourceId": "cabinet",
+        "sourceLabel": "मंत्रिमंडळ निर्णय (आकाशवाणी वृत्त)",
+        "sourceUrl": "https://newsonair.gov.in/",
+        "sourceTitle": "Maharashtra cabinet approves rural drinking water policy, Nagpur Medical Cyclotron Project",
+        "noticeType": "मंत्रिमंडळ निर्णय",
+        "titleEn": "Maharashtra Rural Drinking Water Policy 2026",
+        "summaryEn": "The state cabinet, chaired by the Chief Minister, approved the Rural Drinking Water Policy 2026 on 16 June 2026. The policy is aimed at long-term, sustainable solutions to rural drinking-water scarcity, integrating the various water-supply schemes and adding measures to ensure clean, safe and quality drinking water for rural households.",
+        "detailUrl": "https://newsonair.gov.in/maharashtra-cabinet-approves-rural-drinking-water-policy-nagpur-medical-cyclotron-project/"
+      },
+      "confidence": {
+        "category": "stated",
+        "status": "stated",
+        "agency": "default"
+      },
+      "card": {
+        "headline": "गावांच्या शाश्वत पाणीपुरवठ्यासाठी नवं ग्रामीण पेयजल धोरण मंजूर",
+        "gist": "राज्य मंत्रिमंडळाने १६ जून २०२६ रोजी महाराष्ट्र ग्रामीण पेयजल धोरण २०२६ ला मान्यता दिली. वेगवेगळ्या पाणीपुरवठा योजनांची सांगड घालून, स्रोत टिकवून आणि पाण्याचा दर्जा तपासून गावांना शुद्ध व पुरेसं पिण्याचं पाणी देणं हा या धोरणाचा हेतू आहे.",
+        "impact": "पाणीटंचाईवर दरवर्षीचा टँकर हा उपाय न मानता गावातला स्रोत वर्षभर टिकवण्याकडे नियोजन वळेल.",
+        "placeMr": "संपूर्ण महाराष्ट्र",
+        "agencyMr": "महाराष्ट्र शासन"
+      },
+      "needsTranslation": false,
+      "needsReview": false
+    },
+    {
+      "id": "mh-ai-policy-2026",
+      "scope": "state",
+      "coordinates": [73.95, 18.35],
+      "slug": "महाराष्ट्र-कृत्रिम-बुद्धिमत्ता-धोरण-2026",
+      "title": "महाराष्ट्र कृत्रिम बुद्धिमत्ता धोरण २०२६",
+      "titleMr": "महाराष्ट्र कृत्रिम बुद्धिमत्ता धोरण २०२६",
+      "summary": "कृत्रिम बुद्धिमत्ता क्षेत्रात १० हजार कोटींची गुंतवणूक आणि २०३१ पर्यंत दीड लाखांहून अधिक रोजगारसंधींचं उद्दिष्ट ठेवणारं राज्याचं धोरण, एप्रिल २०२६.",
+      "summaryMr": "कृत्रिम बुद्धिमत्ता क्षेत्रात १० हजार कोटींची गुंतवणूक आणि २०३१ पर्यंत दीड लाखांहून अधिक रोजगारसंधींचं उद्दिष्ट ठेवणारं राज्याचं धोरण, एप्रिल २०२६.",
+      "category": "research",
+      "status": "announced",
+      "publishedAt": "2026-04-30",
+      "implementingAgency": "Government of Maharashtra",
+      "outcome": "₹10,000 crore of targeted investment, a ₹500 crore AI startup venture fund, five AI cities, and AI training for two lakh people.",
+      "evidenceLabel": "शासन घोषणा — newsonair.gov.in",
+      "evidenceUrl": "https://newsonair.gov.in/maharashtra-announces-ai-policy-2026-to-boost-industry-governance-and-public-services/",
+      "provenance": {
+        "sourceId": "cabinet",
+        "sourceLabel": "शासन घोषणा (आकाशवाणी वृत्त)",
+        "sourceUrl": "https://newsonair.gov.in/",
+        "sourceTitle": "Maharashtra announces AI Policy 2026 to boost industry, governance and public services",
+        "noticeType": "धोरण",
+        "titleEn": "Maharashtra AI Policy 2026",
+        "summaryEn": "Announced 30 April 2026. The policy targets ₹10,000 crore of investment in the sector and more than 1.5 lakh job opportunities by 2031. It sets up a ₹500 crore AI startup venture fund, develops five AI cities, and funds a scheme to train two lakh youth and professionals in AI.",
+        "detailUrl": "https://newsonair.gov.in/maharashtra-announces-ai-policy-2026-to-boost-industry-governance-and-public-services/"
+      },
+      "confidence": {
+        "category": "keyword",
+        "status": "stated",
+        "agency": "default"
+      },
+      "card": {
+        "headline": "कृत्रिम बुद्धिमत्ता धोरणातून १० हजार कोटींची गुंतवणूक आणि दीड लाख रोजगारांचं उद्दिष्ट",
+        "gist": "राज्य शासनाने एप्रिल २०२६ मध्ये कृत्रिम बुद्धिमत्ता धोरण २०२६ जाहीर केलं. यात १० हजार कोटी रुपयांची गुंतवणूक, २०३१ पर्यंत दीड लाखांहून अधिक रोजगारसंधी, स्टार्टअपसाठी ५०० कोटींचा निधी, पाच 'एआय सिटी' आणि दोन लाख तरुण व व्यावसायिकांना प्रशिक्षण असे टप्पे आहेत.",
+        "impact": "तंत्रज्ञानातलं प्रशिक्षण आणि नव्या उद्योगांच्या संधी मुंबई-पुण्यापुरत्या न राहता राज्यभर पोहोचवण्याचं हे धोरणातलं आश्वासन आहे.",
+        "placeMr": "संपूर्ण महाराष्ट्र",
+        "agencyMr": "महाराष्ट्र शासन"
+      },
+      "needsTranslation": false,
+      "needsReview": false
+    }
+  ]
+}

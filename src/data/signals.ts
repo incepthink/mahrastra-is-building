@@ -2,12 +2,13 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import published from "@/data/published-signals.json";
-import { signalFileSchema } from "@/lib/validation/signal";
+import { signalFileSchema, statewideFileSchema } from "@/lib/validation/signal";
 import type {
   DataAttribution,
   Signal,
   SignalCategoryId,
   SignalPulse,
+  StatewideSignal,
 } from "@/types/signal";
 
 /**
@@ -109,6 +110,36 @@ export async function loadPublishedSignals(): Promise<SignalSet> {
   );
 
   return { signals: live, attribution };
+}
+
+export type StatewideSet = {
+  signals: StatewideSignal[];
+  attribution: DataAttribution;
+};
+
+/**
+ * The records that are true of the whole state.
+ *
+ * A separate read from a separate file, and deliberately not folded into
+ * `loadPublishedSignals`: these come from state Government Resolutions rather
+ * than from the district portals, they are credited to the state rather than
+ * to a Collector's office, and none of them has a coordinate. Merging the two
+ * sets would mean every consumer of a record downstream having to ask which
+ * kind it is before it could place it. Two files, two loaders, one panel.
+ *
+ * There is no publication list guarding this one. That list exists because the
+ * district files hold hundreds of scraped notices and only nine are live; this
+ * file holds exactly what is live, written by hand, so a second list naming its
+ * own three rows would only be a place for the two to disagree.
+ */
+export async function loadStatewideSignals(): Promise<StatewideSet> {
+  const raw = await readFile(
+    path.join(DATA_ROOT, "maharashtra", "statewide.json"),
+    "utf8",
+  );
+  const { meta, signals } = statewideFileSchema.parse(JSON.parse(raw));
+
+  return { signals, attribution: meta.attribution };
 }
 
 /**

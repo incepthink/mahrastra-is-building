@@ -52,8 +52,19 @@ export function LeadPlate({ delay = 0.55 }: LeadPlateProps) {
           <p className="lead-plate-hint">{MR.leadHint}</p>
         </div>
 
-        <button type="button" className="lead-plate-cta" onClick={() => setOpen(true)}>
-          {MR.leadCta}
+        {/* Two labels, one button: the prompt beside it is hidden on a phone,
+            where the plate is a pill in the bottom dock, and "click here" with
+            nothing above it names no destination. Only one is ever drawn — see
+            `.lead-plate-cta-short` — and `aria-label` says the whole thing at
+            every width, so the button never depends on the prompt surviving. */}
+        <button
+          type="button"
+          className="lead-plate-cta"
+          aria-label={MR.leadPrompt}
+          onClick={() => setOpen(true)}
+        >
+          <span className="lead-plate-cta-long">{MR.leadCta}</span>
+          <span className="lead-plate-cta-short">{MR.leadCtaShort}</span>
         </button>
       </motion.aside>
 

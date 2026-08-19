@@ -4,7 +4,7 @@ import { motion, useSpring, type MotionValue } from "motion/react";
 import { useState } from "react";
 
 import { STATUS_META } from "@/lib/design/status";
-import { countMr, districtMr, MR } from "@/lib/signals/marathi";
+import { countMr, districtMr, isStatewide, MR } from "@/lib/signals/marathi";
 import type { PlacedSignal } from "@/types/signal";
 
 const FOLLOW = { stiffness: 520, damping: 42, mass: 0.6 } as const;
@@ -47,7 +47,16 @@ export function ClusterReadout({ members, x, y, below }: ClusterReadoutProps) {
 
   if (!shown?.length) return null;
 
-  const districts = [...new Set(shown.map((member) => member.signal.district))];
+  // Statewide records contribute no district — they have none, and the point
+  // under the counter was chosen rather than found. A counter holding only
+  // those says so; one holding district records names them as it always did.
+  const districts = [
+    ...new Set(
+      shown.flatMap((member) =>
+        isStatewide(member.signal) ? [] : [member.signal.district],
+      ),
+    ),
+  ];
   const rest = shown.length - MAX_LINES;
 
   return (
@@ -62,9 +71,11 @@ export function ClusterReadout({ members, x, y, below }: ClusterReadoutProps) {
         <p className="cluster-readout-head">
           <strong>{countMr(shown.length)}</strong>
           <span>
-            {districts.length === 1
-              ? `${districtMr(districts[0])} ${MR.district}`
-              : districts.map(districtMr).join(", ")}
+            {districts.length === 0
+              ? MR.allMaharashtra
+              : districts.length === 1
+                ? `${districtMr(districts[0])} ${MR.district}`
+                : districts.map(districtMr).join(", ")}
           </span>
         </p>
 

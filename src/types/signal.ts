@@ -131,9 +131,16 @@ export type DataAttribution = {
  * of a neighbour's way, or folded into a counter with three other records —
  * depends on how far the reader has zoomed in, so it is decided per view by
  * `lib/map/cluster.ts` rather than carried by the record.
+ *
+ * Generic in the record it carries, because both kinds of record get pinned
+ * now and the two sets are never on the sheet together. Anything that only
+ * *draws* a pin takes the default and never has to ask which kind it has; the
+ * two places that read a district back off the record — the legend's "one
+ * district" line, the counter's plate — ask for `PlacedSignal<Signal>` and get
+ * the field they need checked for them.
  */
-export type PlacedSignal = {
-  signal: Signal;
+export type PlacedSignal<T extends AnySignal = AnySignal> = {
+  signal: T;
   /** The anchor: the record's own coordinate. Always truthful. */
   point: [x: number, y: number];
 };
@@ -153,3 +160,45 @@ export type SignalPulse = {
   /** Length of the window the count was taken over, in hours. */
   hours: number;
 };
+
+/**
+ * A record that belongs to the whole state rather than to a place on it.
+ *
+ * A loan waiver, a drinking-water policy, an AI policy: each one is a real
+ * development and each one is true of Sindhudurg and Gadchiroli alike. What it
+ * does not have is an address, and that is what this type takes away: no
+ * district, no taluka, no locality, because there is no answer to "where".
+ *
+ * It keeps `coordinates`, and they mean a different thing here. A district
+ * record's coordinate is a finding — the pipeline matched a village and the pin
+ * stands on it. A statewide record's is a **placement**: a point chosen by hand
+ * so the record has somewhere to be drawn, one per division so the set spreads
+ * across the sheet instead of stacking. Nothing reads them back as a location —
+ * the readout and the panel both say `संपूर्ण महाराष्ट्र`, because that is where
+ * the record applies.
+ *
+ * Everything else is a `Signal` unchanged, which is the whole reason for the
+ * shape: the panel, the stage meter, the sector plate, the pin itself and the
+ * source link all read these without knowing they are looking at a different
+ * kind of record.
+ *
+ * These come from state Government Resolutions and cabinet releases rather than
+ * from the district scrapers, so the set is small, hand-written, and lives in
+ * `public/data/maharashtra/statewide.json`.
+ */
+export type StatewideSignal = Omit<Signal, "district" | "taluka" | "locality"> & {
+  scope: "state";
+};
+
+/** Either kind of record — what anything that only *renders* a record takes. */
+export type AnySignal = Signal | StatewideSignal;
+
+/**
+ * What the map is currently about: the districts, or the state as a whole.
+ *
+ * Not a filter and not a layer — the two sets answer different questions and
+ * are never on screen together. "What is happening near me" is answered by the
+ * district pins; "what has the state decided" is answered by the statewide set,
+ * which takes the sheet over from them rather than joining them on it.
+ */
+export type MapScope = "district" | "state";

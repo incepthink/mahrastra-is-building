@@ -3,6 +3,7 @@ import { NewsTicker, type NewsItem } from "@/components/news";
 import {
   PUBLISHED_SIGNAL_IDS,
   loadPublishedSignals,
+  loadStatewideSignals,
   recentPulse,
 } from "@/data/signals";
 import { buildMapGeometry } from "@/lib/map/geometry";
@@ -11,15 +12,23 @@ import { headlineMr, placeMr } from "@/lib/signals/marathi";
 import type { Signal } from "@/types/signal";
 
 export default async function HomePage() {
-  const [geometry, { signals }, pulse] = await Promise.all([
+  const [geometry, { signals }, pulse, statewide] = await Promise.all([
     buildMapGeometry(),
     loadPublishedSignals(),
     recentPulse(),
+    loadStatewideSignals(),
   ]);
 
   // Projected here rather than in the browser: the client gets viewBox points
-  // and never has to know the projection existed.
+  // and never has to know the projection existed. Both sets go through the same
+  // projector — the statewide records are pinned like any other, the difference
+  // being only that their point was chosen rather than found.
   const placed = signals.map((signal) => ({
+    signal,
+    point: projectPoint(signal.coordinates, geometry.projector),
+  }));
+
+  const placedStatewide = statewide.signals.map((signal) => ({
     signal,
     point: projectPoint(signal.coordinates, geometry.projector),
   }));
@@ -38,6 +47,7 @@ export default async function HomePage() {
           signals={placed}
           published={PUBLISHED_SIGNAL_IDS.length}
           pulse={pulse}
+          statewide={placedStatewide}
         />
       </div>
     </main>

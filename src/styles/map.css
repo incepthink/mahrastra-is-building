@@ -283,14 +283,19 @@
 
 /* --- The left rail ------------------------------------------------------- */
 
-/* Two plates in a column: the legend, and under it the one thing on this
-   screen that asks the reader for something. They share a rail rather than
-   being positioned independently because the legend's height is the data's —
-   sectors with nothing in them are not drawn — so anything pinned below it by
-   a fixed offset would drift the moment the map covered a ninth sector.
+/* Three plates in a column: the legend, under it the one thing on this screen
+   that asks the reader for something, and under that the way into the
+   statewide view. They share a rail rather than being positioned independently
+   because the legend's height is the data's — sectors with nothing in them are
+   not drawn — so anything pinned below it by a fixed offset would drift the
+   moment the map covered a ninth sector.
 
-   Inert to the pointer as a whole; the only thing in here that takes a click
-   is the lead plate's button, which says so itself. */
+   Inert to the pointer as a whole; the only things in here that take a click
+   are the lead plate's button and the statewide badge, both of which say so
+   themselves.
+
+   On a phone the rail spans the frame instead of hugging the top, and the
+   bottom two plates ride the bottom edge — see the narrow-screen block. */
 .map-rail {
   position: absolute;
   z-index: 12;
@@ -302,6 +307,16 @@
   align-items: stretch;
   gap: 0.7rem;
   pointer-events: none;
+}
+
+/* The bottom of the rail: the invitation and the statewide badge, kept as one
+   group so that the pair can be lifted to the bottom edge on a phone without
+   the legend coming with them. A column on a desktop, a row on a phone. */
+.map-rail-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.7rem;
 }
 
 /* --- Brand plate --------------------------------------------------------- */
@@ -528,6 +543,12 @@
     transform 160ms var(--ease-spring);
 }
 
+/* The compact label waits for the phone, where the prompt beside it is gone
+   and "click here" would point at nothing. See `LeadPlate`. */
+.lead-plate-cta-short {
+  display: none;
+}
+
 .lead-plate-cta:hover {
   background: var(--color-sun-400);
 }
@@ -603,9 +624,44 @@
 /* --- Narrow screens ------------------------------------------------------ */
 
 @media (max-width: 64rem) {
+  /* The rail stops being a stack in the corner and becomes the frame's two
+     edges: the legend is a header across the top, and the dock — the
+     invitation and the statewide badge — rides the bottom, which is the half
+     of a phone a thumb actually reaches. The map gets the whole middle.
+
+     It clears the attribution line by its own height, so the two never sit on
+     top of each other. */
   .map-rail {
     width: auto;
     right: clamp(0.85rem, 1.8vw, 1.5rem);
+    bottom: calc(clamp(0.85rem, 2.4vw, 1.75rem) + 1.4rem);
+    justify-content: space-between;
+  }
+
+  /* Side by side rather than stacked: two controls on one line read as one bar,
+     where two full-width cards read as a second panel.
+
+     Left-packed and each as wide as its own words. Letting the invitation grow
+     into the free space pushed the badge into the zoom cluster in the corner
+     and then off the edge — a dock is a row of objects, not a split bar. The
+     tail clears the cluster, which still owns the bottom-right at this width;
+     on a phone it has moved to the middle of the right edge and the reservation
+     is dropped. */
+  .map-rail-dock {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding-right: 3.4rem;
+  }
+
+  .map-rail-dock .lead-plate {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .map-rail-dock .statewide-badge {
+    flex: 0 0 auto;
+    align-self: auto;
   }
 
   /* On a phone the legend is a header, not a card, and the invitation under it
@@ -685,5 +741,287 @@
   .map-attribution {
     right: 4rem;
     max-width: none;
+  }
+
+  /* --- The header, cut down ---------------------------------------------
+     At phone width the legend was taking the top fifth of the screen to say
+     three things, and the state — the whole point of the page — started below
+     the fold of the eye rather than at it. Everything here is the same plate
+     one notch smaller: the wordmark still leads, the pulse line is still a
+     sentence, the count is still a chip. Nothing is removed that was not
+     already gone at 64rem; the card simply stops claiming space it does not
+     need. */
+  .brand-head {
+    padding: 0.5rem 0.85rem 0.55rem;
+  }
+
+  .brand-body {
+    padding: 0.55rem 0.85rem 0.7rem;
+  }
+
+  .brand-title {
+    font-size: 1.1875rem;
+  }
+
+  .brand-pulse {
+    margin-bottom: 0.45rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .brand-count-figure {
+    padding: 0.22rem 0.4rem 0.1rem;
+    font-size: 0.9375rem;
+  }
+
+  .brand-count-where {
+    font-size: var(--text-micro);
+  }
+
+  /* --- The bottom dock, at two pills ------------------------------------
+     363px of dock, and the badge needs 160 of them to say its own name. The
+     invitation cannot also carry a prompt at that width, so it collapses to
+     its glyph and its button, and the button swaps to the label that names the
+     thing rather than the gesture — "click here" under nothing points at
+     nothing. The full prompt survives on the button's `aria-label`, so a screen
+     reader hears the same sentence a desktop reads. */
+  .map-rail-dock {
+    padding-right: 0;
+  }
+
+  .map-rail-dock .lead-plate {
+    flex: 0 0 auto;
+  }
+
+  /* Cut from the same die as the badge beside it. Two controls on one line
+     with different corners and different shadow depths do not read as a pair
+     of buttons, they read as one plate printed twice with the registration
+     slipping — the same argument the rail's own stack makes about its cards,
+     applied along the other axis. */
+  .lead-plate {
+    grid-template-columns: auto auto;
+    gap: 0.45rem;
+    padding: 0.32rem 0.4rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-plate-sm);
+  }
+
+  .lead-plate-text {
+    display: none;
+  }
+
+  .lead-plate-icon {
+    height: 1.6rem;
+    width: 1.6rem;
+  }
+
+  .lead-plate-cta {
+    grid-column: 2;
+    padding: 0.32rem 0.6rem 0.36rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+  }
+
+  .lead-plate-cta-long {
+    display: none;
+  }
+
+  .lead-plate-cta-short {
+    display: inline;
+  }
+
+  .statewide-badge {
+    gap: 0.35rem;
+    padding: 0.3rem 0.55rem 0.3rem 0.34rem;
+  }
+
+  .statewide-badge-mark {
+    height: 1.6rem;
+    width: 1.6rem;
+  }
+
+  .statewide-badge-word {
+    font-size: 0.8125rem;
+  }
+}
+
+/* --- The statewide badge -------------------------------------------------- */
+
+/* The way into the one view that is not about a place.
+
+   It sat in the water south-east of the coast until the zoom caught up with
+   it: painted over the sheet rather than in it, it holds still while the
+   coastline slides out from under it, and a control adrift on land reads as
+   the one thing it must never read as — a pin. So it came off the sheet
+   altogether — and then spent a while pinned to the frame's own bottom-left
+   corner, which fixed the pin problem and introduced a smaller one: a control
+   alone in a corner belongs to nothing, and a reader who had read the legend
+   and the invitation had no reason to look down there for a third thing.
+
+   It now sits in the rail, under the invitation, as the last card of the stack
+   it was always a sibling of — all three are controls the reader consults
+   before touching the map. On a phone the rail's bottom half rides the bottom
+   edge and it lands beside the invitation, where a thumb is.
+
+   Off the sheet it has room to say its own name, so the word is set beside the
+   glyph rather than waiting on a hover no touchscreen sends. Only the
+   instruction folds away. Yellow is held back for the pressed state, which is
+   how this product says "in force". */
+.statewide-badge {
+  position: relative;
+  /* The rail stretches its children; a pill is as wide as its words. */
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.34rem 0.7rem 0.34rem 0.4rem;
+  border: var(--rule-ink);
+  border-radius: 999px;
+  background: var(--color-cream-50);
+  box-shadow: var(--shadow-plate-sm);
+  cursor: pointer;
+  /* The rail is inert so the map pans under it; this is one of the two things
+     in it that takes a click. */
+  pointer-events: auto;
+  transition:
+    background-color 180ms var(--ease-out-soft),
+    box-shadow 180ms var(--ease-out-soft),
+    transform 180ms var(--ease-spring);
+}
+
+.statewide-badge:hover {
+  background: var(--color-accent-soft);
+}
+
+.statewide-badge:active {
+  box-shadow: 1px 2px 0 var(--color-ink-900);
+}
+
+.statewide-badge[data-active] {
+  background: var(--color-accent);
+}
+
+/* The glyph, in its own disc at the head of the pill — the pins are discs, and
+   this is the other thing you press to change the record on screen. It stands
+   for no sector, so it carries no sector colour. */
+.statewide-badge-mark {
+  display: grid;
+  height: 1.75rem;
+  width: 1.75rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-ink-900);
+}
+
+.statewide-badge[data-active] .statewide-badge-mark {
+  background: var(--color-cream-50);
+}
+
+.statewide-badge-word {
+  font-family: var(--font-marathi);
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+/* The count, closing the pill, in the same ink-on-cream the legend uses.
+   Pressed, it inverts to ink so it stays legible on the yellow. */
+.statewide-badge-count {
+  display: grid;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  place-items: center;
+  padding: 0 0.2rem;
+  border: 1.5px solid var(--color-ink-900);
+  border-radius: 999px;
+  background: var(--color-cream-50);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+}
+
+.statewide-badge[data-active] .statewide-badge-count {
+  background: var(--color-ink-900);
+  color: var(--color-cream-50);
+}
+
+/* The instruction, hanging under the pill on its left edge — above it now sits
+   the invitation it shares a rail with, and a caption that covers the card it
+   was printed under is a caption in the wrong place. Shown on hover, on
+   keyboard focus, and whenever the view is on: pressed, its job is to say how
+   to get back. */
+.statewide-badge-hint {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: max-content;
+  max-width: 11rem;
+  padding: 0.24rem 0.5rem 0.28rem;
+  border: var(--rule-ink);
+  border-radius: var(--radius-sm);
+  background: var(--color-cream-50);
+  box-shadow: var(--shadow-plate-sm);
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.35;
+  text-align: start;
+  color: var(--color-text-subtle);
+  opacity: 0;
+  transform: translateY(-0.25rem);
+  pointer-events: none;
+  transition:
+    opacity 160ms var(--ease-out-soft),
+    transform 160ms var(--ease-out-soft);
+}
+
+.statewide-badge:hover .statewide-badge-hint,
+.statewide-badge:focus-visible .statewide-badge-hint,
+.statewide-badge[data-active] .statewide-badge-hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- The state as the subject -------------------------------------------- */
+
+/* What the sheet does when the map stops being about districts.
+
+   No wash and no fill: the state is already one mint plate, and tinting it
+   would only say "selected" about something that has no alternative. The
+   districts recede instead — their hairlines are a way of dividing a place,
+   and nothing on screen is divided by them any more — and the coastline comes
+   forward, because the coastline is the one line that means "all of this".
+
+   This is what carries the whole distinction now that the statewide records
+   are pinned like any other. Three pins on a sheet ruled into thirty-six
+   districts would read as three places; on one undivided plate inside a single
+   heavy coast they read as three marks on the state. The pins themselves are
+   left exactly as they are — same disc, same sector, same stem — because a
+   reader who has learnt what a pin means should not have to learn a second
+   thing.
+
+   The land keeps its pointer: a click on it is how a reader leaves. */
+.map-frame[data-scope="state"] .map-district {
+  stroke: rgb(20 18 12 / 0.09);
+  transition: stroke 260ms var(--ease-out-soft);
+}
+
+.map-frame[data-scope="state"] .map-coast {
+  stroke-width: 2.25;
+}
+
+.map-coast {
+  transition: stroke-width 260ms var(--ease-out-soft);
+}
+
+/* On a phone the pill keeps its corner — the legend is a header across the top
+   and the zoom cluster has moved to the middle of the right edge, so the bottom
+   left is still the quietest part of the frame. Only the caption goes: there is
+   no hover to summon it, and the one state that would show it anyway is the one
+   where the record sheet has climbed over the pill entirely. The sheet’s own
+   close button is the way back out of that view. */
+@media (max-width: 64rem) {
+  .statewide-badge-hint {
+    display: none;
   }
 }
