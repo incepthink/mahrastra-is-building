@@ -1,15 +1,20 @@
 /* ============================================================================
    The report sheet — "something on this record is wrong".
 
-   Same press as everything else: a cream card with a hard black rule, one
-   solid offset shadow, and exactly one saturated block — the record's sector
-   plate behind the heading, so the dialog is visibly the same object as the
-   panel it came out of rather than a system prompt dropped over the map.
+   Same stock as everything else: a white card, borderless, deeply rounded,
+   with one soft cast under it and exactly one tinted block — the record's
+   sector plate behind the heading, so the dialog is visibly the same object as
+   the panel it came out of rather than a system prompt dropped over the map.
 
-   The controls are drawn rather than borrowed. The radio is a square that
-   fills with ink, the way the stage meter's nodes fill; the inputs are ruled
-   boxes that take the highlight yellow on focus, the way the buttons do.
-   Nothing in here blurs or glows.
+   The controls are drawn rather than borrowed. The radio is a disc that fills
+   with the accent, the way the stage meter's nodes fill; the inputs are quiet
+   sunken boxes that take an accent ring on focus, the way everything focusable
+   in the product does.
+
+   This is the one place the product blurs. A dialog is the only thing that
+   ever covers the map, and a flat scrim over a map reads as the map having
+   been switched off; a blurred one reads as the map still being there,
+   underneath.
    ========================================================================= */
 
 .report-layer {
@@ -21,12 +26,18 @@
   place-items: center;
 }
 
-/* Ink, not smoke. A blurred scrim would be the one soft edge in a product made
-   entirely of hard ones; this is the page seen through a printed screen. */
+/* Smoke, not ink. The old scrim was flat because the whole product was flat —
+   a blur would have been the one soft edge in a system made entirely of hard
+   ones. Now that the product is soft everywhere, the flat version is the odd
+   one out: a solid wash over the map reads as the map having been switched
+   off, and the blurred one leaves it visibly still there underneath, which is
+   the point. */
 .report-scrim {
   position: absolute;
   inset: 0;
-  background: rgb(20 18 12 / 0.52);
+  background: rgb(26 26 48 / 0.34);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
 }
 
 .report-sheet {
@@ -37,10 +48,9 @@
   max-height: 100%;
   flex-direction: column;
   overflow: hidden;
-  border: var(--rule-ink-heavy);
-  border-radius: var(--radius-sm);
-  background: var(--color-cream-50);
-  box-shadow: var(--shadow-plate-lg);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
 }
 
 .report-close {
@@ -52,37 +62,35 @@
   height: 1.75rem;
   width: 1.75rem;
   place-items: center;
-  border: 1px solid transparent;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--color-ink-800);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition:
-    border-color 160ms var(--ease-out-soft),
+    color 160ms var(--ease-out-soft),
     background-color 160ms var(--ease-out-soft);
 }
 
 .report-close:hover {
-  border-color: var(--color-ink-900);
-  background: var(--color-cream-50);
+  background: rgb(255 255 255 / 0.7);
+  color: var(--color-text);
 }
 
 /* --- Head ---------------------------------------------------------------- */
 
 .report-head {
-  padding: 1.15rem 1.35rem 1.05rem;
-  border-bottom: var(--rule-ink);
-  background: var(--sector, var(--color-accent));
+  padding: 1.2rem 1.35rem 1.1rem;
+  background: var(--sector-plate, var(--color-accent-soft));
 }
 
 .report-title {
   padding-right: 1.75rem;
   font-family: var(--font-marathi);
   font-size: 1.3125rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--color-ink-900);
+  letter-spacing: -0.018em;
+  color: var(--color-text);
   text-wrap: balance;
 }
 
@@ -90,7 +98,7 @@
   margin-top: 0.4rem;
   font-size: var(--text-caption);
   line-height: 1.6;
-  color: var(--color-ink-800);
+  color: var(--color-text-muted);
 }
 
 /* --- Body ---------------------------------------------------------------- */
@@ -107,18 +115,17 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  padding: 0.6rem 0.8rem 0.65rem;
-  border: 1px solid var(--color-ink-900);
-  border-left: 4px solid var(--color-ink-900);
-  border-radius: var(--radius-xs);
-  background: var(--color-surface);
+  padding: 0.65rem 0.85rem 0.7rem;
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
 }
 
 .report-subject-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--text-eyebrow);
-  font-weight: 500;
-  letter-spacing: 0.2em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-text-subtle);
 }
@@ -157,14 +164,14 @@
   padding: 0;
   font-size: var(--text-caption);
   font-weight: 700;
-  color: var(--color-ink-900);
+  color: var(--color-text);
 }
 
 /* "ऐच्छिक" — a chip rather than a parenthesis, so the eye can skip it. */
 .report-optional {
-  padding: 0.05rem 0.35rem;
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-xs);
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  background: var(--color-surface-sunken);
   font-size: var(--text-micro);
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -191,9 +198,9 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.4rem 0.5rem;
+  padding: 0.45rem 0.6rem;
   border: 1px solid transparent;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition:
     border-color 150ms var(--ease-out-soft),
@@ -201,7 +208,7 @@
 }
 
 .report-kind:hover {
-  background: var(--color-surface);
+  background: var(--color-surface-hover);
 }
 
 /* The native control is kept for the keyboard and the accessibility tree, and
@@ -220,19 +227,20 @@
   height: 0.9rem;
   width: 0.9rem;
   flex: none;
-  border: 1.5px solid var(--color-ink-900);
-  border-radius: var(--radius-xs);
-  background: var(--color-cream-50);
+  border: 1.5px solid var(--color-slate-300);
+  border-radius: 50%;
+  background: var(--color-surface);
+  transition: border-color 150ms var(--ease-out-soft);
 }
 
-/* Filled, not ticked: a solid square inside a square is the mark this press
-   makes everywhere else — see the stage meter's nodes. */
+/* Filled, not ticked: a solid disc inside a ring is the mark this system makes
+   everywhere else — see the stage meter's nodes. */
 .report-kind-box::after {
   content: "";
   position: absolute;
-  inset: 2px;
-  border-radius: 1px;
-  background: var(--color-ink-900);
+  inset: 2.5px;
+  border-radius: 50%;
+  background: var(--color-accent);
   opacity: 0;
   transform: scale(0.4);
   transition:
@@ -246,8 +254,12 @@
 }
 
 .report-kind:has(input:checked) {
-  border-color: var(--color-ink-900);
+  border-color: var(--color-accent);
   background: var(--color-accent-soft);
+}
+
+.report-kind:has(input:checked) .report-kind-box {
+  border-color: var(--color-accent);
 }
 
 .report-kind:has(input:focus-visible) {
@@ -266,29 +278,33 @@
 .report-input {
   width: 100%;
   margin-top: 0.15rem;
-  padding: 0.55rem 0.7rem;
-  border: 1px solid var(--color-ink-900);
-  border-radius: var(--radius-xs);
-  background: var(--color-cream-50);
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
   font: inherit;
   font-size: var(--text-caption);
   line-height: 1.6;
   color: var(--color-text);
   resize: vertical;
   transition:
+    border-color 160ms var(--ease-out-soft),
     background-color 160ms var(--ease-out-soft),
     box-shadow 160ms var(--ease-out-soft);
 }
 
 .report-input::placeholder {
-  color: var(--color-ink-400);
+  color: var(--color-slate-400);
 }
 
 /* Focus lands as the house highlight behind the box plus the offset plate —
-   the same "this is the live one" language the buttons use. */
+   the same "this is the live one" language everything focusable uses. The
+   field lifts to white as it takes focus, so the live one is the bright one. */
 .report-input:focus {
-  background: var(--color-accent-soft);
-  box-shadow: var(--shadow-plate-sm);
+  outline: none;
+  border-color: var(--color-accent);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 4px var(--color-accent-wash);
 }
 
 /* --- Foot ---------------------------------------------------------------- */
@@ -300,8 +316,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.85rem 1.35rem 0.9rem;
-  border-top: var(--rule-ink);
+  padding: 0.9rem 1.35rem 0.95rem;
+  border-top: var(--rule-hair);
   background: var(--color-surface-sunken);
 }
 
@@ -318,43 +334,48 @@
 }
 
 .report-cancel {
-  padding: 0.5rem 0.7rem;
-  border: 1px solid transparent;
-  border-radius: var(--radius-xs);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
   background: transparent;
   font-size: var(--text-caption);
   font-weight: 600;
   color: var(--color-text-muted);
   cursor: pointer;
   transition:
-    border-color 160ms var(--ease-out-soft),
+    background-color 160ms var(--ease-out-soft),
     color 160ms var(--ease-out-soft);
 }
 
 .report-cancel:hover {
-  border-color: var(--color-ink-900);
-  color: var(--color-ink-900);
+  background: var(--color-surface-hover);
+  color: var(--color-text);
 }
 
 .report-submit {
-  padding: 0.55rem 1.1rem;
-  border: var(--rule-ink);
-  border-radius: var(--radius-xs);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-sm);
   background: var(--color-accent);
   font-size: var(--text-caption);
   font-weight: 700;
-  color: var(--color-ink-900);
+  color: var(--color-on-accent);
   cursor: pointer;
-  box-shadow: var(--shadow-plate-sm);
+  box-shadow: var(--shadow-accent);
   transition:
     transform 160ms var(--ease-out-soft),
-    box-shadow 160ms var(--ease-out-soft);
+    background-color 160ms var(--ease-out-soft),
+    box-shadow 200ms var(--ease-out-soft);
 }
 
-/* Presses into the sheet, like the notice link on the panel. */
+/* Rises off the sheet, like the notice link on the panel. */
 .report-submit:hover {
-  transform: translate(2px, 3px);
-  box-shadow: 0 0 0 var(--color-ink-900);
+  transform: translateY(-1px);
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-accent-hover);
+}
+
+.report-submit:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-accent);
 }
 
 /* --- Narrow screens ------------------------------------------------------ */
@@ -395,13 +416,13 @@
 /* Ten sectors is too many for the stacked radio rows a correction uses — that
    list is four items and reads as a sentence, this one would be a column half
    the sheet tall. So it wraps, and each option carries the sector's own disc:
-   the same mark, at the same size, as the legend row on the map behind the
-   sheet. Choosing one is choosing where the pin would go rather than picking a
-   word off a list.
+   the same mark, in the same saturated hue, at the same size, as the legend row
+   on the map behind the sheet. Choosing one is choosing where the pin would go
+   rather than picking a word off a list.
 
-   Everything else — the hidden native control, the ink border and pale accent
-   on the chosen one, the focus ring — is the report sheet's, because these are
-   the same object. */
+   Everything else — the hidden native control, the accent border and pale
+   accent fill on the chosen one, the focus ring — is the report sheet's,
+   because these are the same object. */
 .lead-sectors {
   display: flex;
   flex-wrap: wrap;
@@ -413,10 +434,10 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.25rem 0.55rem 0.25rem 0.3rem;
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-xs);
-  background: var(--color-cream-50);
+  padding: 0.28rem 0.6rem 0.28rem 0.3rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--color-surface-sunken);
   cursor: pointer;
   transition:
     border-color 150ms var(--ease-out-soft),
@@ -439,10 +460,9 @@
   width: 1.4rem;
   flex: none;
   place-items: center;
-  border: 1.5px solid var(--color-ink-900);
   border-radius: 50%;
   background: var(--sector);
-  color: var(--color-ink-900);
+  color: var(--color-on-accent);
 }
 
 .lead-sector-word {
@@ -453,11 +473,11 @@
 }
 
 .lead-sector:hover {
-  border-color: var(--color-ink-900);
+  background: var(--color-surface-hover);
 }
 
 .lead-sector:has(input:checked) {
-  border-color: var(--color-ink-900);
+  border-color: var(--color-accent);
   background: var(--color-accent-soft);
 }
 

@@ -37,12 +37,13 @@ type ModalSheetProps = {
   title: string;
   /** One line under it saying what happens to what you write. */
   intro: string;
-  /**
-   * The plate behind the heading. A record's dialog takes that record's sector
-   * so it reads as having come out of the panel; a dialog belonging to no
-   * record takes the highlight yellow, which is the plate's own colour.
+   /**
+   * The plate behind the heading — the *pale* end of a sector's hue, not the
+   * saturated one. A record's dialog takes that record's sector so it reads as
+   * having come out of the panel; a dialog belonging to no record falls back
+   * to the pale accent, which is the product's own plate.
    */
-  sector?: string;
+  sectorPlate?: string;
   /** The standing caveat above the buttons — what this form does *not* do. */
   note: string;
   submitLabel: string;
@@ -76,7 +77,7 @@ export function ModalSheet({
   onClose,
   title,
   intro,
-  sector,
+  sectorPlate,
   note,
   submitLabel,
   formId,
@@ -137,7 +138,11 @@ export function ModalSheet({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            style={sector ? ({ "--sector": sector } as React.CSSProperties) : undefined}
+            style={
+              sectorPlate
+                ? ({ "--sector-plate": sectorPlate } as React.CSSProperties)
+                : undefined
+            }
             variants={SHEET}
             initial="hidden"
             animate="shown"

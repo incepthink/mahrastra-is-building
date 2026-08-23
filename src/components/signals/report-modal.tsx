@@ -35,10 +35,11 @@ export function ReportModal({ signal, open, onClose }: ReportModalProps) {
       onClose={onClose}
       title={MR.reportTitle}
       intro={MR.reportIntro}
-      // The head takes the record's sector plate, so the dialog reads as having
-      // come out of the panel rather than as a system prompt dropped over the
-      // map.
-      sector={categoryOf(signal.category).tint}
+      // The head takes the pale end of the record's sector hue, so the dialog
+      // reads as having come out of the panel rather than as a system prompt
+      // dropped over the map. The plate, not the mark: this is a surface with
+      // body text on it.
+      sectorPlate={categoryOf(signal.category).plate}
       note={MR.reportNote}
       submitLabel={MR.reportSubmit}
       formId="report-form"

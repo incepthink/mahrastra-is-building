@@ -89,6 +89,17 @@ export const MR = {
   newsAria: "ताज्या नोंदींची पट्टी",
   /** Follows a figure: "२५ पैकी निवडक" — selected out of 25. */
   selectedFrom: "पैकी निवडक",
+  /* --- The filters, under the pulse line ---------------------------------
+     Two axes and a way out of them. `filtersEmpty` is the one line the legend
+     prints when a combination matches nothing: a plate that simply goes blank
+     reads as a map that broke rather than as an answer. */
+  filters: "गाळणी",
+  filterSector: "क्षेत्र",
+  filterStatus: "सद्यस्थिती",
+  filterClear: "सर्व दाखवा",
+  filtersEmpty: "या गाळणीत एकही नोंद नाही.",
+  /** Read out to a screen reader on a chip, before the sector or stage name. */
+  filterToggle: "गाळणी लावा",
   /** The stage meter's heading in the record panel. */
   stage: "सद्यस्थिती",
   /** Heads the `impact` line — "what this means for you". */

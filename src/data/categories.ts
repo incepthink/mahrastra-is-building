@@ -19,8 +19,13 @@ export type Category = {
   label: string;
   labelMr: string;
   icon: LucideIcon;
-  /** The sector's pastel plate — chip grounds and the collar behind a pin. */
+  /** The sector's MARK — a saturated fill that always carries a white glyph.
+   *  Pin heads, the legend's icon badges, the dot leading a ticker headline. */
   tint: string;
+  /** The sector's SURFACE — the pale version of the same hue, for areas that
+   *  have ordinary body text on them: the record panel's header, the "what
+   *  this means" block, the report dialog's head. */
+  plate: string;
 };
 
 /**
@@ -32,12 +37,17 @@ export type Category = {
  * per group: a reader now has to tell two adjacent pins apart at a glance, and
  * an icon at 13px is not enough on its own.
  *
- * So a sector gets a *plate* and a status gets an *ink*. They cannot be
- * confused because they are used at different saturations and in different
- * places — the pastel always fills the mark, the ink always rings it. The
- * plate is the one that fills, because the plate is what the brand plate's
- * legend keys: a reader matching a legend row against the map is matching
- * areas of colour, not hairlines.
+ * So a sector gets a *hue* and a status gets an *ink*. They cannot be
+ * confused because they live on different surfaces: the sector hue fills the
+ * mark, the status ink only ever appears beside it — on the stage meter, the
+ * panel's leading edge, a cluster's chips.
+ *
+ * Each sector carries that hue at two strengths. `tint` is the saturated one
+ * and it fills anything small enough to need finding — a pin head, a legend
+ * badge — always under a white glyph. `plate` is the pale one and it fills
+ * anything large enough to be read on — a panel header, a callout block. One
+ * pastel used to do both jobs, which meant the pin was as quiet as the panel,
+ * and a pin is the smallest thing on screen.
  *
  * Water, housing and environment were added when the pilot took in Pune and
  * stopped being one district's land-acquisition file. They are not refinements
@@ -53,6 +63,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "पायाभूत सुविधा",
     icon: Building2,
     tint: "var(--color-sector-infrastructure)",
+    plate: "var(--color-sector-infrastructure-plate)",
   },
   {
     id: "transportation",
@@ -60,6 +71,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "वाहतूक",
     icon: TrainFront,
     tint: "var(--color-sector-transportation)",
+    plate: "var(--color-sector-transportation-plate)",
   },
   {
     id: "energy",
@@ -67,6 +79,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "ऊर्जा",
     icon: Zap,
     tint: "var(--color-sector-energy)",
+    plate: "var(--color-sector-energy-plate)",
   },
   {
     id: "public-systems",
@@ -74,6 +87,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "सार्वजनिक सेवा",
     icon: Landmark,
     tint: "var(--color-sector-public-systems)",
+    plate: "var(--color-sector-public-systems-plate)",
   },
   {
     id: "manufacturing",
@@ -81,6 +95,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "उत्पादन",
     icon: Factory,
     tint: "var(--color-sector-manufacturing)",
+    plate: "var(--color-sector-manufacturing-plate)",
   },
   {
     id: "research",
@@ -88,6 +103,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "संशोधन",
     icon: Cpu,
     tint: "var(--color-sector-research)",
+    plate: "var(--color-sector-research-plate)",
   },
   {
     id: "agriculture",
@@ -95,6 +111,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "शेती",
     icon: Sprout,
     tint: "var(--color-sector-agriculture)",
+    plate: "var(--color-sector-agriculture-plate)",
   },
   {
     id: "water",
@@ -102,6 +119,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "पाणी व स्वच्छता",
     icon: Droplets,
     tint: "var(--color-sector-water)",
+    plate: "var(--color-sector-water-plate)",
   },
   {
     id: "housing",
@@ -109,6 +127,7 @@ export const CATEGORIES: Category[] = [
     labelMr: "घरकुल",
     icon: House,
     tint: "var(--color-sector-housing)",
+    plate: "var(--color-sector-housing-plate)",
   },
   {
     id: "environment",
@@ -116,5 +135,6 @@ export const CATEGORIES: Category[] = [
     labelMr: "पर्यावरण व गौणखनिज",
     icon: Mountain,
     tint: "var(--color-sector-environment)",
+    plate: "var(--color-sector-environment-plate)",
   },
 ];

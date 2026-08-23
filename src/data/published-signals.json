@@ -1,6 +1,6 @@
 {
   "note": "Records published to the map. A record reaches the public surface by appearing here and nowhere else. Each row names the district file it is read from, and may state the sector it belongs to when the scraper's keyword rule got it wrong — the data's own caveat says category is derived from notice wording and 'needs editorial confirmation', so an override is the confirmation, recorded with its reason. Nothing here invents a record: every id exists in that district's signals.json with its own source link.",
-  "selection": "One record per sector, best first, across both pilot districts. Infrastructure is deliberately a single pin: Amravati publishes twenty-five near-identical land-acquisition notices and putting them all on the map said 'something is happening in Vidarbha' and nothing else. The other sectors are what the two districts actually have — a ring road and a national highway, a sewage plant and a tanker tender, a Housing-for-All plot list, an irrigation project, a new Collector's office, and a sand-group clearance.",
+  "selection": "One record per sector, best first, across the three pilot districts. Infrastructure is deliberately a single pin: Amravati publishes twenty-five near-identical land-acquisition notices and Nagpur two hundred and seventy, and putting them all on the map said 'something is happening in Vidarbha' and nothing else. The other sectors are what the three districts actually have — a ring road, a national highway and a railway line, a sewage plant and a tanker tender, a Housing-for-All plot list, three irrigation schemes and a river barrage, a new Collector’s office, and a sand-group clearance. Nagpur is the third district and earns three pins rather than a proportional share of three hundred: what it adds is a mode and two schemes the other two do not have — rail, a barrage, and the Gosikhurd command area that its archive is mostly about.",
   "records": [
     {
       "district": "amravati",
@@ -50,6 +50,22 @@
       "id": "amv-announcements-18ddb163",
       "category": "environment",
       "why": "Environmental consultants appointed for clearance of the district's sand groups. The rule fell through to the public-systems default; the notice is about environmental clearance of minor minerals."
+    },
+    {
+      "district": "nagpur",
+      "id": "nag-rehabilitation_resettelement-5a1381ff",
+      "note": "The Wardha–Nagpur third and fourth railway lines at Wathoda. The first rail record on the map — every other transportation pin is a road — and the notice names the line outright."
+    },
+    {
+      "district": "nagpur",
+      "id": "nag-rehabilitation_resettelement-78660628",
+      "category": "water",
+      "why": "The notice acquires land ‘for Kanhan River Project (Kochhi Barrage)’. The keyword rule read ‘agricultural land’ and the barrage together and filed it under agriculture; the land is agricultural but what is being built is a barrage on the river Nagpur draws its water from."
+    },
+    {
+      "district": "nagpur",
+      "id": "nag-rehabilitation_resettelement-a9d2491e",
+      "note": "Gosikhurd irrigation project at Ruyad, Kuhi — a section 19 declaration, so the land is confirmed as required. Kuhi and Bhiwapur hold 166 of the archive’s 305 rows between them, and Gosikhurd is why; this is the pin that says so."
     }
   ]
 }

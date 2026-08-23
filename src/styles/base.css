@@ -25,28 +25,33 @@
 
   /* Devanagari copy opts in via lang="mr" or .font-devanagari. */
   :lang(mr) {
-    font-family: var(--font-anek-devanagari), sans-serif;
-    /* Anek sets Devanagari a shade small next to Manrope at the same px. */
-    font-size: 1.02em;
+    font-family: var(--font-poppins), sans-serif;
+    /* Anek needed a 1.02em bump to hold its own next to Manrope. Poppins does
+       not: its Devanagari is set on the same generous body as its Latin, and
+       the bump made Marathi the loud half of every bilingual pair. */
   }
 
-  /* One focus treatment for the entire product. */
+  /* One focus treatment for the entire product. The ring is violet on a
+     lavender ground, so it needs the halo behind it to separate the two — a
+     bare 2px violet line on a violet-tinted page is a ring you have to look
+     for. */
   :focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 3px;
     border-radius: var(--radius-xs);
+    box-shadow: 0 0 0 6px var(--color-accent-wash);
   }
 
   ::selection {
-    background-color: var(--color-accent);
-    color: var(--color-ink-900);
+    background-color: var(--color-accent-soft);
+    color: var(--color-accent-deep);
   }
 
   /* The panel is the only scroller in the product; give it a hairline rather
      than the platform's slab. */
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-cream-400) transparent;
+    scrollbar-color: var(--color-slate-300) transparent;
   }
 
   ::-webkit-scrollbar {
@@ -55,7 +60,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: var(--color-cream-400);
+    background-color: var(--color-slate-300);
     border-radius: 999px;
   }
 
@@ -71,12 +76,14 @@
     font-feature-settings: "tnum" 1;
   }
 
-  /* The house eyebrow: mono, caps, tracked wide. */
+  /* The house eyebrow: caps, tracked, and in the UI sans rather than the mono
+     it used to be set in. A monospaced label is a document's voice, and the
+     tracking alone is enough to say "this is a label, not a sentence". */
   .eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: var(--text-eyebrow);
-    font-weight: 500;
-    letter-spacing: 0.22em;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-text-subtle);
   }

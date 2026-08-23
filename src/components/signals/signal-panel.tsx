@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ReportModal } from "./report-modal";
 import { StageMeter } from "./stage-meter";
-import { STATUS_META, TONE_COLOR } from "@/lib/design/status";
+import { STATUS_META } from "@/lib/design/status";
 import { categoryOf } from "@/lib/signals/format";
 import {
   agencyMr,
@@ -128,10 +128,10 @@ export function SignalPanel({ signal, onClose, step }: SignalPanelProps) {
             aria-labelledby="record-title"
             style={
               {
-                "--tone": TONE_COLOR[STATUS_META[signal.status].tone],
-                // The head takes the sector's plate, so the panel opens in the
+                // The head takes the sector's pale plate, so the panel opens in the
                 // same colour as the collar of the pin that opened it.
                 "--sector": categoryOf(signal.category).tint,
+                "--sector-plate": categoryOf(signal.category).plate,
               } as React.CSSProperties
             }
             variants={panelVariants(sheet)}
@@ -139,10 +139,6 @@ export function SignalPanel({ signal, onClose, step }: SignalPanelProps) {
             animate="shown"
             exit="gone"
           >
-            {/* The record's status, painted down the panel's leading edge. It is
-                the only structural use of colour in here. */}
-            <span className="record-edge" aria-hidden />
-
             {step ? (
               <nav className="record-step" aria-label={MR.statewide}>
                 <button
@@ -193,8 +189,8 @@ export function SignalPanel({ signal, onClose, step }: SignalPanelProps) {
             >
               <motion.header className="record-head" variants={SECTION}>
                 <div className="record-identity">
-                  {/* The pin, redrawn at panel size: one disc in the sector plate,
-                      the sector glyph on it. Same shape, same colour, so the panel
+                  {/* The pin, redrawn at panel size: one disc in the sector's own
+                      hue, the white sector glyph on it. Same shape, same colour, so the panel
                       and the mark that opened it are one object at two sizes rather
                       than two things that happen to be about the same record. */}
                   <span className="record-mark" aria-hidden>

@@ -6,11 +6,13 @@
  * the contact shadow, the coastline and the clip — four layers off one ~85 kB
  * path string instead of four copies of it in the DOM.
  *
- * `#map-land-fill` is the only gradient on the map and it is one hue: mint,
- * two shades of it, on the same diagonal the page behind it runs on. Districts
- * are not filled at all — the sheet shows through and the hairlines divide it.
- * There is no hatch, no division tint and no per-district colour here; see
- * `DistrictPath` for why each of those went.
+ * `#map-land-fill` is the only gradient on the map and it is barely a colour:
+ * two steps of near-white on the same diagonal the lavender page behind it
+ * runs on. The state is the quietest surface on screen on purpose — every
+ * saturated thing here is a mark standing on it. Districts are not filled at
+ * all; the land shows through and the hairlines divide it. There is no hatch,
+ * no division tint and no per-district colour; see `DistrictPath` for why each
+ * of those went.
  */
 export function MapDefs({ landPath }: { landPath: string }) {
   return (
@@ -25,19 +27,24 @@ export function MapDefs({ landPath }: { landPath: string }) {
           bounds and holds at every zoom — the camera scales the geometry, not
           the gradient. */}
       <linearGradient id="map-land-fill" x1="0" y1="0" x2="0.7" y2="1">
-        <stop offset="0%" stopColor="var(--color-mint-300)" />
-        <stop offset="100%" stopColor="var(--color-mint-200)" />
+        <stop offset="0%" stopColor="var(--color-land)" />
+        <stop offset="100%" stopColor="var(--color-land-deep)" />
       </linearGradient>
 
-      {/* Contact shadow under the sheet. Tight and warm — paper on paper, not
-          an element floating in space. */}
-      <filter id="map-contact" x="-12%" y="-12%" width="124%" height="124%">
+      {/* The cast under the state. It used to be a tight, warm contact shadow —
+          paper resting on paper. There is no paper under the land any more:
+          the frame is transparent and the silhouette sits directly on the
+          page's lavender wash, so this is the one thing separating the two.
+          Wider, softer and cooler to match, and pushed further down, because a
+          shape this large needs a long cast to read as raised rather than as a
+          shape with a dark edge. */}
+      <filter id="map-contact" x="-18%" y="-18%" width="136%" height="136%">
         <feDropShadow
           dx="0"
-          dy="5"
-          stdDeviation="7"
-          floodColor="#14120c"
-          floodOpacity="0.22"
+          dy="14"
+          stdDeviation="20"
+          floodColor="#1a1a30"
+          floodOpacity="0.16"
         />
       </filter>
     </defs>

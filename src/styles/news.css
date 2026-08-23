@@ -1,16 +1,20 @@
 /* ============================================================================
    The news band.
 
-   The only dark object in the product. Everything under it is a survey sheet —
-   cream stock, black rules, colour reserved for marks that mean something — so
-   a second cream plate stretched across the full width would have read as more
-   chrome on the same sheet. Inverting it makes the band a different kind of
-   object, which is what lets it sit above the map without competing with a pin.
+   It used to be the only dark object in the product — a black strip inverted
+   out of a page of cream sheets, because a second cream plate across the full
+   width would have read as more chrome on the same sheet.
 
-   The palette is still the house one: the label block is the wordmark's
-   highlight yellow, the type is card stock, and the only other colour on the
-   band is the sector plate leading each headline — the same pastel disc the
-   legend keys and the pin wears.
+   It is white now, and it stops needing to be inverted for the same reason the
+   map sheet stopped needing to be opaque: the ground behind everything is
+   lavender, so white is already a distinct object on it. The band is the top
+   edge of the page, lifted off the wash by its own shadow, exactly like the
+   cards below it.
+
+   The palette is the house one: the label block is the accent violet with the
+   wordmark's white on it, the headlines are ordinary body ink, and the only
+   other colour on the band is the sector dot leading each headline — the same
+   saturated hue the legend keys and the pin wears.
    ========================================================================= */
 
 .news-ticker {
@@ -21,31 +25,22 @@
   min-width: 0;
   align-items: stretch;
   /* The band is printed on the sheet, not floating over it: one heavy rule
-     underneath, the same weight every plate in the product is cut with. */
-  border-bottom: var(--rule-ink-heavy);
-  background: var(--color-ink-900);
-  color: var(--color-cream-50);
+     underneath — the band is lifted off the wash rather than ruled off it. */
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
 }
 
 /* Fine drafting grid, in cream rather than ink — the same tooth the map sheet
-   has, inverted with the band so the strip is the same paper seen from the
-   other side. */
-.news-ticker::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  background-image:
-    linear-gradient(to right, var(--color-cream-50) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-cream-50) 1px, transparent 1px);
-  background-size: 22px 22px;
-}
+   has, inverted with the band so the strip read as the same paper seen from
+   the other side. The band is no longer inverted and the grid is no longer
+   drawn: a ruled 22px lattice behind moving headlines is texture competing
+   with the one thing on this strip that is meant to be read. */
 
 /* The one fixed thing on the band, so the strip still says what it is at any
-   moment of the loop. On the highlight yellow, because it is the same claim
-   the wordmark makes and should be read in the same voice. */
+   moment of the loop. On the accent violet, because it is the same claim the
+   wordmark makes and should be read in the same voice — and it is the same
+   block, in the same colour, at the other end of the screen. */
 .news-ticker-label {
   position: relative;
   z-index: 2;
@@ -53,12 +48,13 @@
   flex: 0 0 auto;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.5rem clamp(0.7rem, 1.6vw, 1.15rem) 0.55rem;
+  padding: 0.5rem clamp(0.8rem, 1.6vw, 1.25rem) 0.55rem;
   background: var(--color-accent);
   font-family: var(--font-marathi);
   font-size: 0.9375rem;
+  font-weight: 600;
   line-height: 1.2;
-  color: var(--color-ink-900);
+  color: var(--color-on-accent);
   white-space: nowrap;
 }
 
@@ -68,9 +64,9 @@
   height: 0.5rem;
   width: 0.5rem;
   flex: none;
-  border: 1px solid var(--color-ink-900);
   border-radius: 50%;
-  background: var(--color-status-progress);
+  background: var(--color-on-accent);
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.28);
   animation: news-ticker-live 1.8s var(--ease-in-out-soft) infinite;
 }
 
@@ -130,8 +126,8 @@
 }
 
 /* The sector plate, at band size — the same pastel disc the legend keys and
-   the pin wears, so a sky-blue dot going past says "water" before the words
-   are read. It doubles as the separator between headlines, which is why there
+   the pin wears, so a blue dot going past says "water" before the words are
+   read. It doubles as the separator between headlines, which is why there
    is no rule or bullet between items. */
 .news-ticker-mark {
   align-self: center;
@@ -146,13 +142,13 @@
   font-family: var(--font-marathi);
   font-size: 0.9375rem;
   line-height: 1.3;
-  color: var(--color-cream-50);
+  color: var(--color-text);
 }
 
 .news-ticker-place {
   font-size: var(--text-caption);
   line-height: 1.3;
-  color: var(--color-cream-400);
+  color: var(--color-text-subtle);
 }
 
 /* On a phone the label loses its word and keeps its dot: at this width the

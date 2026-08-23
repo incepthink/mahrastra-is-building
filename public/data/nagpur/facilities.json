@@ -1,0 +1,592 @@
+{
+  "meta": {
+    "scrapedAt": "2026-08-23T15:37:13.458Z",
+    "count": 37,
+    "attribution": {
+      "content": {
+        "label": "Nagpur District Administration (nagpur.gov.in)",
+        "url": "https://nagpur.gov.in/",
+        "note": "Public notices reproduced from the official district portal (NIC S3WaaS)."
+      },
+      "geocoding": {
+        "label": "© OpenStreetMap contributors",
+        "url": "https://www.openstreetmap.org/copyright",
+        "note": "Coordinates are inferred from place names via Nominatim, not published by the district."
+      }
+    }
+  },
+  "facilities": [
+    {
+      "id": "nag-fac-hospitals-a6800865",
+      "name": "Daga Memorial Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Near Agrasen Square, Gandhibagh, Nagpur",
+      "phone": "0712-2729333",
+      "email": "msdaga_womenhosp[at]rediffmail[dot]com",
+      "pincode": "440018",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-hospitals-34aa9630",
+      "name": "Government Ayurvedic College and Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Chota Tajbag Rd, Opposite Kamala Nehru College, Sakkardara Square, Nagpur",
+      "phone": "0712-2449198",
+      "email": "govtayurcollegenagpur[at]gmail[dot]com",
+      "pincode": "440024",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-hospitals-96b9e5f6",
+      "name": "Government Dental College and Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Medical College Premises, Medical Square, Nagpur - E-mail I.D. dean.gdcngp@gmail.com",
+      "phone": "0712-2744496",
+      "email": "gdchnag[at]rediffmail[dot]com",
+      "pincode": "440009",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-hospitals-5c48d459",
+      "name": "Government Medical College and Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Medical Square, Nagpur",
+      "phone": "0712-2701642",
+      "email": "deangmc2[at]gmail[dot]com",
+      "pincode": "440009",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-hospitals-bb50dcbf",
+      "name": "Indira Gandhi Government Medical College and Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Central Avenue Road, Nagpur - 440018",
+      "phone": "0712-2725274",
+      "email": "igmcn[at]rediffmail[dot]com",
+      "pincode": "440018",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-hospitals-c811a5dd",
+      "name": "Regional Mental Hospital",
+      "kind": "hospitals",
+      "kindLabel": "Hospitals",
+      "address": "Pagalkhana Square, Koradi Road, Nagpur",
+      "phone": "0712-2583176",
+      "email": "msrmhn[at]rediffmail[dot]com",
+      "pincode": "440001",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/hospitals/",
+        "sourceLabel": "Hospitals",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-colleges-b0277f1a",
+      "name": "Kavikulaguru Kalidas Sanskrit University",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Kavikulaguru Kalidas Sanskrit University Mauda Road, Ramtek, District: Nagpur - 441 106 Maharashtra, India",
+      "phone": "91-7114-255787",
+      "email": "kksuvc[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-colleges-c01509bf",
+      "name": "Maharashtra Animal & Fishery Sciences University",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Maharashtra Animal & Fishery Sciences University Futala Lake Road, Nagpur - 440 001",
+      "phone": "0712-2511784",
+      "email": "vcmafsu[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-colleges-213f6ddc",
+      "name": "National Law University, Nagpur",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "National Law University, Nagpur Moraj Design and Decorator (DnD) Building, Near Oil Depot, Mihan Fly Over, Wardha Road, Khapri, Nagpur-441108 Maharashtra, India",
+      "phone": "07103-297488",
+      "email": "contact[at]nlunagpur[dot]ac[dot]in",
+      "pincode": "441108",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-colleges-7bf608bd",
+      "name": "Rashtrasant Tukadoji Maharaj Nagpur University",
+      "kind": "colleges",
+      "kindLabel": "Colleges & universities",
+      "address": "Chhatrapati Maharaj Administrative Premises Ravindranath Tagore Marg Nagpur 440001",
+      "phone": "0712-2523045",
+      "email": "vc[at]nagpuruniversity[dot]nic[dot]in",
+      "pincode": "440001",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/colleges/",
+        "sourceLabel": "Colleges & universities",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-corporation-94197fde",
+      "name": "Nagpur Municipal Corporation",
+      "kind": "municipal-corporation",
+      "kindLabel": "Municipal corporation",
+      "address": "Nagpur Municipal Corporation, Mahanagar Palika Marg, Civil Lines, Nagpur",
+      "phone": "0712-2567035",
+      "email": "nmcegov[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-corporation/",
+        "sourceLabel": "Municipal corporation",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-975fa57f",
+      "name": "Butibori Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Butibori, Tahsil Nagpur Rural, Dist. Nagpur",
+      "phone": "07218-526999",
+      "email": "mcbutibori[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-64946a1d",
+      "name": "Kalmeshwar Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Kalmeshwar, Tahsil Kalmeshwar, Dist. Nagpur",
+      "phone": "07118-271333",
+      "email": "chiefofficer[at]kalmeshwarnagarparishad[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-d07061e4",
+      "name": "Kamptee Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Kamptee, Tahsil Kamptee, Dist. Nagpur",
+      "phone": "07109-286665",
+      "email": "chiefofficerkamptee[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-4e695c56",
+      "name": "Kanhan Pipari Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Kanhan, Tahsil Parseoni, Dist. Nagpur",
+      "phone": "07102-236789",
+      "email": "kanhanpiprinagarparishad[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-521bc74a",
+      "name": "Katol Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Katol, Tahsil Katol, Dist. Nagpur",
+      "phone": "07112-222593",
+      "email": "npkatol[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-bc853da0",
+      "name": "Khapa Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Khapa, Tahsil Saoner, Dist. Nagpur",
+      "phone": "07113-286125",
+      "email": "npkhapa[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-2174c90b",
+      "name": "Mohpa Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Mohpa, Tahsil Kalmeshwar, Dist. Nagpur",
+      "phone": "07118-237126",
+      "email": "npmohapa[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-412e7f1e",
+      "name": "Mowad Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Mowad, Tahsil Narkhed, Dist. Nagpur",
+      "phone": "07105-236123",
+      "email": "mcmowad1867[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-3166f877",
+      "name": "Narkhed Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Narkhed, Tahsil Narkhed, Dist. Nagpur",
+      "phone": "07105-23233",
+      "email": "mcnarkhed[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-municipal-councils-1470269d",
+      "name": "Ramtek Municipal Council",
+      "kind": "municipal-councils",
+      "kindLabel": "Municipal councils",
+      "address": "Ramtek, Tahsil Ramtek, Dist. Nagpur",
+      "phone": "07114-255132",
+      "email": "mcramtek[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/municipal-councils/",
+        "sourceLabel": "Municipal councils",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-nagar-panchayat-d62aa9ad",
+      "name": "Bhiwapur Nagar Panchayat",
+      "kind": "nagar-panchayat",
+      "kindLabel": "Nagar panchayats",
+      "address": "Bhiwapur, Tahsil Bhiwapur, Dist. Nagpur",
+      "phone": "07106-232308",
+      "email": "bhiwapurnagarpanchayat[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/nagar-panchayat/",
+        "sourceLabel": "Nagar panchayats",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-nagar-panchayat-9280029f",
+      "name": "Hingna Nagar Panchayat",
+      "kind": "nagar-panchayat",
+      "kindLabel": "Nagar panchayats",
+      "address": "Hingna, Tahsil Hingna, Dist. Nagpur",
+      "phone": "07104-276134",
+      "email": "tahsildarhingna[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/nagar-panchayat/",
+        "sourceLabel": "Nagar panchayats",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-nagar-panchayat-39eb0510",
+      "name": "Kuhi Nagar Panchayat",
+      "kind": "nagar-panchayat",
+      "kindLabel": "Nagar panchayats",
+      "address": "Kuhi, Tahsil Kuhi, Dist. Nagpur",
+      "phone": "07100-222236",
+      "email": "nagarpanchayatkuhi[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/nagar-panchayat/",
+        "sourceLabel": "Nagar panchayats",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-nagar-panchayat-d51c1f18",
+      "name": "Mahadula Nagar Panchayat",
+      "kind": "nagar-panchayat",
+      "kindLabel": "Nagar panchayats",
+      "address": "Mahadula, Tahsil Kamptee, Dist. Nagpur",
+      "phone": "07109-262218",
+      "email": "mahadulanagarpanchyat[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/nagar-panchayat/",
+        "sourceLabel": "Nagar panchayats",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-nagar-panchayat-cdf14b0d",
+      "name": "Mouda Nagar Panchayat",
+      "kind": "nagar-panchayat",
+      "kindLabel": "Nagar panchayats",
+      "address": "Mouda, Tahsil Mouda, Dist. Nagpur",
+      "phone": "07115-287125",
+      "email": "nagarpanchayatmouda[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/nagar-panchayat/",
+        "sourceLabel": "Nagar panchayats",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-nagar-panchayat-8baa9f6c",
+      "name": "Parseoni Nagar Panchayat",
+      "kind": "nagar-panchayat",
+      "kindLabel": "Nagar panchayats",
+      "address": "Parseoni, Tahsil Parseoni, Dist. Nagpur",
+      "email": "parshivaninagarpanchayat[at]gmail[dot]com",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/nagar-panchayat/",
+        "sourceLabel": "Nagar panchayats",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-8b1887cc",
+      "name": "Abhyankar Nagar Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Abhyankar Nagar Nagpur -440010",
+      "phone": "2233292",
+      "email": "abhyankarnagarso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440010",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-ac05344d",
+      "name": "Airport Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Airport Nagpur-440005",
+      "phone": "0712-2285261",
+      "email": "nagpurairportso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440005",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-bbb33831",
+      "name": "Ajni Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Ajni Nagpur-440003",
+      "phone": "0712-2744786",
+      "email": "ajniso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440003",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-a23cb9f0",
+      "name": "Ayodhya Nagar Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Ayodhya Nagar Nagpur-440024",
+      "phone": "0712-2746361",
+      "email": "ayodhyanagarso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440024",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-3eb77850",
+      "name": "Bagadganj Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Bagadganj Nagpur-440008",
+      "phone": "0712-2764405",
+      "email": "bagadganjso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440008",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-7fab03ac",
+      "name": "Besa Road Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Besa Road Nagpur-440037",
+      "phone": "0710-3281275",
+      "email": "besaroadso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440037",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-6afa5167",
+      "name": "Bezonbagh Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Bezonbagh Nagpur-440014",
+      "phone": "0712-2562711",
+      "email": "bezonbaghso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440014",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-e93c9cb2",
+      "name": "Borgaon Road Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Borgaon Road Nagpur-440013",
+      "phone": "0712-2596330",
+      "email": "borgaonroadso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440013",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-2b453c4a",
+      "name": "Coal Estate Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Coal Estate Nagpur-440001",
+      "phone": "0712-2510372",
+      "email": "coalestateso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440001",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    },
+    {
+      "id": "nag-fac-postal_nagpur_city-efd2553b",
+      "name": "Congress Nagar Post Office",
+      "kind": "postal_nagpur_city",
+      "kindLabel": "Post offices",
+      "address": "Congress Nagar Nagpur-440012",
+      "phone": "0712-2460678",
+      "email": "congressnagarnagpurso[at]indiapost[dot]gov[dot]in",
+      "pincode": "440012",
+      "district": "Nagpur",
+      "provenance": {
+        "sourceUrl": "https://nagpur.gov.in/public-utility-category/postal_nagpur_city/",
+        "sourceLabel": "Post offices",
+        "scrapedAt": "2026-08-23T15:37:13.458Z"
+      }
+    }
+  ]
+}

@@ -97,13 +97,10 @@ export function ClusterMarker({
         <g className="cluster-body">
           <path className="signal-stem" d={stem} />
 
-          {/* Registration offset — the stack. */}
-          <circle
-            className="cluster-plate"
-            cx={headX + 3}
-            cy={headY + 3.5}
-            r={CLUSTER_HEAD}
-          />
+          {/* A solid ink disc used to sit here, offset behind the head — the
+              registration misprint that was this product's whole depth model.
+              Depth is a soft cast now, and the head carries its own; a second
+              disc behind it would just be a dark crescent. */}
           <circle className="cluster-head" cx={headX} cy={headY} r={CLUSTER_HEAD} />
 
           <text className="cluster-count" x={headX} y={headY - 2} lang="mr">

@@ -16,13 +16,21 @@ import { useMapCamera } from "./use-map-camera";
 import { SignalPanel } from "@/components/signals";
 import { districtIdOf } from "@/data/districts";
 import { buildMarkers, clusterMembers } from "@/lib/map/cluster";
+import {
+  NO_FILTERS,
+  matchesFilters,
+  toggle,
+  type SignalFilters,
+} from "@/lib/signals/filter";
 import { MR } from "@/lib/signals/marathi";
 import type { DistrictShape, MapGeometry } from "@/types/map";
 import type {
   MapScope,
   PlacedSignal,
   Signal,
+  SignalCategoryId,
   SignalPulse,
+  SignalStatus,
   StatewideSignal,
 } from "@/types/signal";
 
@@ -98,6 +106,16 @@ export function MaharashtraMap({
    * than to a reset one.
    */
   const [scope, setScope] = useState<MapScope>("district");
+  /**
+   * What the reader has narrowed the sheet to — sectors, stages, or neither.
+   *
+   * A filter, unlike `scope`, does not change which corpus the map is about:
+   * it takes pins off the sheet the reader asked not to see. It survives the
+   * switch between the two views on purpose — "show me water work" is a
+   * standing instruction about the kind of record, and the statewide set has
+   * sectors and stages like any other.
+   */
+  const [filters, setFilters] = useState<SignalFilters>(NO_FILTERS);
   // Starts at the camera's rest zoom so the first client render reproduces the
   // server's markers exactly. See `buildMarkers`.
   const [zoom, setZoom] = useState(1);
@@ -113,6 +131,26 @@ export function MaharashtraMap({
     setOpenCluster(null);
   });
 
+  /** The two sets with the narrowing applied. Everything downstream — the
+   *  markers, the legend's tally, the statewide stepper — works off these, so
+   *  a filtered-out record is gone rather than hidden. */
+  const visible = useMemo(
+    () => signals.filter(({ signal }) => matchesFilters(signal, filters)),
+    [filters, signals],
+  );
+
+  const visibleStatewide = useMemo(
+    () => statewide.filter(({ signal }) => matchesFilters(signal, filters)),
+    [filters, statewide],
+  );
+
+  /** Everything the current view could show before narrowing — what the filter
+   *  chips count from. See `MapFilters`. */
+  const pool = useMemo(
+    () => (scope === "state" ? statewide : signals).map((placed) => placed.signal),
+    [scope, signals, statewide],
+  );
+
   /**
    * Whichever set the map is currently about, laid out as markers.
    *
@@ -126,11 +164,11 @@ export function MaharashtraMap({
   const markers = useMemo(
     () =>
       buildMarkers(
-        scope === "state" ? statewide : signals,
+        scope === "state" ? visibleStatewide : visible,
         zoom / pinUnit,
         openCluster,
       ),
-    [openCluster, pinUnit, scope, signals, statewide, zoom],
+    [openCluster, pinUnit, scope, visible, visibleStatewide, zoom],
   );
 
   /** Where in the statewide set the open record sits, or -1 when the panel is
@@ -138,9 +176,9 @@ export function MaharashtraMap({
   const stateIndex = useMemo(
     () =>
       scope === "state" && openSignal
-        ? statewide.findIndex((placed) => placed.signal.id === openSignal.signal.id)
+        ? visibleStatewide.findIndex((placed) => placed.signal.id === openSignal.signal.id)
         : -1,
-    [openSignal, scope, statewide],
+    [openSignal, scope, visibleStatewide],
   );
 
   /**
@@ -172,12 +210,12 @@ export function MaharashtraMap({
       ...clusterMembers(openCluster),
     ]);
 
-    const districts = signals
+    const districts = visible
       .filter(({ signal }) => chosen.has(signal.id))
       .map(({ signal }) => districtIdOf(signal.district));
 
     return new Set(pickedDistrict ? [...districts, pickedDistrict] : districts);
-  }, [openCluster, openSignal, pickedDistrict, scope, signals]);
+  }, [openCluster, openSignal, pickedDistrict, scope, visible]);
 
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
@@ -258,6 +296,34 @@ export function MaharashtraMap({
     setScope("district");
   }, []);
 
+  /**
+   * Narrowing the sheet, on either axis.
+   *
+   * Both let go of whatever was open first. A record the reader has just
+   * filtered away cannot stay in the panel describing a pin that is no longer
+   * on the map, and a counter's id names a group that the next layout pass is
+   * about to rebuild from a different set of records.
+   */
+  const toggleSector = useCallback((id: SignalCategoryId) => {
+    setOpenSignal(null);
+    setOpenCluster(null);
+    setFilters((current) => ({ ...current, sectors: toggle(current.sectors, id) }));
+  }, []);
+
+  const toggleStatus = useCallback((status: SignalStatus) => {
+    setOpenSignal(null);
+    setOpenCluster(null);
+    setFilters((current) => ({ ...current, statuses: toggle(current.statuses, status) }));
+  }, []);
+
+  /** Back to the whole sheet. Both axes at once: two resets for two axes is
+   *  two clicks to undo one decision the reader thinks of as "narrowed". */
+  const clearFilters = useCallback(() => {
+    setOpenSignal(null);
+    setOpenCluster(null);
+    setFilters(NO_FILTERS);
+  }, []);
+
   /** Into the statewide view and back out. Either direction lets go of whatever
    *  was open: the record the reader had is not in the set they are about to be
    *  shown, and a panel that survives the switch describes the view they left. */
@@ -279,12 +345,12 @@ export function MaharashtraMap({
    */
   const stepStatewide = useCallback(
     (by: number) => {
-      const total = statewide.length;
+      const total = visibleStatewide.length;
       if (!total) return;
 
-      setOpenSignal(statewide[(Math.max(stateIndex, 0) + by + total) % total]);
+      setOpenSignal(visibleStatewide[(Math.max(stateIndex, 0) + by + total) % total]);
     },
-    [stateIndex, statewide],
+    [stateIndex, visibleStatewide],
   );
 
   /**
@@ -419,11 +485,16 @@ export function MaharashtraMap({
             data's: sectors with nothing in them are not drawn. */}
         <div className="map-rail">
           <BrandPlate
-            signals={signals}
-            statewide={statewide}
+            signals={visible}
+            statewide={visibleStatewide}
+            pool={pool}
             scope={scope}
             published={published}
             pulse={pulse}
+            filters={filters}
+            onToggleSector={toggleSector}
+            onToggleStatus={toggleStatus}
+            onClearFilters={clearFilters}
           />
 
           {/* The invitation and the way into the statewide view, docked
@@ -438,7 +509,7 @@ export function MaharashtraMap({
 
             {statewide.length ? (
               <StatewideBadge
-                count={statewide.length}
+                count={visibleStatewide.length}
                 active={scope === "state"}
                 onToggle={toggleScope}
               />
@@ -482,7 +553,7 @@ export function MaharashtraMap({
             scope === "state" && stateIndex >= 0
               ? {
                   index: stateIndex,
-                  total: statewide.length,
+                  total: visibleStatewide.length,
                   onPrev: () => stepStatewide(-1),
                   onNext: () => stepStatewide(1),
                 }

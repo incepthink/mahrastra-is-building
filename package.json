@@ -9,6 +9,7 @@
     "lint": "eslint",
     "scrape:amravati": "node scripts/scrape-amravati.mjs",
     "scrape:pune": "node scripts/scrape-pune.mjs",
+    "scrape:nagpur": "node scripts/scrape-nagpur.mjs",
     "enrich:marathi": "node scripts/enrich-marathi.mjs",
     "share:cards": "node scripts/render-share-cards.mjs"
   },
