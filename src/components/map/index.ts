@@ -1,1 +1,1 @@
-export { MaharashtraMap } from "./maharashtra-map";
+export { NewsMapShell } from "./news-map-shell";

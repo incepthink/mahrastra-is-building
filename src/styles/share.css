@@ -1,0 +1,351 @@
+/* ============================================================================
+   Sending a set of press releases on.
+
+   Its own file rather than more of `dgipr.css`, for the reason that one is
+   separate from `news-map.css`: this is not a way of looking at the government
+   layer, it is a way of taking something out of the product entirely. The bar
+   and the preview would work over any set of documents that had sheets to
+   send, and the day a second one exists they should not have to be dug out of
+   the DGIPR file.
+
+   Green throughout, because what is being sent is that layer's, and a reader
+   halfway through picking four notices should not be looking at a violet
+   button. This is the same second hue `--color-official` already buys and not
+   a third.
+   ========================================================================= */
+
+/* --- The bar at the foot of the expanded reading ------------------------- */
+
+/* Stands where `.panel-modal-foot` stands and matches its gutters, so the
+   sheet has one bottom edge whichever of the two is showing. */
+.panel-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.65rem clamp(1rem, 2.2vw, 1.6rem) 0.8rem;
+  border-top: var(--rule-hair);
+}
+
+.share-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.share-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* The count, or the instruction that stands in for it before anything is
+   picked. Takes the free space so the controls beside it never move as the
+   number changes — a button that shifts under a thumb between two taps is a
+   button that gets mis-hit. */
+.share-bar-count {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Every button on the bar shares one shape; only the weight differs. */
+.share-bar-enter,
+.share-bar-exit,
+.share-bar-select,
+.share-bar-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.3;
+  cursor: pointer;
+  transition:
+    background 160ms var(--ease-out-soft),
+    color 160ms var(--ease-out-soft),
+    opacity 160ms var(--ease-out-soft);
+}
+
+.share-bar-enter:focus-visible,
+.share-bar-exit:focus-visible,
+.share-bar-select:focus-visible,
+.share-bar-send:focus-visible {
+  outline: 2px solid var(--color-official);
+  outline-offset: 2px;
+}
+
+/* The way in. Quiet — it is offering a second reading of a sheet the reader
+   came here to read, not asking them to do anything. */
+.share-bar-enter {
+  align-self: flex-start;
+  background: var(--color-official-soft);
+  color: var(--color-official-deep);
+}
+
+.share-bar-enter:hover {
+  background: var(--color-official);
+  color: var(--color-on-official);
+}
+
+/* The way out, quieter still: it undoes rather than does. */
+.share-bar-exit {
+  padding-inline: 0.55rem;
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.share-bar-exit:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.share-bar-select {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+}
+
+.share-bar-select:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* The one thing on the bar the reader is actually heading for, so it takes the
+   width and the ink. */
+.share-bar-send {
+  flex: 1;
+  background: var(--color-official);
+  color: var(--color-on-official);
+  font-weight: 600;
+}
+
+.share-bar-send:hover:not(:disabled) {
+  background: var(--color-official-hover);
+}
+
+.share-bar-select:disabled,
+.share-bar-send:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+/* --- The preview ---------------------------------------------------------
+
+   A dialog over a dialog, which the product otherwise never does. It earns it:
+   the message is the thing being committed to, and showing it in the sheet
+   that built it would mean scrolling the grid away to read what the grid
+   produced. Above `.panel-modal-layer`'s 60, and no higher than it needs to
+   be. */
+
+.share-preview-layer {
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  display: grid;
+  padding: clamp(0.75rem, 3vh, 2rem) clamp(0.75rem, 3vw, 2rem);
+  place-items: center;
+}
+
+/* Thinner smoke than `.panel-modal-scrim`, and no blur. What is underneath is
+   already a blurred sheet over a blurred map, and blurring a blur twice turns
+   the whole window to soup — the reader should still be able to see the grid
+   they picked from sitting behind this. */
+.share-preview-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(26 26 48 / 0.4);
+}
+
+.share-preview-sheet {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(38rem, 100%);
+  max-height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.share-preview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--color-official-soft);
+}
+
+.share-preview-heading {
+  min-width: 0;
+}
+
+.share-preview-title {
+  font-family: var(--font-marathi);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.share-preview-tally {
+  margin-top: 0.15rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  color: var(--color-text-subtle);
+}
+
+.share-preview-close {
+  flex: none;
+}
+
+.share-preview-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.9rem 1.1rem;
+}
+
+/* Said before the message rather than after it, because it changes what the
+   reader should do with the buttons at the bottom. */
+.share-preview-warn {
+  display: flex;
+  gap: 0.55rem;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-amber-100);
+  color: var(--color-amber-600);
+}
+
+.share-preview-warn-title {
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.share-preview-warn-note {
+  margin-top: 0.2rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+/* The message, exactly as it will be sent.
+
+   A `<pre>` set in the Marathi face and wrapped, not in mono: this is Devanagari
+   prose and a monospace fallback would render it as something the reader has to
+   decode. What `pre` is here for is the whitespace — the blank lines and the
+   rules are the message's structure, and a `<p>` would collapse them. */
+.share-preview-message {
+  padding: 0.8rem 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.75;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.share-preview-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1.1rem 0.9rem;
+  border-top: var(--rule-hair);
+}
+
+.share-preview-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.share-preview-action {
+  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.8rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.3;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background 160ms var(--ease-out-soft),
+    color 160ms var(--ease-out-soft);
+}
+
+.share-preview-action:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.share-preview-action:focus-visible {
+  outline: 2px solid var(--color-official);
+  outline-offset: 2px;
+}
+
+/* WhatsApp is where these messages go, so it is the one that looks like a
+   destination and the rest look like alternatives. */
+.share-preview-action-primary {
+  background: var(--color-official);
+  color: var(--color-on-official);
+  font-weight: 600;
+}
+
+.share-preview-action-primary:hover {
+  background: var(--color-official-hover);
+  color: var(--color-on-official);
+}
+
+.share-preview-action-block {
+  width: 100%;
+  flex: none;
+}
+
+/* Where a copy or a share says how it went, and where the browsers without a
+   share sheet say so. Reserves its line whether or not it has anything in it,
+   so a result appearing does not shove the buttons under the reader's thumb. */
+.share-preview-note {
+  min-height: 1.1rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.5;
+  color: var(--color-text-subtle);
+  text-align: center;
+}
+
+@media (max-width: 860px) {
+  .share-preview-layer {
+    padding: 0;
+  }
+
+  .share-preview-sheet {
+    height: 100%;
+    border-radius: 0;
+  }
+}

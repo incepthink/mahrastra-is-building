@@ -46,8 +46,28 @@ type Boundary = FeatureCollection<Geometry, BoundaryProperties>;
  * ADM1 outline: the two files are from different vintages (2011 vs 2021) and
  * disagree by a few kilometres along the north and east, which showed up as a
  * coastline slicing through Nandurbar and Gadchiroli.
+ *
+ * Built once per process and then handed out. This used to be free: the page
+ * was statically prerendered, so the projection ran at build time and the
+ * result was baked into the HTML. The news map made the route dynamic — it
+ * reads a time window off the query string and re-queries a database that
+ * changes every half hour — and without this the whole pipeline below would
+ * run on every request: read 440 kB of GeoJSON, project 21,967 points, build a
+ * topology, simplify it and re-path 36 districts, to produce a byte-identical
+ * answer every time. The inputs are two files that ship with the deploy and
+ * cannot change while the process is alive, so the answer is memoised rather
+ * than recomputed.
+ *
+ * The *promise* is cached, not the value, so concurrent first requests share
+ * one build instead of racing into several.
  */
-export async function buildMapGeometry(): Promise<MapGeometry> {
+let geometry: Promise<MapGeometry> | null = null;
+
+export function buildMapGeometry(): Promise<MapGeometry> {
+  return (geometry ??= projectMapGeometry());
+}
+
+async function projectMapGeometry(): Promise<MapGeometry> {
   const boundaries = await readBoundary("maharashtra-districts.geojson");
 
   const projection = geoMercator().fitExtent(

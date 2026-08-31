@@ -2,10 +2,11 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
-import { useEffect, useId, useRef, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { MR } from "@/lib/signals/marathi";
+import { keepFocusInside, useMounted } from "@/lib/ui/modal";
 
 const SCRIM = {
   hidden: { opacity: 0 },
@@ -180,42 +181,5 @@ export function ModalSheet({
       ) : null}
     </AnimatePresence>,
     document.body,
-  );
-}
-
-/** Holds Tab inside the sheet by wrapping it at either end. */
-function keepFocusInside(event: KeyboardEvent, sheet: HTMLElement | null) {
-  if (!sheet) return;
-
-  const focusable = [
-    ...sheet.querySelectorAll<HTMLElement>(
-      "button, [href], input, textarea, select, [tabindex]:not([tabindex='-1'])",
-    ),
-  ].filter((node) => !node.hasAttribute("disabled"));
-
-  if (focusable.length === 0) return;
-
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-
-  if (event.shiftKey && document.activeElement === first) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && document.activeElement === last) {
-    event.preventDefault();
-    first.focus();
-  }
-}
-
-/** A portal needs a `document`, and the server has not got one. Read as an
- *  external store rather than an effect: the server snapshot is `false`, the
- *  client snapshot is `true`, and there is no cascading render to pay for. */
-const NEVER_CHANGES = () => () => {};
-
-function useMounted(): boolean {
-  return useSyncExternalStore(
-    NEVER_CHANGES,
-    () => true,
-    () => false,
   );
 }

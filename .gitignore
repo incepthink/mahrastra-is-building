@@ -44,3 +44,7 @@ next-env.d.ts
 /.cache
 
 .vercel
+
+# news engine: scraped corpus and HTTP cache, both rebuildable and both large
+/.data/
+/.cache/

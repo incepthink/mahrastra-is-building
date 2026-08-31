@@ -13,6 +13,17 @@ type DistrictPathProps = {
   onMove: (event: React.PointerEvent<SVGPathElement>) => void;
   /** Picks the district out on the sheet. Fires for empty districts too. */
   onSelect: (district: DistrictShape) => void;
+  /**
+   * What the shape is called, when the name alone is not what it says.
+   *
+   * The sheet used to be one colour and a district meant only itself, so its
+   * Marathi name was the whole of its accessible label. The choropleth changed
+   * that: the fill now carries a number, and a reader who cannot see the fill
+   * gets a map of thirty-six names and none of the data. Passing the count in
+   * here is what keeps the two readings equivalent. Defaults to the name, so
+   * an uncoloured map is unchanged.
+   */
+  label?: string;
 };
 
 /**
@@ -47,6 +58,7 @@ export const DistrictPath = memo(function DistrictPath({
   onLeave,
   onMove,
   onSelect,
+  label,
 }: DistrictPathProps) {
   return (
     <path
@@ -61,7 +73,7 @@ export const DistrictPath = memo(function DistrictPath({
       {/* The name is on the shape rather than in a label layer: the plate is
           `aria-hidden` because it follows a pointer, so this is what a screen
           reader and a native tooltip both read. */}
-      <title>{district.nameMr}</title>
+      <title>{label ?? district.nameMr}</title>
     </path>
   );
 });

@@ -1,0 +1,210 @@
+/* ============================================================================
+   The expanded reading — a docked panel opened out over the whole page.
+
+   Its own file because it is not a fourth panel: it is a second *reading* of
+   the three that already exist, and every one of them keeps its own head, its
+   own cards and its own footer inside it. What is here is only the shell and
+   the one thing the extra width is actually for, which is columns.
+
+   The press is `report.css`'s — same layer, same smoke, same drop — because a
+   reader should be able to tell at a glance that these two things are the same
+   kind of object. What differs is the size: a form is 30rem because a form has
+   one column of fields, and this is as wide as the page will give it because
+   the whole point is fitting more than one card across.
+   ========================================================================= */
+
+.panel-modal-layer {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  display: grid;
+  padding: clamp(0.75rem, 3vh, 2rem) clamp(0.75rem, 3vw, 2rem);
+  place-items: center;
+}
+
+/* Smoke, not ink — the map is still there underneath and should look it. See
+   the note on `.report-scrim`, which this is deliberately identical to. */
+.panel-modal-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(26 26 48 / 0.34);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+}
+
+.panel-modal-sheet {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(84rem, 100%);
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+/* The panel's header at the panel's own proportions, one size up. The eyebrow
+   and the tally are the panel's classes verbatim so the two readings cannot
+   drift apart; only the heading is set larger, because it is the one thing
+   that was being cramped by a 25rem column. */
+.panel-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(0.9rem, 2vw, 1.4rem) clamp(1rem, 2.2vw, 1.6rem);
+  border-bottom: var(--rule-line);
+}
+
+.panel-modal-heading {
+  min-width: 0;
+}
+
+.panel-modal-title {
+  margin-top: 0.15rem;
+  font-family: var(--font-marathi);
+  font-size: clamp(1.5rem, 1.1rem + 1.1vw, 2rem);
+  font-weight: 600;
+  line-height: 1.18;
+  color: var(--color-text);
+}
+
+.panel-modal-close {
+  width: 34px;
+  height: 34px;
+}
+
+.panel-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(0.9rem, 2vw, 1.4rem) clamp(1rem, 2.2vw, 1.6rem);
+}
+
+/* The one thing width buys.
+
+   `auto-fill` and not `auto-fit`: a district that filed two articles gets two
+   cards at card width with the rest of the row empty, rather than two cards
+   stretched across an entire page — a headline set across 40rem is not a
+   headline anyone reads, and the grid should look like a grid whether it is
+   holding two of these or forty.
+
+   `align-items: start` so a card with no picture and a two-line headline stays
+   the height it needs instead of being pulled to the tallest in its row. */
+.panel-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  align-items: start;
+  gap: clamp(0.7rem, 1.2vw, 1rem);
+}
+
+.panel-modal-foot {
+  padding: 0.7rem clamp(1rem, 2.2vw, 1.6rem) 0.85rem;
+}
+
+/* --- An article, as a card ------------------------------------------------
+
+   The same `.news-card` the panel renders, turned from a row into a card: the
+   picture goes over the text instead of beside it, and the clamps come off the
+   headline and the standfirst, because the reason they were clamped was a
+   4.5rem thumbnail and a 25rem column. Nothing about the markup changes — a
+   card in the grid and a row in the panel are the same component, and the day
+   they stop being is the day they start disagreeing. */
+
+.panel-modal-grid .news-card {
+  grid-template-columns: 1fr;
+  align-content: start;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  transition:
+    box-shadow 160ms var(--ease-out-soft),
+    transform 160ms var(--ease-out-soft);
+}
+
+.panel-modal-grid .news-card:hover {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* The lead keeps its rule down the leading edge, which `box-shadow` above
+   would otherwise have replaced rather than joined. */
+.panel-modal-grid .news-card[data-lead] {
+  background: var(--color-accent-wash);
+  box-shadow:
+    inset 3px 0 0 var(--color-accent),
+    var(--shadow-xs);
+}
+
+.panel-modal-grid .news-card[data-lead]:hover {
+  background: var(--color-accent-wash);
+  box-shadow:
+    inset 3px 0 0 var(--color-accent),
+    var(--shadow-md);
+}
+
+.panel-modal-grid .news-card-image {
+  width: 100%;
+  height: 9rem;
+  border-radius: 0;
+}
+
+.panel-modal-grid .news-card-body {
+  padding: 0.7rem 0.85rem 0.9rem;
+}
+
+.panel-modal-grid .news-card-headline {
+  font-size: 1rem;
+  line-height: 1.45;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.panel-modal-grid .news-card-standfirst {
+  font-size: var(--text-caption);
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.panel-modal-grid .news-card-out {
+  top: 0.55rem;
+  right: 0.55rem;
+}
+
+/* Over a photograph the arrow needs its own ground, or it lands on whatever
+   the top-right corner of somebody's news picture happens to be. */
+.panel-modal-grid .news-card:has(.news-card-image) .news-card-out {
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  box-sizing: content-box;
+}
+
+/* --- Narrow screens ------------------------------------------------------ */
+
+@media (max-width: 860px) {
+  .panel-modal-layer {
+    padding: 0;
+  }
+
+  .panel-modal-sheet {
+    border-radius: 0;
+  }
+
+  /* One column, and the picture shrinks with it: a 9rem photograph on a phone
+     pushes the second headline off the screen. */
+  .panel-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-modal-grid .news-card-image {
+    height: 7rem;
+  }
+}

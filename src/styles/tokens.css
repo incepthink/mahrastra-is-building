@@ -74,6 +74,7 @@
   --color-emerald-300: #8adcb4;
   --color-emerald-500: #14926a;
   --color-emerald-600: #1f8f5f;
+  --color-emerald-700: #0c6b4c;
 
   /* Olive — land, environment, minor minerals. Yellower than emerald so the
      two hold apart on a map that can show both. */
@@ -215,6 +216,26 @@
   --color-accent-wash: rgb(108 92 231 / 0.08);
   --color-on-accent: #ffffff;
   --color-focus: var(--color-violet-500);
+
+  /* Official — the government layer, and the only second hue the news map
+     carries.
+
+     `news-map.css` argues that the sheet has exactly one hue that means
+     anything, and it is right about what it was arguing against: ten sector
+     colours over a choropleth are two categorical systems fighting for one
+     surface, and the ramp's whole grammar is that darker means more.
+
+     This is not that. It is one hue standing for one thing — a source that is
+     not the press — and it is what makes the distinction survive at a glance
+     rather than only in a panel. Green rather than any of the warm ramps
+     because those all read as status, and this is not a state of anything; it
+     is an origin. Held to the same 3:1 the sector marks are: against the
+     near-white land it stands on, and against the white keyline inside it. */
+  --color-official: var(--color-emerald-500);
+  --color-official-hover: var(--color-emerald-600);
+  --color-official-deep: var(--color-emerald-700);
+  --color-official-soft: var(--color-emerald-100);
+  --color-on-official: #ffffff;
 
   /* Status — the ONE thing that carries colour by meaning, in the order work
      moves through: declared (cool) → funded (amber) → building (hot) → built →

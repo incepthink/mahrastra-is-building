@@ -125,17 +125,16 @@
   white-space: nowrap;
 }
 
-/* The sector plate, at band size — the same pastel disc the legend keys and
-   the pin wears, so a blue dot going past says "water" before the words are
-   read. It doubles as the separator between headlines, which is why there
-   is no rule or bullet between items. */
+/* The disc that leads each headline. It doubles as the separator between
+   items, which is why there is no rule or bullet between them. It carries no
+   meaning of its own — it is punctuation, not a key. */
 .news-ticker-mark {
   align-self: center;
   height: 0.5rem;
   width: 0.5rem;
   flex: none;
   border-radius: 50%;
-  background: var(--sector);
+  background: var(--color-slate-400);
 }
 
 .news-ticker-head {

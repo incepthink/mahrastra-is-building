@@ -2,24 +2,23 @@
 
 import { useMemo } from "react";
 
-import { categoryOf } from "@/lib/signals/format";
-import { MR } from "@/lib/signals/marathi";
-import type { SignalCategoryId } from "@/types/signal";
+import { NEWS_MR } from "@/lib/news/marathi";
 
 /**
  * One headline as it crosses the band.
  *
- * Deliberately not a `Signal`: the ticker is rendered on the client and the
- * page is rendered on the server, so what travels between them is the four
- * plain fields the band actually paints. The sector arrives as an id rather
- * than as a resolved icon and tint, because a Lucide component is a function
- * and functions do not cross that boundary.
+ * Deliberately not a `NewsArticle`: the ticker is rendered on the client and
+ * the page is rendered on the server, so what travels between them is the four
+ * plain fields the band actually paints — not the standfirst, the picture, the
+ * word count or the prominence workings, none of which the strip has any use
+ * for and all of which it would otherwise be paying to serialise.
  */
 export type NewsItem = {
   id: string;
   headline: string;
+  /** Which district, in Marathi. Empty for a statewide piece. */
   place: string;
-  category: SignalCategoryId;
+  url: string;
 };
 
 type NewsTickerProps = {
@@ -28,10 +27,10 @@ type NewsTickerProps = {
 
 /** Seconds of travel per character of headline text, and the floor under it.
  *  The duration is derived from the text rather than fixed, because a fixed
- *  one makes the band's speed a function of how many records happen to be
- *  published — nine notices would crawl and thirty would blur past. Tuned
- *  against the live set to land near 70px/s: fast enough to read as live, slow
- *  enough to finish a Marathi line before it leaves the frame. */
+ *  one makes the band's speed a function of how much news happens to have
+ *  landed — nine headlines would crawl and forty would blur past. Tuned to
+ *  land near 70px/s: fast enough to read as live, slow enough to finish a
+ *  Marathi line before it leaves the frame. */
 const SECONDS_PER_CHAR = 0.13;
 const MIN_DURATION = 28;
 
@@ -40,19 +39,23 @@ const MIN_DURATION = 28;
  * once, continuously, the way a news channel runs its strip.
  *
  * It is the one place in the product that is printed *dark* — ink ground,
- * cream type — and that is on purpose. Everything below it is a survey sheet:
- * cream stock, black rules, colour only where it means something. A second
- * cream plate stretched across the full width would have read as more chrome
- * on the same sheet and would have been ignored. Inverting it makes the band a
- * different object entirely, which is what lets it sit above the map without
- * competing with a single pin.
+ * pale type — and that is on purpose. Everything below it is a survey sheet;
+ * a second pale plate stretched across the full width would have read as more
+ * chrome on the same surface and would have been ignored. Inverting it makes
+ * the band a different object entirely, which is what lets it sit above the
+ * map without competing with a single district.
  *
- * The house colours still do all the work — the label block is the same
- * highlight yellow as the wordmark, and each headline is led by its sector
- * plate, the same pastel disc the legend keys and the pin wears. So a reader
- * who sees a sky-blue dot go past knows it is water before they read a word.
+ * Each headline is led by a plain disc rather than by a sector dot. The sector
+ * taxonomy the dot used to carry does not exist in this corpus and inventing
+ * one from keywords would have been the strip asserting something the data
+ * does not say, so the mark is punctuation now: it separates headlines and
+ * claims nothing.
  *
- * The list is rendered twice and the track is translated by exactly half its
+ * Every line is a link now. The strip used to be a read-only summary of pins
+ * that were clickable below it, which made it the one live-looking thing on
+ * the page that did nothing when pressed.
+ *
+ * The list is rendered twice and the track translated by exactly half its
  * width, so the loop closes on itself with no gap and no jump — the second
  * copy is `aria-hidden`, and a screen reader gets the headlines once. Hover or
  * focus anywhere on the band holds it still, because a line you cannot stop is
@@ -73,12 +76,12 @@ export function NewsTicker({ items }: NewsTickerProps) {
   if (items.length === 0) return null;
 
   return (
-    <section className="news-ticker" lang="mr" aria-label={MR.newsAria}>
+    <section className="news-ticker" lang="mr" aria-label={NEWS_MR.tickerAria}>
       {/* The one fixed thing on the band. It does not scroll, so the strip
           still says what it is at any moment of the loop. */}
       <p className="news-ticker-label">
         <span className="news-ticker-dot" aria-hidden />
-        {MR.newsLabel}
+        {NEWS_MR.ticker}
       </p>
 
       <div className="news-ticker-viewport">
@@ -95,18 +98,28 @@ export function NewsTicker({ items }: NewsTickerProps) {
 }
 
 /** One pass of the list. Two of these sit in the track end to end. */
-function NewsRun({ items, ...rest }: { items: NewsItem[] } & React.HTMLAttributes<HTMLUListElement>) {
+function NewsRun({
+  items,
+  ...rest
+}: { items: NewsItem[] } & React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul className="news-ticker-run" {...rest}>
       {items.map((item) => (
         <li key={item.id} className="news-ticker-item">
-          <span
-            className="news-ticker-mark"
-            style={{ "--sector": categoryOf(item.category).tint } as React.CSSProperties}
-            aria-hidden
-          />
-          <span className="news-ticker-head">{item.headline}</span>
-          {item.place ? <span className="news-ticker-place">{item.place}</span> : null}
+          <a
+            className="news-ticker-link"
+            href={item.url}
+            target="_blank"
+            rel="noreferrer noopener"
+            // The duplicate run is inert to the pointer and to the reader: two
+            // copies of every headline in the tab order is the accessibility
+            // cost of a seamless loop, and this is how it is not paid.
+            tabIndex={rest["aria-hidden"] ? -1 : undefined}
+          >
+            <span className="news-ticker-mark" aria-hidden />
+            <span className="news-ticker-head">{item.headline}</span>
+            {item.place ? <span className="news-ticker-place">{item.place}</span> : null}
+          </a>
         </li>
       ))}
     </ul>

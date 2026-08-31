@@ -17,6 +17,13 @@ type MapCanvasProps = {
   /** Ids of the districts drawn as picked out — the one the reader clicked,
    *  and whichever the open record or counter stands in. */
   lit: ReadonlySet<string>;
+  /** Painted under the hairlines, above the sheet — the choropleth, when the
+   *  map is showing one. See `ChoroplethLayer` for why it is a layer of its
+   *  own rather than a fill on the district shapes. */
+  ground?: React.ReactNode;
+  /** District id to the accessible label for its shape, when the sheet is
+   *  coloured by something the name does not say. See `DistrictPath`. */
+  labels?: Record<string, string>;
   onGroundClick: (event: React.MouseEvent<SVGSVGElement>) => void;
   onPointerEnter: (district: DistrictShape) => void;
   onLeave: (district: DistrictShape) => void;
@@ -53,6 +60,8 @@ export function MapCanvas({
   camera,
   surfaceProps,
   lit,
+  ground,
+  labels,
   onGroundClick,
   onPointerEnter,
   onLeave,
@@ -89,12 +98,17 @@ export function MapCanvas({
         />
 
         <g clipPath="url(#map-land-clip)">
+          {/* Whatever the districts are coloured by, under every line on the
+              sheet so no border is ever printed over. */}
+          {ground}
+
           <g className="map-districts">
             {geometry.districts.map((district) => (
               <DistrictPath
                 key={district.id}
                 district={district}
                 delay={(district.centroid[0] / geometry.size[0]) * SWEEP_MS}
+                label={labels?.[district.id]}
                 onPointerEnter={onPointerEnter}
                 onLeave={onLeave}
                 onMove={onMove}

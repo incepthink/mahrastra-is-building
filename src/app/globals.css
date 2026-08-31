@@ -3,5 +3,9 @@
 @import "../styles/base.css";
 @import "../styles/map.css";
 @import "../styles/news.css";
+@import "../styles/news-map.css";
+@import "../styles/panel-modal.css";
+@import "../styles/dgipr.css";
+@import "../styles/share.css";
 @import "../styles/signals.css";
 @import "../styles/report.css";

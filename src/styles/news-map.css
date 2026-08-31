@@ -1,0 +1,1133 @@
+/* ============================================================================
+   The news map — the choropleth, its legend, its readout and its panel.
+
+   Kept in its own file rather than folded into `map.css`, which is about the
+   sheet: the silhouette, the hairlines, the camera, the plates that trail the
+   pointer. Everything here is about what the sheet is currently *coloured by*,
+   and that is the part most likely to be replaced again.
+   ========================================================================= */
+
+/* --- The ramp ------------------------------------------------------------
+   Five steps of the accent violet, and violet because this product has
+   exactly one hue that means anything and it is already the colour of "picked
+   out". A second categorical palette on the same surface — the ten sector
+   hues the pins used to wear — would be two colour systems arguing over one
+   map, and a choropleth cannot afford that: its whole grammar is that darker
+   means more, which only reads if nothing else on the sheet is competing.
+
+   The steps are spaced in alpha, not in lightness, so the land's own gradient
+   and the district hairlines stay visible through every one of them. The top
+   step stops well short of full ink — a district at level 5 still has to hold
+   a hairline, a lit border and a hover state on top of it.
+
+   The floor is 0.10 rather than something fainter because the bottom step has
+   to be distinguishable from bare land at a glance; below about that it reads
+   as a rendering artefact rather than as data. */
+.map-choropleth {
+  pointer-events: none;
+}
+
+.map-choropleth-fill {
+  stroke: none;
+  fill: var(--color-accent);
+  transition: fill-opacity 260ms var(--ease-out-soft);
+}
+
+.map-choropleth-fill[data-level="1"] { fill-opacity: 0.10; }
+.map-choropleth-fill[data-level="2"] { fill-opacity: 0.22; }
+.map-choropleth-fill[data-level="3"] { fill-opacity: 0.36; }
+.map-choropleth-fill[data-level="4"] { fill-opacity: 0.52; }
+.map-choropleth-fill[data-level="5"] { fill-opacity: 0.70; }
+
+/* The land is the mark now, so it answers the pointer. A wash rather than a
+   colour change: the district already carries a value that means something,
+   and brightening it would say the reader had changed the data by pointing
+   at it. */
+.map-district:hover {
+  fill: rgb(255 255 255 / 0.16);
+}
+
+/* While the server is fetching a different window. The map stays live and
+   interactive — it is still a true picture of the window it is showing — so
+   this is a whisper, not a curtain. */
+.map-frame[data-pending] .map-choropleth {
+  opacity: 0.55;
+  transition: opacity 180ms var(--ease-out-soft);
+}
+
+/* --- The readout that trails the pointer --------------------------------- */
+
+.news-readout-card {
+  width: max-content;
+  max-width: 21rem;
+  padding: 0.55rem 0.9rem 0.65rem;
+}
+
+.news-readout-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.news-readout-name {
+  font-family: var(--font-marathi);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.news-readout-count {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.news-readout-count[data-empty] {
+  font-weight: 500;
+  color: var(--color-text-subtle);
+}
+
+/* The lead headline. Clamped rather than truncated: a Marathi line broken
+   mid-word with an invented ellipsis is worse than one that simply stops at
+   the end of its second line. */
+.news-readout-lead {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: var(--rule-hair);
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+/* --- The legend plate ---------------------------------------------------- */
+
+/* The rail's plates are inert so the map underneath keeps the pointer; these
+   are the two controls inside it that are not. */
+.news-plate {
+  pointer-events: none;
+}
+
+.news-plate .news-chip,
+.news-plate button {
+  pointer-events: auto;
+}
+
+.news-plate-stamp {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--text-micro);
+  letter-spacing: var(--text-micro--letter-spacing);
+  color: var(--color-text-subtle);
+}
+
+/* The one thing on the page that says "this is live". Kept to 6px and a slow
+   pulse — a fast blinking dot is an alarm, and nothing here is urgent. */
+.news-plate-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-status-completed);
+  animation: news-live 2.4s var(--ease-in-out-soft) infinite;
+}
+
+@keyframes news-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-plate-live { animation: none; }
+}
+
+.news-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.75rem;
+}
+
+.news-control {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.news-control-label {
+  display: block;
+  padding: 0;
+  margin-bottom: 0.4rem;
+  font-size: var(--text-eyebrow);
+  font-weight: var(--text-eyebrow--font-weight);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.news-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.news-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.2;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background 160ms var(--ease-out-soft),
+    color 160ms var(--ease-out-soft);
+}
+
+.news-chip:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.news-chip[data-active] {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.news-chip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.news-chip-count {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  opacity: 0.75;
+}
+
+.news-plate-note {
+  margin-top: 0.5rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.45;
+  color: var(--color-text-subtle);
+}
+
+/* --- The ramp key -------------------------------------------------------- */
+
+.news-ramp {
+  margin-top: 0.85rem;
+}
+
+.news-ramp-steps {
+  display: flex;
+  gap: 2px;
+}
+
+.news-ramp-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.news-ramp-swatch {
+  display: block;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+.news-ramp-swatch[data-level="1"] { opacity: 0.10; }
+.news-ramp-swatch[data-level="2"] { opacity: 0.22; }
+.news-ramp-swatch[data-level="3"] { opacity: 0.36; }
+.news-ramp-swatch[data-level="4"] { opacity: 0.52; }
+.news-ramp-swatch[data-level="5"] { opacity: 0.70; }
+
+/* The count band each step covers. Printed because the ramp is quantile and
+   therefore means rank rather than amount — see `scale.ts`. */
+.news-ramp-band {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  line-height: 1;
+  text-align: center;
+  color: var(--color-text-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.news-ramp-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  color: var(--color-text-subtle);
+}
+
+/* --- The panel ----------------------------------------------------------- */
+
+/* A column docked to the right edge, not a modal. The map stays visible and
+   stays clickable beside it, because the reading order here is "look at the
+   state, pick a district, read it, pick another" — and a dialog that covers
+   the map makes the second half of that a matter of remembering where you
+   just clicked. */
+.news-panel {
+  position: absolute;
+  z-index: 15;
+  top: clamp(0.85rem, 2.2vh, 1.5rem);
+  right: clamp(0.85rem, 1.8vw, 1.5rem);
+  bottom: clamp(0.85rem, 2.2vh, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  width: clamp(19rem, 27vw, 25rem);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.news-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem 0.85rem;
+  border-bottom: var(--rule-line);
+}
+
+.news-panel-eyebrow {
+  font-size: var(--text-eyebrow);
+  font-weight: var(--text-eyebrow--font-weight);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.news-panel-title {
+  margin-top: 0.15rem;
+  font-family: var(--font-marathi);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.news-panel-tally {
+  margin-top: 0.2rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  color: var(--color-accent);
+}
+
+/* The corner. Close on top because that is where every reader already knows
+   it is, expand under it — a second control that has to be findable without
+   being the first thing a hand reaches for. Stacked rather than set side by
+   side so the heading beside them keeps its width. */
+.news-panel-tools {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.news-panel-close,
+.news-panel-expand {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background 160ms var(--ease-out-soft),
+    color 160ms var(--ease-out-soft);
+}
+
+.news-panel-close:hover,
+.news-panel-expand:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.news-panel-close:focus-visible,
+.news-panel-expand:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Expand is the panel's own gesture rather than a way out of it, so it takes
+   the panel's accent on hover — which the DGIPR panel overrides to green
+   through `--panel-accent`, the variable it already sets for exactly this. */
+.news-panel-expand:hover {
+  background: var(--panel-accent, var(--color-accent));
+  color: var(--color-on-accent);
+}
+
+.news-panel-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.news-panel-empty {
+  padding: 2rem 1rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  text-align: center;
+  color: var(--color-text-subtle);
+}
+
+.news-panel-foot {
+  padding: 0.6rem 1.1rem 0.75rem;
+  border-top: var(--rule-hair);
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.5;
+  color: var(--color-text-subtle);
+}
+
+/* --- One article --------------------------------------------------------- */
+
+.news-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.7rem;
+  padding: 0.6rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background 160ms var(--ease-out-soft);
+}
+
+.news-card:hover {
+  background: var(--color-surface-sunken);
+}
+
+.news-card:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+/* The lead: the piece the papers pushed hardest, not simply the newest. Marked
+   by a rule down its leading edge rather than by a badge, because a badge on
+   the first card of every list stops being read after the second district. */
+.news-card[data-lead] {
+  background: var(--color-accent-wash);
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+.news-card-image {
+  width: 4.5rem;
+  height: 3.4rem;
+  border-radius: var(--radius-xs);
+  object-fit: cover;
+  background: var(--color-surface-sunken);
+}
+
+/* No picture is not a broken picture: the column collapses rather than leaving
+   a grey rectangle where a photograph was expected. */
+.news-card:not(:has(.news-card-image)) {
+  grid-template-columns: 1fr;
+}
+
+.news-card-body {
+  min-width: 0;
+}
+
+.news-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--text-micro);
+  color: var(--color-text-subtle);
+}
+
+.news-card-ago,
+.news-card-revised {
+  font-family: var(--font-marathi);
+}
+
+.news-card-revised {
+  color: var(--color-status-progress);
+}
+
+.news-card-headline {
+  margin-top: 0.2rem;
+  font-family: var(--font-marathi);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.news-card-standfirst {
+  margin-top: 0.25rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+/* Why this one is at the top. Said in words rather than as the score behind
+   it: the figure is inferred from where the editors put the link and a reader
+   has no way to check it, so the map prints only the claim. */
+.news-card-played {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  color: var(--color-accent-deep);
+}
+
+.news-card-played-mark {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.news-card-out {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  color: var(--color-slate-400);
+  opacity: 0;
+  transition: opacity 160ms var(--ease-out-soft);
+}
+
+.news-card:hover .news-card-out,
+.news-card:focus-visible .news-card-out {
+  opacity: 1;
+}
+
+/* --- The ticker ---------------------------------------------------------- */
+
+.news-ticker-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.news-ticker-link:hover .news-ticker-head {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- The story pins ------------------------------------------------------
+
+   Two marks, and the difference between them is the whole argument.
+
+   `choropleth-layer.tsx` objects that "a pin at a centroid is a lie told with
+   great precision". It is right, and the answer is not to drop the objection
+   but to give the mark a way to say how precise it is. A taluka-tier story was
+   placed by a name the article itself used, so it gets a stake with a tip: a
+   hard edge, a point, a claim about a coordinate. A district-tier story knows
+   only which desk filed it, so it gets no tip at all — a soft halo and a
+   dashed ring, which read as an area because an area is what is known.
+
+   Every dimension below is in screen pixels rather than viewBox units: each
+   mark counter-scales against the camera (see `useStake`), so one unit inside
+   a mark is one pixel at 1x and at 16x. That is why the stroke widths are
+   plain numbers rather than `vector-effect: non-scaling-stroke` like the
+   hairlines. */
+
+.map-pins {
+  /* The group is inert; the marks inside take the pointer. Otherwise the
+     bounding box of a hundred pins would sit over the whole state and eat
+     every click meant for the land. */
+  pointer-events: none;
+}
+
+.map-pin {
+  pointer-events: auto;
+  cursor: pointer;
+  animation: pin-arrive 320ms var(--ease-out-soft) backwards;
+}
+
+.map-pin:focus {
+  outline: none;
+}
+
+@keyframes pin-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* The hit area. A mark is about thirteen pixels across on purpose — the state
+   can carry a hundred of them — and thirteen pixels is not a target. */
+.map-pin-hit {
+  fill: transparent;
+  pointer-events: fill;
+}
+
+/* --- The sharp pin: taluka tier ------------------------------------------ */
+
+/* Full ink and a white keyline, so it holds against a level-5 district
+   underneath it. This is the only mark on the sheet allowed to look exact. */
+.map-pin-stake {
+  fill: var(--color-accent);
+  stroke: var(--color-surface);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 2px rgb(26 26 48 / 0.35));
+  transition: fill 160ms var(--ease-out-soft);
+}
+
+/* The point of the pin, printed as its own dot at the anchor. The head above
+   it is a label and may be read loosely; this is the coordinate. */
+.map-pin-tip {
+  fill: var(--color-accent-deep);
+}
+
+.map-pin:hover .map-pin-stake,
+.map-pin:focus-visible .map-pin-stake,
+.map-pin[data-selected] .map-pin-stake {
+  fill: var(--color-accent-hover);
+}
+
+/* --- The soft marker: district tier -------------------------------------- */
+
+/* No tip, no keyline, no hard edge anywhere. The halo is the claim — somewhere
+   in this district — and it is drawn at the size of a claim that loose. */
+.map-pin-halo {
+  fill: var(--color-accent);
+  fill-opacity: 0.14;
+  transition: fill-opacity 160ms var(--ease-out-soft);
+}
+
+/* Dashed because the edge of the area is not known either. A solid ring at
+   this size reads as a boundary, and there is no boundary here. */
+.map-pin-ring {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  stroke-opacity: 0.75;
+  stroke-dasharray: 3 3;
+  transition: stroke-opacity 160ms var(--ease-out-soft);
+}
+
+.map-pin-core {
+  fill: var(--color-accent);
+  fill-opacity: 0.85;
+}
+
+.map-pin:hover .map-pin-halo,
+.map-pin:focus-visible .map-pin-halo,
+.map-pin[data-selected] .map-pin-halo {
+  fill-opacity: 0.26;
+}
+
+.map-pin:hover .map-pin-ring,
+.map-pin:focus-visible .map-pin-ring,
+.map-pin[data-selected] .map-pin-ring {
+  stroke-opacity: 1;
+}
+
+/* The open story, picked out on the sheet. A ring around the mark rather than
+   a colour change, so the tier's own shape survives being selected. */
+.map-pin[data-selected] .map-pin-hit {
+  fill: none;
+  stroke: var(--color-accent-deep);
+  stroke-width: 1.6;
+  stroke-opacity: 0.9;
+}
+
+/* Pin mode keeps the choropleth, at a whisper. The counts under the marks are
+   still true and a sheet of bare land would throw them away — but the ramp and
+   the pins are the same violet, and at full strength a level-5 district and a
+   pin standing on it are one blot. */
+.map-frame[data-mode="pins"] .map-choropleth {
+  opacity: 0.4;
+}
+
+/* A drag is a pan, not a click; the marks say so along with everything else. */
+.map-frame[data-panning] .map-pin {
+  cursor: grabbing;
+}
+
+/* --- The key to the two marks -------------------------------------------- */
+
+.pin-key {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pin-key-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Drawn from the same paths the layer uses, so the key cannot drift away from
+   the marks it is explaining. */
+.pin-key-mark {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+}
+
+.pin-key-name {
+  display: block;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.pin-key-note {
+  display: block;
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.35;
+  color: var(--color-text-subtle);
+}
+
+.pin-key-statewide {
+  margin-top: 0.5rem;
+  padding-top: 0.45rem;
+  border-top: var(--rule-hair);
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.4;
+  color: var(--color-text-subtle);
+}
+
+/* --- The story panel -----------------------------------------------------
+
+   Shares the district panel's shell — same dock, same width, same close, same
+   behaviour on a phone — and differs entirely inside it. The district panel is
+   a reading list; this is a chronology, and the rail down the left is what
+   makes the difference legible before a word is read. */
+
+.story-title {
+  font-size: 1.1875rem;
+  line-height: 1.3;
+}
+
+.story-place {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.story-place-name {
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* The tier, said in words next to the place. The mark's shape says the same
+   thing on the sheet, but a shape only carries a meaning a reader has been
+   told once — and this is where a reader who clicked one arrives. */
+.story-tier {
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.4;
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+}
+
+.story-tier[data-tier="taluka"] {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+}
+
+.story-evidence {
+  padding: 0.55rem 1.1rem 0.65rem;
+  border-bottom: var(--rule-hair);
+  background: var(--color-surface-sunken);
+}
+
+.story-evidence-line,
+.story-desks {
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.story-desks {
+  margin-top: 0.25rem;
+}
+
+.story-evidence-label {
+  margin-right: 0.35rem;
+  color: var(--color-text-subtle);
+}
+
+/* The matched words themselves, quoted rather than paraphrased: the claim is
+   checkable by a reader only if the reader can see what was matched. */
+.story-evidence-quote {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.story-flow {
+  padding: 0.75rem 0.9rem 1rem;
+  gap: 0;
+}
+
+.story-flow-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.story-flow-label {
+  font-size: var(--text-eyebrow);
+  font-weight: var(--text-eyebrow--font-weight);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.story-flow-tally {
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  color: var(--color-accent);
+}
+
+/* --- One step ------------------------------------------------------------ */
+
+.story-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: 0.6rem;
+  padding: 0.3rem 1.1rem 0.85rem 0;
+  text-decoration: none;
+}
+
+.story-step:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+  border-radius: var(--radius-xs);
+}
+
+/* The rail. The connecting line is drawn by the node's own ::after rather than
+   as a separate element, so it can stop at the last step — a chronology whose
+   line runs off the bottom implies there is more of it. */
+.story-step-rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.story-step-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: var(--color-surface-sunken);
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  transition:
+    background 160ms var(--ease-out-soft),
+    color 160ms var(--ease-out-soft);
+}
+
+.story-step-node::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: calc(100% + 0.85rem);
+  transform: translateX(-50%);
+  background: var(--color-line-strong);
+}
+
+.story-step[data-last] .story-step-node::after {
+  display: none;
+}
+
+.story-step:hover .story-step-node,
+.story-step:focus-visible .story-step-node {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.story-step-body {
+  min-width: 0;
+  padding-top: 0.1rem;
+}
+
+.story-step-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--text-micro);
+  color: var(--color-text-subtle);
+}
+
+/* The absolute time, beside the relative one. "२ दिवसांपूर्वी" on three rows
+   running says nothing about the shape of a story, and the shape — two days,
+   three in the morning, then twice in one afternoon — is the point. */
+.story-step-clock {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--color-text-subtle);
+}
+
+.story-step-headline {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-marathi);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.story-step:hover .story-step-headline {
+  color: var(--color-accent-deep);
+}
+
+/* Printed only on the step where the place changed — the story physically
+   travelled, and marking every row would bury the two rows that matter. */
+.story-step-place {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  color: var(--color-text-muted);
+}
+
+.story-step-place[data-tier="taluka"] {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+}
+
+.story-step-out {
+  position: absolute;
+  top: 0.35rem;
+  right: 0;
+  color: var(--color-slate-400);
+  opacity: 0;
+  transition: opacity 160ms var(--ease-out-soft);
+}
+
+.story-step:hover .story-step-out,
+.story-step:focus-visible .story-step-out {
+  opacity: 1;
+}
+
+/* --- Narrow screens ------------------------------------------------------ */
+
+/* The panel becomes a sheet over the bottom of the map. The column layout
+   depends on there being room beside the state for both, and on a phone there
+   is not — so it takes the bottom half, which is the half a thumb reaches. */
+@media (max-width: 860px) {
+  .news-panel {
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: auto;
+    max-height: 62vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  /* The list is inside the frame, and the frame gives every touch to the
+     camera — so without this the sheet is a list a thumb cannot scroll, which
+     on a phone is the same as a list that is not there. */
+  .news-panel-list {
+    touch-action: pan-y;
+  }
+
+  .news-readout-card {
+    max-width: 16rem;
+  }
+}
+
+/* --- The plate, folded --------------------------------------------------
+   At 64rem the rail stops being a column beside the state and becomes a header
+   across the top of the frame — and this plate, unlike the one that block in
+   `map.css` was written for, carries three chip rows, a tally and a key. Open,
+   that is most of a phone screen: the filters covered the state they filter,
+   which is the one thing the page exists to show.
+
+   So on a phone the plate opens rather than being open. What stays standing is
+   the wordmark, the timestamp and the tally — the plate's claim about the map,
+   which a reader should not have to open a control to read. Everything that
+   changes the map goes behind the button.
+
+   Nothing here fires above 64rem: the toggle is display:none, so the plate's
+   `data-open` never means anything and every fold prints. */
+
+.news-plate-toggle {
+  display: none;
+}
+
+@media (max-width: 64rem) {
+  /* The wordmark block gains a second occupant. It is the one part of the
+     plate that never folds, which is the whole reason the control lives in it:
+     a button inside the fold cannot close the fold. */
+  .news-plate .brand-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .news-plate .brand-title {
+    min-width: 0;
+  }
+
+  .news-plate-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.3rem;
+    /* 2.25rem tall with the padding — the desktop chip's 26px is under every
+       touch target minimum there is, and this one is pressed on a phone by
+       definition. */
+    padding: 0.4rem 0.7rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.18);
+    font-family: var(--font-marathi);
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    color: var(--color-on-accent);
+    cursor: pointer;
+    transition: background 160ms var(--ease-out-soft);
+  }
+
+  .news-plate-toggle:hover {
+    background: rgb(255 255 255 / 0.28);
+  }
+
+  .news-plate-toggle:focus-visible {
+    outline: 2px solid var(--color-on-accent);
+    outline-offset: 2px;
+  }
+
+  .news-plate-toggle-mark {
+    transition: rotate 200ms var(--ease-out-soft);
+  }
+
+  .news-plate[data-open] .news-plate-toggle-mark {
+    rotate: 180deg;
+  }
+
+  .news-plate:not([data-open]) .news-plate-fold {
+    display: none;
+  }
+
+  /* The rail and the zoom cluster both sit at 12, and the cluster is later in
+     the DOM — so an open fold was read through three floating buttons. The
+     rail is a stacking context, so this has to be lifted on the rail itself
+     and not on the plate inside it. Only while the fold is open: closed, the
+     cluster is the thing a thumb wants and the plate is a header it should be
+     allowed to sit beside. */
+  .map-rail:has(.news-plate[data-open]) {
+    z-index: 14;
+  }
+
+  /* Open, the plate is a sheet with a bottom rather than a column that grows
+     until it runs out of screen: half the frame, scrolled inside itself. A
+     reader on a long window with the pin key and the government key both
+     printed still gets to see the state under it.
+
+     `touch-action` because the frame hands every touch to the camera — see
+     `.map-frame` in `map.css` — and inside that a scroll region is a list a
+     thumb cannot move. */
+  .news-plate[data-open] .brand-body {
+    max-height: min(46dvh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    /* The plate is inert so the map keeps the pointer — see the top of this
+       file. A scroll region has to take the touch that scrolls it, so the fold
+       claims the pointer for exactly as long as it is open. */
+    pointer-events: auto;
+  }
+
+  /* The chips wrap rather than scrolling sideways, which is what the sector
+     pills in `map.css` do at this width — but there are ten of those and five
+     of these, and the two rules answer different problems. A sideways strip
+     hides choices behind a gesture, and it puts a horizontal scroll inside a
+     frame whose whole surface already pans a map: the row and the camera end
+     up fighting over the same drag. Five windows on two lines hide nothing.
+
+     Bigger than the desktop pill, which is 26px tall — under every touch
+     target minimum there is, and these are pressed with a thumb. */
+  .news-plate .news-chip {
+    padding: 0.42rem 0.7rem;
+  }
+
+  .news-plate .news-chips {
+    gap: 0.4rem;
+  }
+
+  .news-controls {
+    gap: 0.55rem;
+    margin-top: 0.6rem;
+  }
+
+  .news-ramp {
+    margin-top: 0.7rem;
+  }
+}
