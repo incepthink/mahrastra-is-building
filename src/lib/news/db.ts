@@ -4,6 +4,8 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
+import { hasSnapshot } from "./snapshot";
+
 /**
  * The handle on the collector's SQLite file.
  *
@@ -40,10 +42,15 @@ let reportedMissing = false;
  * The database, or null when the collector has never run here.
  *
  * Null rather than a throw, because a missing `.data/news.db` is the expected
- * state of a fresh clone and of any deploy that does not carry the file: the
- * directory is gitignored, since it holds a rebuildable corpus far too large
- * to commit. The page renders the state with no news on it and says so, which
- * is a better first run than a stack trace.
+ * state of a fresh clone and of every deploy: the directory is gitignored,
+ * since it holds a rebuildable corpus far too large to commit.
+ *
+ * Null used to mean an empty map, and that was the bug — a production deploy
+ * cannot have this file and so showed a state with no news on it while the
+ * collector had 820 articles. Null now means "ask the snapshot", and the read
+ * layer does: see `snapshot.ts`, and the fork in `read.ts::articlesSince`.
+ * This function is unchanged in what it returns; what changed is what the
+ * callers do with the null.
  */
 export function newsDb(): DatabaseSync | null {
   if (handle) return handle;
@@ -51,8 +58,14 @@ export function newsDb(): DatabaseSync | null {
   if (!existsSync(DB_FILE)) {
     if (!reportedMissing) {
       reportedMissing = true;
+      // Two different situations reach this line and they want different
+      // advice. A deploy has no `.data/` and never will — it is serving the
+      // committed snapshot, which is the arrangement, not a fault. A fresh
+      // clone has neither and needs to run the collector.
       console.warn(
-        `[news] no database at ${DB_FILE} — run \`pnpm news:cycle\` to collect one.`,
+        hasSnapshot()
+          ? `[news] no database at ${DB_FILE} — serving the committed snapshot instead.`
+          : `[news] no database at ${DB_FILE} and an empty snapshot — run \`pnpm news:cycle\`.`,
       );
     }
 
@@ -111,8 +124,11 @@ let storiesState: "unattached" | "attached" | "absent" = "unattached";
  *
  * Absent is an ordinary state, not an error: `.data/stories.db` is gitignored
  * and disposable, a fresh clone has never run `pnpm news:stories`, and the map
- * without it is the choropleth — which is a complete product. So this returns
- * null and the page simply has no pin mode to offer.
+ * without it is the choropleth — which is a complete product.
+ *
+ * As with `newsDb`, null is now a question rather than an answer:
+ * `stories.ts::storySource` falls through to the committed snapshot, and only
+ * an empty snapshot leaves the page with no pin mode to offer.
  */
 export function storiesDb(): DatabaseSync | null {
   const db = newsDb();

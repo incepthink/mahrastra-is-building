@@ -1,4 +1,5 @@
-import { query } from "./db";
+import { newsDb, query } from "./db";
+import { snapshotProminence } from "./snapshot";
 import type { Prominence } from "@/types/news";
 
 /**
@@ -68,14 +69,51 @@ const POSITION_FLOOR = 30;
  * therefore yields a smaller reach, not a larger one — the number errs toward
  * "we did not see it", which is the honest direction for a lower bound.
  */
+type ProminenceRow = {
+  url: string;
+  peak_pages: number;
+  site_pages: number;
+  best_position: number;
+  sweeps: number;
+};
+
 export function prominenceByUrl(): Map<string, Prominence> {
-  const rows = query<{
-    url: string;
-    peak_pages: number;
-    site_pages: number;
-    best_position: number;
-    sweeps: number;
-  }>(`
+  const rows = prominenceRows();
+
+  return new Map(
+    rows.map((row) => {
+      const sitePages = Math.max(1, Number(row.site_pages));
+      const reach = clamp01(Number(row.peak_pages) / sitePages);
+      const bestPosition = Number(row.best_position);
+      const rank = 1 - Math.min(bestPosition, POSITION_FLOOR) / POSITION_FLOOR;
+
+      return [
+        row.url,
+        {
+          reach: round(reach),
+          bestPosition,
+          sweeps: Number(row.sweeps),
+          score: round(REACH_WEIGHT * reach + POSITION_WEIGHT * rank),
+        },
+      ];
+    }),
+  );
+}
+
+/**
+ * The four counts, from `rank_snapshots` or from the shipped corpus.
+ *
+ * The split is between the counting and the weighting, deliberately: the
+ * snapshot builder runs this same SQL and writes down what it returned, but it
+ * does not apply the constants above. Those stay here, where this file's own
+ * argument requires them — they are meant to be retunable "against the whole
+ * history without re-scraping", and a score baked into a committed JSON file
+ * would be a constant chosen at build time that no later edit could reach.
+ */
+function prominenceRows(): ProminenceRow[] {
+  if (!newsDb()) return snapshotProminence();
+
+  return query<ProminenceRow>(`
     WITH site AS (
       -- How many section pages the site is believed to have: the most that
       -- have ever answered in a single capture.
@@ -114,25 +152,6 @@ export function prominenceByUrl(): Map<string, Prominence> {
     FROM per_sweep p CROSS JOIN site
     GROUP BY p.url
   `);
-
-  return new Map(
-    rows.map((row) => {
-      const sitePages = Math.max(1, Number(row.site_pages));
-      const reach = clamp01(Number(row.peak_pages) / sitePages);
-      const bestPosition = Number(row.best_position);
-      const rank = 1 - Math.min(bestPosition, POSITION_FLOOR) / POSITION_FLOOR;
-
-      return [
-        row.url,
-        {
-          reach: round(reach),
-          bestPosition,
-          sweeps: Number(row.sweeps),
-          score: round(REACH_WEIGHT * reach + POSITION_WEIGHT * rank),
-        },
-      ];
-    }),
-  );
 }
 
 function clamp01(value: number): number {

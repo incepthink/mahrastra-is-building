@@ -24,6 +24,7 @@
     "news:stats": "node scripts/news/run.mjs stats",
     "news:backfill": "node scripts/news/run.mjs backfill",
     "news:stories": "node scripts/news/stories/run.mjs",
+    "news:snapshot": "node scripts/news/snapshot.mjs",
     "news:fire": "node scripts/news/fire.mjs",
     "dgipr:pull": "node scripts/dgipr/pull.mjs",
     "dgipr:pull:live": "node scripts/dgipr/pull-mahasamvad.mjs",

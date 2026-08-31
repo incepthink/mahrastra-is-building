@@ -1,8 +1,9 @@
 import "server-only";
 
-import { query, queryOne } from "./db";
+import { newsDb, query, queryOne } from "./db";
 import { prominenceByUrl } from "./prominence";
 import { quantileScale } from "./scale";
+import { snapshotArticlesSince, snapshotMeta } from "./snapshot";
 import { cutoffOf, DEFAULT_WINDOW, windowsFrom } from "./window";
 import { DISTRICTS } from "@/data/districts";
 import type {
@@ -162,7 +163,17 @@ export function legendBands(
     .filter((band): band is { level: number; min: number; max: number } => band !== null);
 }
 
+/**
+ * The window's rows, from the collector's database or from the shipped corpus.
+ *
+ * The fork is here and only here: everything above this line — the widening
+ * walk, the district buckets, the quantile scale, the prominence sort, the
+ * per-district cap — runs over whichever rows come back and cannot tell which
+ * source produced them. See `snapshot.ts` for why a second source exists.
+ */
 function articlesSince(cutoff: string | null): ArticleRow[] {
+  if (!newsDb()) return snapshotArticlesSince(cutoff);
+
   const bounded = cutoff ? "AND a.published_at >= ?" : "";
 
   return query<ArticleRow>(
@@ -215,14 +226,26 @@ function byProminenceThenTime(a: NewsArticle, b: NewsArticle): number {
   return gap !== 0 ? gap : b.publishedAt.localeCompare(a.publishedAt);
 }
 
-/** When the collector last wrote anything — what "as of" on the plate means. */
+/**
+ * When the collector last wrote anything — what "as of" on the plate means.
+ *
+ * Carried through from the snapshot rather than inferred from the newest
+ * article in it, and the difference matters on exactly the reading this line
+ * exists to support: the collector discovers far more URLs than it manages to
+ * fetch in the same pass, so `MAX(discovered_at)` is later than the newest
+ * publishable row and is the honest answer to "when did we last look".
+ */
 function lastCollectedAt(): string | null {
+  if (!newsDb()) return snapshotMeta().collectedAt;
+
   return queryOne<{ at: string | null }>(
     "SELECT MAX(discovered_at) AS at FROM articles",
   )?.at ?? null;
 }
 
 function lastSweptAt(): string | null {
+  if (!newsDb()) return snapshotMeta().sweptAt;
+
   return queryOne<{ at: string | null }>(
     "SELECT MAX(captured_at) AS at FROM rank_sweeps",
   )?.at ?? null;

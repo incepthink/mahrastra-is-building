@@ -1,6 +1,7 @@
 import "server-only";
 
-import { storyQuery, storyQueryOne } from "./db";
+import { storiesDb, storyQuery, storyQueryOne } from "./db";
+import { snapshotStories } from "./snapshot";
 import { cutoffOf } from "./window";
 import type {
   NewsStories,
@@ -87,6 +88,90 @@ export function loadStories(
   window: NewsWindow,
   now: Date = new Date(),
 ): NewsStories | null {
+  const source = storySource();
+  if (!source) return null;
+
+  const cutoff = cutoffOf(window, now);
+
+  /**
+   * A story is a thread the pipeline **named**, and `storySource` has already
+   * dropped the rest — 347 of an earlier run's 482 threads carried no label at
+   * all, being single articles the matcher left alone that the choropleth
+   * underneath already counts. Pinning them would put 350 marks on the state
+   * and call each one a story, which is the same over-claim
+   * `choropleth-layer.tsx` objects to, wearing a different shape.
+   *
+   * What is left to do here is the window, and it is done in memory rather
+   * than in SQL because there are two row sources and only one of them can be
+   * given a `WHERE` clause. See `snapshot.ts`. String comparison is exact for
+   * the same reason it is in `snapshotArticlesSince`: both sides are ISO.
+   */
+  const inWindow = source.threads.filter(
+    (row) => row.last_at !== null && (!cutoff || row.last_at >= cutoff),
+  );
+
+  // The tier filter is the second half of the same restraint: a `state` story
+  // is not in a place and gets no pin. Counted rather than dropped, so the
+  // plate can say statewide stories exist instead of letting them vanish
+  // between the two modes.
+  const pinnable = inWindow.filter((row) => row.place_tier !== "state");
+  const statewide = inWindow.length - pinnable.length;
+
+  const carried = [...pinnable]
+    // Ranked by coverage for the cap, so what survives `STORY_LIMIT` is what
+    // the press stayed on. Counting and nothing else decides this: the model
+    // named these stories and has no say in which of them the map has room for.
+    .sort((a, b) => Number(b.articles) - Number(a.articles) || lastAtDesc(a, b))
+    .slice(0, STORY_LIMIT);
+
+  const steps = stepsByThread(
+    source.steps,
+    new Set(carried.map((row) => row.id)),
+  );
+
+  const stories = carried
+    .map((row) => toStory(row, steps.get(row.id) ?? []))
+    // Presented newest first. The cap above ranks by coverage so the stories
+    // that survive it are the ones the press stayed on; what a reader wants to
+    // see once they have survived is what happened last.
+    .sort((a, b) => b.lastAt.localeCompare(a.lastAt));
+
+  return {
+    stories,
+    total: pinnable.length,
+    statewide,
+    runId: source.runId,
+    runAt: source.runAt,
+  };
+}
+
+type StorySource = {
+  runId: number;
+  runAt: string;
+  threads: ThreadRow[];
+  steps: StepRow[];
+};
+
+/**
+ * The newest finished run's named threads and their steps — from the derived
+ * store, or from the shipped corpus when there is no `.data/` to attach.
+ *
+ * Everything is fetched unbounded and the window is applied above, which is a
+ * change from the SQL this replaces: the cap used to be a `LIMIT` and the
+ * counts two more `SELECT COUNT(*)`s. Pushing them into memory is what lets
+ * one implementation serve both sources — and it costs nothing measurable,
+ * because a run's *named* threads are 127 rows carrying 231 steps between
+ * them. It is the unnamed 2,400 that would have made this a bad idea, and they
+ * were never wanted here.
+ *
+ * `ended_at IS NOT NULL AND ok = 1` is the whole of the half-written-run
+ * guarantee: the pipeline writes events, then places, then labels, then
+ * threads, so a run caught mid-flight would show a state covered in unnamed
+ * stories that are about to be merged into each other.
+ */
+function storySource(): StorySource | null {
+  if (!storiesDb()) return snapshotStories();
+
   const run = storyQueryOne<{ id: number; ended_at: string }>(
     `SELECT id, ended_at FROM stories.story_runs
       WHERE ended_at IS NOT NULL AND ok = 1
@@ -95,99 +180,50 @@ export function loadStories(
 
   if (!run) return null;
 
-  const cutoff = cutoffOf(window, now);
-  const bounded = cutoff ? "AND last_at >= ?" : "";
-  const since = cutoff ? [cutoff] : [];
-
-  /**
-   * A story is a thread the pipeline **named**. 347 of the current run's 482
-   * threads carry no label at all — they are single articles the matcher left
-   * alone, and the choropleth underneath already counts every one of them.
-   * Pinning them would put 350 marks on the state and call each one a story,
-   * which is the same over-claim `choropleth-layer.tsx` objects to, wearing a
-   * different shape. The tier filter is the second half of that: a `state`
-   * story is not in a place and gets no pin.
-   */
-  const rows = storyQuery<ThreadRow>(
+  const threads = storyQuery<ThreadRow>(
     `SELECT id, title_mr, actors, issue, place_tier, taluka_name_mr, district_id,
             lon, lat, place_evidence, articles, first_at, last_at, desk_districts
        FROM stories.threads
-      WHERE run_id = ? AND title_mr IS NOT NULL AND place_tier <> 'state'
-            AND last_at IS NOT NULL ${bounded}
-      ORDER BY articles DESC, last_at DESC
-      LIMIT ?`,
+      WHERE run_id = ? AND title_mr IS NOT NULL AND last_at IS NOT NULL`,
     run.id,
-    ...since,
-    STORY_LIMIT,
   );
 
-  const total = countThreads(run.id, bounded, since, "place_tier <> 'state'");
-  const statewide = countThreads(run.id, bounded, since, "place_tier = 'state'");
-
-  const steps = stepsFor(
-    run.id,
-    rows.map((row) => row.id),
-  );
-
-  const stories = rows
-    .map((row) => toStory(row, steps.get(row.id) ?? []))
-    // Presented newest first. The cap above ranks by coverage so the stories
-    // that survive it are the ones the press stayed on; what a reader wants to
-    // see once they have survived is what happened last.
-    .sort((a, b) => b.lastAt.localeCompare(a.lastAt));
-
-  return { stories, total, statewide, runId: run.id, runAt: run.ended_at };
-}
-
-function countThreads(
-  runId: number,
-  bounded: string,
-  since: string[],
-  tier: string,
-): number {
-  return Number(
-    storyQueryOne<{ n: number }>(
-      `SELECT COUNT(*) AS n FROM stories.threads
-        WHERE run_id = ? AND title_mr IS NOT NULL AND ${tier}
-              AND last_at IS NOT NULL ${bounded}`,
-      runId,
-      ...since,
-    )?.n ?? 0,
-  );
-}
-
-/**
- * Every carried story's progression, in one statement.
- *
- * This is the join the derived store exists to make: `thread_articles` holds
- * the membership and the step number, `main.articles` holds the publisher's
- * own words, and the two live in different files that SQLite is happy to read
- * together once one is attached. See `storiesDb`.
- *
- * `fetch_status = 'ok'` for the same reason `read.ts` insists on it: a pending
- * row has a URL and nothing else, and a step with no headline is a gap in a
- * chronology rather than a beat in one.
- */
-function stepsFor(runId: number, ids: string[]): Map<string, StoryStep[]> {
-  const byThread = new Map<string, StoryStep[]>();
-  if (ids.length === 0) return byThread;
-
-  const holes = ids.map(() => "?").join(",");
-
-  const rows = storyQuery<StepRow>(
+  /**
+   * The join the derived store exists to make: `thread_articles` holds the
+   * membership and the step number, `main.articles` holds the publisher's own
+   * words, and the two live in different files that SQLite is happy to read
+   * together once one is attached. See `storiesDb`.
+   *
+   * `fetch_status = 'ok'` for the same reason `read.ts` insists on it: a
+   * pending row has a URL and nothing else, and a step with no headline is a
+   * gap in a chronology rather than a beat in one.
+   */
+  const steps = storyQuery<StepRow>(
     `SELECT ta.thread_id, ta.url, ta.step, ta.published_at, ta.place_tier,
             ta.taluka_name_mr, ta.district_id,
             a.headline, a.sitemap_title
        FROM stories.thread_articles ta
        JOIN main.articles a ON a.url = ta.url
-      WHERE ta.run_id = ? AND ta.thread_id IN (${holes})
-            AND a.fetch_status = 'ok'
+      WHERE ta.run_id = ? AND a.fetch_status = 'ok'
+            AND ta.thread_id IN (
+              SELECT id FROM stories.threads
+               WHERE run_id = ? AND title_mr IS NOT NULL AND last_at IS NOT NULL
+            )
       ORDER BY ta.thread_id, ta.step`,
-    runId,
-    ...ids,
+    run.id,
+    run.id,
   );
 
+  return { runId: Number(run.id), runAt: run.ended_at, threads, steps };
+}
+
+/** Each carried story's progression, oldest step first, capped at `PER_STORY`. */
+function stepsByThread(rows: StepRow[], carried: Set<string>): Map<string, StoryStep[]> {
+  const byThread = new Map<string, StoryStep[]>();
+
   for (const row of rows) {
+    if (!carried.has(row.thread_id)) continue;
+
     const list = byThread.get(row.thread_id) ?? [];
     byThread.set(row.thread_id, list);
 
@@ -207,6 +243,11 @@ function stepsFor(runId: number, ids: string[]): Map<string, StoryStep[]> {
   }
 
   return byThread;
+}
+
+/** Newest last filing first; the tie-break under the coverage ranking. */
+function lastAtDesc(a: ThreadRow, b: ThreadRow): number {
+  return (b.last_at ?? "").localeCompare(a.last_at ?? "");
 }
 
 function toStory(row: ThreadRow, steps: StoryStep[]): Story {
