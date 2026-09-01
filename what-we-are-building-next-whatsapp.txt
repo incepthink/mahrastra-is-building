@@ -1,0 +1,17 @@
+*What's still to build*
+
+Four things are designed and measured but not yet built. In the order we'll do them:
+
+*1. Google News RSS* — not started
+Today the map reads two mastheads: Lokmat and Loksatta. RSS takes us to roughly thirty. How many separate outlets pick a story up, and how fast they join, is the strongest signal available to us — and it's free, no key, no rate limit. Biggest lift, cheapest work. This goes first.
+
+*2. YouTube — connecting it up*
+The collector is already running: view counts for eight Marathi news channels, snapshotted every sweep. But nothing yet joins a video to a story, so those numbers don't reach the ranking. The signal is banked, not spent. It needs the title-to-story matcher we've already written for the press side.
+
+*3. Fire on the map itself*
+The score that measures _growth_ works today — but only from the command line. The map a reader opens still ranks by how _big_ a story is, not how fast it's moving. The maths is done and correct; it just has to be carried into what the page loads.
+
+*4. Google Trends* — not started
+Last, and only to corroborate. Its numbers are rescaled on every request, so it can confirm a story is rising but cannot compare two stories against each other. Useful, but never load-bearing.
+
+_Everything else — the 15-minute press sweep, story grouping, locating by article text, the heat map, pins, the story timeline, the Mahasamvad government layer, WhatsApp sharing and the minister filter — is built and running._
