@@ -100,6 +100,72 @@ export type NewsWindow = {
 };
 
 /**
+ * Where someone sits in the Council of Ministers.
+ *
+ * Four ranks and not forty-one chips, because the corpus will not support the
+ * second. Measured over seven days: the Chief Minister is named in 83 articles
+ * and the senior Deputy in 35, after which the whole cabinet drops to single
+ * figures — 29 of the 32 remaining ministers have between nought and four. Per-
+ * minister tabs would therefore be a row of empty tabs most weeks. The rank is
+ * the chip; the names live inside it and appear only where there is something
+ * to open.
+ *
+ * `mos` is a Minister of State, which is a real distinction in this Council —
+ * the six of them hold parts of portfolios that also have a Cabinet minister,
+ * so folding them into `min` would put two people under one heading who are not
+ * answerable for the same thing.
+ */
+export type MinisterTier = "cm" | "dcm" | "min" | "mos";
+
+/**
+ * What the reader has narrowed the map to.
+ *
+ * A rank or one person, never both — see `asMinisterFilter` for why the two
+ * share a single URL parameter.
+ */
+export type MinisterFilter =
+  | { kind: "tier"; tier: MinisterTier }
+  | { kind: "one"; id: string };
+
+/**
+ * One minister as the browser gets them.
+ *
+ * Deliberately not the roster row. `Minister` in `src/data/ministers.ts` also
+ * carries the Gazette's formal name and the alias lists the matcher is built
+ * from, and none of that has any business crossing to the client: the aliases
+ * are a server-side matching detail, and shipping forty-one of them would put a
+ * few kilobytes of matching machinery into every page load to render a chip
+ * that needs a name and a number.
+ */
+export type MinisterCount = {
+  id: string;
+  tier: MinisterTier;
+  nameMr: string;
+  portfolioMr: string;
+  /** Articles in the current window naming them, before any filter. */
+  articles: number;
+};
+
+/**
+ * The chips, counted over the window the map settled on.
+ *
+ * Always counted against the **unfiltered** window. A board that renumbered
+ * itself as the reader clicked through it would make the chip they just left
+ * unreadable, and the counts are the only way to tell a quiet week for a
+ * minister from a minister the roster has misspelled.
+ */
+export type MinisterBoard = {
+  /** Articles per rank. An article naming two ministers of the same rank
+   *  counts once, so these stay counts of articles rather than of mentions. */
+  tiers: Record<MinisterTier, number>;
+  /** Every minister in Gazette order, including those with nothing. */
+  ministers: MinisterCount[];
+  /** Articles in the window naming anyone at all. Measured at about 16% of
+   *  the corpus, steady across every window from a day to a month. */
+  matched: number;
+};
+
+/**
  * Everything the page needs, read in one pass on the server.
  *
  * Assembled whole rather than fetched per component: the choropleth needs the
@@ -123,6 +189,12 @@ export type NewsMap = {
   };
   /** The upper count any district reached — the top of the choropleth ramp. */
   ceiling: number;
+  /** The chips, counted over this window before the filter below was applied. */
+  ministers: MinisterBoard;
+  /** Which minister the map is narrowed to, or null for the whole press. When
+   *  set, `districts`, `statewide` and `totals` describe the narrowed corpus —
+   *  everything on the sheet is that minister's news and nothing else. */
+  minister: MinisterFilter | null;
   /** When the collector last wrote to the database. */
   collectedAt: string | null;
   /** When the section pages were last swept, and how many came back. */

@@ -1,6 +1,11 @@
 import { DISTRICTS } from "@/data/districts";
 import { toDevanagari } from "@/lib/signals/marathi";
-import type { NewsArticle, NewsWindow, PlaceTier } from "@/types/news";
+import type {
+  MinisterTier,
+  NewsArticle,
+  NewsWindow,
+  PlaceTier,
+} from "@/types/news";
 
 export { toDevanagari };
 
@@ -20,10 +25,26 @@ export const NEWS_MR = {
 
   /** The choropleth legend. */
   intensity: "बातम्यांची घनता",
-  fewer: "कमी",
-  more: "जास्त",
   noNews: "बातमी नाही",
 
+  /** The minister control. See `types/news.ts` for why it is four ranks and
+   *  not forty-one names. The legend does not say `मंत्री`, because one of the
+   *  chips underneath it already does. */
+  ministers: "बातमीत कोण",
+  tierCm: "मुख्यमंत्री",
+  tierDcm: "उपमुख्यमंत्री",
+  tierMin: "कॅबिनेट मंत्री",
+  tierMos: "राज्यमंत्री",
+  /** Clears the filter. Named for what it restores rather than for what it
+   *  removes — the reader is going back to the whole press, not switching a
+   *  thing off. */
+  ministerAll: "सर्व बातम्या",
+  /** Printed above the named chips once a rank is open. */
+  ministerWho: "कोणाची बातमी",
+  /** Said when the rank or the person has nothing in this window. It names the
+   *  window as the reason, because the alternative reading — that this app has
+   *  never heard of them — is the one the reader would otherwise reach. */
+  ministerEmpty: "या कालावधीत या मंत्र्यांची बातमी नाही.",
   /** The window control. */
   window: "कालावधी",
   windowWidened: "या कालावधीत बातमी नव्हती, म्हणून व्याप्ती वाढवली.",
@@ -50,6 +71,22 @@ export const NEWS_MR = {
   expand: "पूर्ण पडद्यावर वाचा",
   collapse: "पूर्ण पडदा बंद करा",
 
+  /** The expanded reading's own filter. Offered there and not in the docked
+   *  panel: the column shows a list you scroll, and the grid shows forty cards
+   *  at once — which is the point at which a reader stops scanning and starts
+   *  hunting for a word they remember. Searches the headline and the
+   *  publisher's standfirst, which is all of the piece we hold on this side of
+   *  the boundary. */
+  search: "बातम्यांत शोधा",
+  /** What the empty box says, and nothing more. The label above carries the
+   *  full sentence for a screen reader; a placeholder is read at a glance by
+   *  somebody already looking at the grid it filters, and it does not need to
+   *  name what they are looking at. */
+  searchPlaceholder: "शोधा...",
+  searchClear: "शोध पुसा",
+  searchEmpty: "या शोधाशी जुळणारी बातमी नाही.",
+  searchAll: "सर्व बातम्या दाखवा",
+
   /** How prominently the press played a piece. See `Prominence`. */
   prominence: "प्रसिद्धी",
   onEveryPage: "राज्यभर मुखपृष्ठी",
@@ -75,9 +112,11 @@ export const NEWS_MR = {
   storyStep: "टप्पा",
   noStories: "या कालावधीत नोंदवलेली घडामोड नाही.",
   storiesUnbuilt: "घडामोडींची नोंद अद्याप तयार केलेली नाही.",
-  /** Said on the plate, so the statewide stories do not simply vanish when the
-   *  reader switches to pins. They have no place, so they get no mark. */
-  storiesStatewide: "राज्यव्यापी — नकाशावर खूण नाही",
+  /** Said only when the window holds no pins. The reason is nearly always that
+   *  the last threading run predates the window, not that the state was quiet
+   *  — `loadStories` does not widen its window the way `loadNewsMap` widens the
+   *  choropleth's, so the pin layer can fall behind the news underneath it. */
+  storiesBehind: "त्यानंतरच्या बातम्या अजून कथांमध्ये गुंफलेल्या नाहीत.",
 
   /** How precisely a story's place is known. The tier is the whole reason
    *  pins are allowed on this map at all — see `PlaceTier`. */
@@ -93,7 +132,6 @@ export const NEWS_MR = {
   minutesAgo: "मिनिटांपूर्वी",
   hoursAgo: "तासांपूर्वी",
   daysAgo: "दिवसांपूर्वी",
-  collectedAt: "शेवटची नोंद",
 
   /** The plate's own control, and only on a phone: at that width the legend is
    *  a header across the top of the frame, and open by default it printed
@@ -115,6 +153,14 @@ export const NEWS_MR = {
   credit: "बातम्या संबंधित वृत्तपत्रांच्या. दुव्यावर क्लिक करून मूळ बातमी वाचा.",
   noDatabase: "अद्याप बातम्या गोळा केलेल्या नाहीत.",
 } as const;
+
+/** What a rank is called. The four are distinct offices, not a gradient. */
+export function ministerTierMr(tier: MinisterTier): string {
+  if (tier === "cm") return NEWS_MR.tierCm;
+  if (tier === "dcm") return NEWS_MR.tierDcm;
+
+  return tier === "min" ? NEWS_MR.tierMin : NEWS_MR.tierMos;
+}
 
 /** A district id to its Marathi name, or the id when the map has never heard
  *  of it — which is the honest answer and never a guess. */

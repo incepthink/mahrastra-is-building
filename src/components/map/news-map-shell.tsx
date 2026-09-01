@@ -4,9 +4,15 @@ import { useRouter } from "next/navigation";
 import { useCallback, useTransition } from "react";
 
 import { NewsMap } from "./news-map";
+import { ministerParam } from "@/data/ministers";
 import type { DgiprMap } from "@/types/dgipr";
 import type { MapGeometry } from "@/types/map";
-import type { NewsMap as NewsMapData, NewsStories, WindowId } from "@/types/news";
+import type {
+  MinisterFilter,
+  NewsMap as NewsMapData,
+  NewsStories,
+  WindowId,
+} from "@/types/news";
 
 type NewsMapShellProps = {
   geometry: MapGeometry;
@@ -22,6 +28,9 @@ type NewsMapShellProps = {
   dgipr: DgiprMap;
   bands: Array<{ level: number; min: number; max: number }>;
   window: WindowId;
+  /** Who the map is narrowed to. In the URL for the same reason the window is:
+   *  it decides which rows exist. See `setFilters`. */
+  minister: MinisterFilter | null;
 };
 
 /**
@@ -50,20 +59,48 @@ export function NewsMapShell({
   dgipr,
   bands,
   window,
+  minister,
 }: NewsMapShellProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const setWindow = useCallback(
-    (id: WindowId) => {
+  /**
+   * Both server-side controls, written as one query string.
+   *
+   * They have to move together. Building the URL from one of them and letting
+   * the other fall back to its default would mean picking a minister silently
+   * reset the window to 24 hours — the classic bug of a URL that is the state
+   * rather than a projection of it, hit the first time a second parameter is
+   * added. So this takes the whole next state and prints it.
+   */
+  const setFilters = useCallback(
+    (next: { window: WindowId; minister: MinisterFilter | null }) => {
+      const params = new URLSearchParams({ window: next.window });
+      const who = ministerParam(next.minister);
+
+      // Absent rather than empty when there is no filter: `?minister=` is a
+      // value the parser would have to have an opinion about, and "no filter"
+      // is better said by saying nothing.
+      if (who) params.set("minister", who);
+
       startTransition(() => {
-        // `replace`, not `push`: flipping between windows is adjusting a view,
-        // not navigating, and stacking six of them in the history means six
-        // presses of Back to leave the page.
-        router.replace(`/?window=${id}`, { scroll: false });
+        // `replace`, not `push`: adjusting a view is not navigating, and
+        // stacking six of them in the history means six presses of Back to
+        // leave the page.
+        router.replace(`/?${params.toString()}`, { scroll: false });
       });
     },
     [router],
+  );
+
+  const setWindow = useCallback(
+    (id: WindowId) => setFilters({ window: id, minister }),
+    [setFilters, minister],
+  );
+
+  const setMinister = useCallback(
+    (next: MinisterFilter | null) => setFilters({ window, minister: next }),
+    [setFilters, window],
   );
 
   return (
@@ -75,6 +112,8 @@ export function NewsMapShell({
       bands={bands}
       window={window}
       onWindow={setWindow}
+      minister={minister}
+      onMinister={setMinister}
       pending={pending}
     />
   );

@@ -2,9 +2,11 @@ import "server-only";
 
 import snapshot from "@/data/dgipr-releases.json";
 import { DISTRICTS } from "@/data/districts";
+import { satisfiesFilter } from "@/data/ministers";
+import { ministersInText } from "@/lib/news/ministers";
 import { cutoffOf, DEFAULT_WINDOW, windowsFrom } from "@/lib/news/window";
 import type { DgiprMap, DgiprRelease } from "@/types/dgipr";
-import type { WindowId } from "@/types/news";
+import type { MinisterFilter, WindowId } from "@/types/news";
 
 /**
  * The DGIPR layer, read from the committed snapshot.
@@ -78,6 +80,21 @@ function coversEnoughDistricts(releases: DgiprRelease[]): boolean {
 }
 
 /**
+ * Whether a release names the filtered minister, in its title or its text.
+ *
+ * The government layer is where ministers are dense — 81 of 141 releases name
+ * one in the title alone, against roughly one press article in six — so this
+ * filter narrows far less here than it does on the news, which is the honest
+ * shape of the two corpora rather than an inconsistency between them.
+ */
+function namesMinister(release: DgiprRelease, filter: MinisterFilter): boolean {
+  return satisfiesFilter(
+    ministersInText(`${release.titleMr} | ${release.summaryMr}`),
+    filter,
+  );
+}
+
+/**
  * Everything the DGIPR layer needs for one window.
  *
  * **The window is applied at day granularity, because a day is all the source
@@ -102,10 +119,17 @@ function coversEnoughDistricts(releases: DgiprRelease[]): boolean {
  * curated releases and became a live pull across every district category on
  * mahasamvad.in, and "not empty" stopped meaning "shows a map".
  */
+export type LoadDgiprOptions = {
+  /** Which minister the overlay is narrowed to, or null for every release. */
+  minister?: MinisterFilter | null;
+  now?: Date;
+};
+
 export function loadDgipr(
   requested: WindowId = DEFAULT_WINDOW,
-  now: Date = new Date(),
+  options: LoadDgiprOptions = {},
 ): DgiprMap {
+  const { minister = null, now = new Date() } = options;
   const candidates = windowsFrom(requested);
   const widest = candidates[candidates.length - 1];
 
@@ -124,6 +148,28 @@ export function loadDgipr(
       releases = found;
       break;
     }
+  }
+
+  /**
+   * The minister filter, applied after the window has been settled.
+   *
+   * Same ordering as the press side, and the district floor above is the reason
+   * it has to be: `coversEnoughDistricts` widens until the layer paints a map,
+   * and letting a filtered set drive that walk would reach back through months
+   * of releases hunting for six districts that mention one minister. The window
+   * is chosen for the layer; the filter then narrows what the layer shows.
+   *
+   * Matched over the title **and** the released text, which is a departure from
+   * the press side and a deliberate one. `types/news.ts` refuses to match an
+   * article body because it is a newspaper's copyrighted reporting that this app
+   * only points at; a DGIPR release is a government department's own public
+   * information, already published in full and reprinted here in full by
+   * `DgiprPanel`. There is no body being read that the reader is not also shown.
+   */
+  if (minister) {
+    releases = releases.filter((release) =>
+      namesMinister(release, minister),
+    );
   }
 
   const byDistrict: Record<string, DgiprRelease[]> = {};

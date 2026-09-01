@@ -14,9 +14,10 @@ import { formatDateMr, toDevanagari } from "@/lib/signals/marathi";
 export const DGIPR_MR = {
   /** The filter chip, and what the layer is called wherever it is named. */
   layer: "शासकीय प्रसिद्धीपत्रके",
-  /** The short tag, for the chip and the mark's label. Roman on purpose: this
-   *  is how the directorate is referred to in Marathi copy as well. */
-  tag: "DGIPR",
+  /** The short tag, for the chip and the mark's label. Names the department's
+   *  own outlet — महासंवाद — rather than the directorate's initials, because
+   *  that is the name a Marathi reader has seen on the releases themselves. */
+  tag: "महासंवाद",
   source: "स्रोत",
 
   /** Who issues them, said in full once — on the panel. */

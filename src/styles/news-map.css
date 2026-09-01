@@ -121,32 +121,65 @@
   pointer-events: auto;
 }
 
-.news-plate-stamp {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: var(--text-micro);
-  letter-spacing: var(--text-micro--letter-spacing);
-  color: var(--color-text-subtle);
-}
+/* The plate has a bottom.
 
-/* The one thing on the page that says "this is live". Kept to 6px and a slow
-   pulse — a fast blinking dot is an alarm, and nothing here is urgent. */
-.news-plate-live {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--color-status-completed);
-  animation: news-live 2.4s var(--ease-in-out-soft) infinite;
-}
+   `.map-rail` is absolutely positioned at the top-left of the frame with no
+   height, which was fine while the legend was a mode toggle, five windows and
+   a ramp. The minister filter put a rank of thirty-two names in it: on the
+   cabinet chip the plate grows past the bottom of the screen and the tally —
+   the one line that says what the whole card adds up to — is cut off, with no
+   scrollbar, because the card ends somewhere below the viewport.
 
-@keyframes news-live {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
+   So the rail is bounded by the frame, and the plate scrolls inside itself. It
+   is the *body* that scrolls and not the rail, deliberately: the wordmark stays
+   put at the top of the card the way it does on a phone, and the statewide
+   badge under the plate stays reachable rather than being pushed off with it.
 
-@media (prefers-reduced-motion: reduce) {
-  .news-plate-live { animation: none; }
+   The phone already answers this its own way — see the `data-open` rule at the
+   bottom of this file, where the fold is a half-height sheet — so this is the
+   desktop half of the same fix and stays out of its way. */
+@media (min-width: 64.0625rem) {
+  .map-rail:has(.news-plate) {
+    max-height: calc(100% - 2 * clamp(0.85rem, 2.2vh, 1.5rem));
+  }
+
+  /* The dock keeps its size; only the plate above it gives way. Named rather
+     than written as `> *`, which would out-specify the plate's own `flex`
+     below and pin the card open at its full height — the exact bug this block
+     exists to fix, reintroduced by the rule meant to protect the badge. */
+  .map-rail:has(.news-plate) > .map-rail-dock {
+    flex: 0 0 auto;
+  }
+
+  .news-plate {
+    display: flex;
+    min-height: 0;
+    flex: 0 1 auto;
+    flex-direction: column;
+  }
+
+  .news-plate .brand-head {
+    flex: 0 0 auto;
+  }
+
+  .news-plate .brand-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* The plate is inert so the map keeps the pointer — see above. A region
+       that scrolls has to take the wheel that scrolls it, and unlike the
+       phone's fold this one is always present, so it always claims it. */
+    pointer-events: auto;
+    /* The frame hands every touch to the camera — see `.map-frame` in
+       `map.css` — which on a touch laptop would make this a list a finger
+       cannot move. */
+    touch-action: pan-y;
+    /* Reserved rather than conditional: the chips reflow into different rows
+       at two widths a scrollbar apart, so a bar that appears when the cabinet
+       opens would re-wrap the list under the reader's cursor. */
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
 }
 
 .news-controls {
@@ -168,7 +201,10 @@
   margin-bottom: 0.4rem;
   font-size: var(--text-eyebrow);
   font-weight: var(--text-eyebrow--font-weight);
-  letter-spacing: var(--text-eyebrow--letter-spacing);
+  /* No tracking. The eyebrow letter-spacing is a Latin small-caps device;
+     applied to Devanagari it prises matras and conjuncts off their base
+     letters, so a heading like नकाशा reads as loose fragments. */
+  letter-spacing: normal;
   text-transform: uppercase;
   color: var(--color-text-subtle);
 }
@@ -218,6 +254,40 @@
   opacity: 0.75;
 }
 
+/* --- The minister chips --------------------------------------------------
+
+   Two rows, and the second one is indented because it is inside the first.
+   Picking a rank opens the names within it, and a flat row of thirty-six chips
+   would read as one list of equals when it is in fact a list nested under the
+   chip above it. */
+
+.news-chips-named {
+  margin-top: 0.4rem;
+  padding-left: 0.6rem;
+  border-left: var(--rule-hair);
+}
+
+/* Named chips carry a person, not a category, so they are set in the reading
+   weight rather than the control weight. */
+.news-chip-named {
+  font-size: var(--text-micro);
+}
+
+/* The way out. Deliberately not styled as an active chip — it is the only
+   control in this group that removes state rather than setting it, and it
+   should not look like a fifth rank. */
+.news-chip-clear {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-line);
+}
+
+.news-chip-clear:hover {
+  background: var(--color-surface-hover);
+}
+
+/* The roster's date. Small, quiet and always printed: the list of who holds
+   which portfolio is the one claim this map makes that none of its sources
+   state, so it carries its provenance wherever it is offered. */
 .news-plate-note {
   margin-top: 0.5rem;
   font-family: var(--font-marathi);
@@ -271,15 +341,6 @@
   text-overflow: ellipsis;
 }
 
-.news-ramp-ends {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0.3rem;
-  font-family: var(--font-marathi);
-  font-size: var(--text-micro);
-  color: var(--color-text-subtle);
-}
-
 /* --- The panel ----------------------------------------------------------- */
 
 /* A column docked to the right edge, not a modal. The map stays visible and
@@ -314,7 +375,7 @@
 .news-panel-eyebrow {
   font-size: var(--text-eyebrow);
   font-weight: var(--text-eyebrow--font-weight);
-  letter-spacing: var(--text-eyebrow--letter-spacing);
+  letter-spacing: normal;
   text-transform: uppercase;
   color: var(--color-text-subtle);
 }
@@ -727,6 +788,16 @@
   color: var(--color-text-subtle);
 }
 
+/* Stands in for the key when the window holds no pins. Set at body weight
+   rather than the subtle grey of the notes below it: this is the answer to
+   "where are the marks", not a footnote to marks that are there. */
+.pin-key-empty {
+  font-family: var(--font-marathi);
+  font-size: var(--text-micro);
+  line-height: 1.45;
+  color: var(--color-text-muted, var(--color-text-subtle));
+}
+
 .pin-key-statewide {
   margin-top: 0.5rem;
   padding-top: 0.45rem;
@@ -764,54 +835,6 @@
   color: var(--color-accent);
 }
 
-/* The tier, said in words next to the place. The mark's shape says the same
-   thing on the sheet, but a shape only carries a meaning a reader has been
-   told once — and this is where a reader who clicked one arrives. */
-.story-tier {
-  padding: 0.1rem 0.4rem;
-  border-radius: var(--radius-xs);
-  font-family: var(--font-marathi);
-  font-size: var(--text-micro);
-  line-height: 1.4;
-  background: var(--color-surface-sunken);
-  color: var(--color-text-muted);
-}
-
-.story-tier[data-tier="taluka"] {
-  background: var(--color-accent-soft);
-  color: var(--color-accent-deep);
-}
-
-.story-evidence {
-  padding: 0.55rem 1.1rem 0.65rem;
-  border-bottom: var(--rule-hair);
-  background: var(--color-surface-sunken);
-}
-
-.story-evidence-line,
-.story-desks {
-  font-family: var(--font-marathi);
-  font-size: var(--text-micro);
-  line-height: 1.5;
-  color: var(--color-text-muted);
-}
-
-.story-desks {
-  margin-top: 0.25rem;
-}
-
-.story-evidence-label {
-  margin-right: 0.35rem;
-  color: var(--color-text-subtle);
-}
-
-/* The matched words themselves, quoted rather than paraphrased: the claim is
-   checkable by a reader only if the reader can see what was matched. */
-.story-evidence-quote {
-  font-weight: 600;
-  color: var(--color-text);
-}
-
 .story-flow {
   padding: 0.75rem 0.9rem 1rem;
   gap: 0;
@@ -828,7 +851,7 @@
 .story-flow-label {
   font-size: var(--text-eyebrow);
   font-weight: var(--text-eyebrow--font-weight);
-  letter-spacing: var(--text-eyebrow--letter-spacing);
+  letter-spacing: normal;
   text-transform: uppercase;
   color: var(--color-text-subtle);
 }

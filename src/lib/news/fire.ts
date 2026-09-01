@@ -104,9 +104,11 @@ const ARRIVAL_HOURS = 24;
 const VELOCITY_WEIGHT = 0.65;
 const ARRIVAL_WEIGHT = 1 - VELOCITY_WEIGHT;
 
-/** How many entries cross the wire. The same argument as `PER_DISTRICT` in
- *  `read.ts`: the cap belongs here so the payload stays flat as the corpus
- *  grows, and the board's own totals stay unclipped. */
+/** How many entries cross the wire. The cap belongs here rather than in the
+ *  component so the payload stays flat as the corpus grows, and the board's own
+ *  totals stay unclipped. Unlike the article lists in `read.ts`, which ship
+ *  whole, a board is a ranking: entry 61 is not a piece a reader is looking
+ *  for, it is a row that lost. */
 const BOARD_LIMIT = 60;
 
 type ArticleRow = {

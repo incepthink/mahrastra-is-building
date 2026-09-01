@@ -1,6 +1,7 @@
 import "server-only";
 
 import { newsDb, query, queryOne } from "./db";
+import { ministerBoard, ministerIndex, type MinisterIndex } from "./ministers";
 import { prominenceByUrl } from "./prominence";
 import { quantileScale } from "./scale";
 import { snapshotArticlesSince, snapshotMeta } from "./snapshot";
@@ -8,22 +9,11 @@ import { cutoffOf, DEFAULT_WINDOW, windowsFrom } from "./window";
 import { DISTRICTS } from "@/data/districts";
 import type {
   DistrictNews,
+  MinisterFilter,
   NewsArticle,
   NewsMap,
   WindowId,
 } from "@/types/news";
-/**
- * How many articles are carried into the browser per district.
- *
- * The panel is a reading list, not an archive. Mumbai files a hundred pieces a
- * day and nobody scrolls a hundred; capping here rather than in the component
- * is what keeps the page's payload flat as the corpus grows — otherwise every
- * reader downloads every headline in the state to look at one district. The
- * district's own `count` is left unclipped, so the panel can always say how
- * many it is showing out of how many there are.
- */
-const PER_DISTRICT = 24;
-const STATEWIDE_LIMIT = 30;
 
 type ArticleRow = {
   url: string;
@@ -38,6 +28,10 @@ type ArticleRow = {
   published_at: string | null;
   modified_at: string | null;
   word_count: number | null;
+  /** Read only by the minister matcher, and never carried into `NewsArticle`:
+   *  a publisher's SEO tag list is matching input, not something the panel has
+   *  any business printing. See `lib/news/ministers.ts`. */
+  keywords: string | null;
   revisions: number;
 };
 
@@ -55,10 +49,27 @@ type ArticleRow = {
  * yet, which makes the choropleth a picture of the queue rather than of the
  * news.
  */
+export type LoadNewsMapOptions = {
+  /**
+   * Which minister the map is narrowed to, or null for the whole press.
+   *
+   * Applied *after* the window has been chosen and the chip counts taken, and
+   * both orderings matter. See the note on the widening walk below.
+   */
+  minister?: MinisterFilter | null;
+  /** The url-to-ministers index, built once per request and shared with the
+   *  story layer. Built here when absent, which is what keeps this function
+   *  callable on its own. */
+  index?: MinisterIndex;
+  now?: Date;
+};
+
 export async function loadNewsMap(
   requested: WindowId = DEFAULT_WINDOW,
-  now: Date = new Date(),
+  options: LoadNewsMapOptions = {},
 ): Promise<NewsMap> {
+  const { minister = null, now = new Date() } = options;
+  const index = options.index ?? ministerIndex();
   const prominence = prominenceByUrl();
   const candidates = windowsFrom(requested);
   const widest = candidates[candidates.length - 1];
@@ -66,6 +77,16 @@ export async function loadNewsMap(
   let used = widest;
   let rows: ArticleRow[] = [];
 
+  /**
+   * The window widens on the corpus, never on the filter.
+   *
+   * A 24-hour window with news in it is a 24-hour window even when the minister
+   * the reader picked is not in any of it, and quietly reaching back a week to
+   * find them would answer a question nobody asked — the reader would be shown
+   * seven days of one minister under a chip that still said twenty-four hours.
+   * An empty answer here is a real answer: this minister was not in the news
+   * today. The plate says so in words.
+   */
   for (const candidate of candidates) {
     const found = articlesSince(cutoffOf(candidate, now));
 
@@ -76,8 +97,32 @@ export async function loadNewsMap(
     }
   }
 
-  const articles = rows.map((row) => toArticle(row, prominence));
+  // Counted over the window before it is narrowed, so a chip keeps its number
+  // while it is the one being switched away from. See `ministerBoard`.
+  const board = ministerBoard(index, rows.map((row) => row.url));
 
+  const kept = minister
+    ? rows.filter((row) => index.matches(row.url, minister))
+    : rows;
+
+  const articles = kept.map((row) => toArticle(row, prominence));
+
+  /**
+   * Both lists carry every piece the window caught, uncapped.
+   *
+   * They used to be clipped here — 24 per district, 30 statewide — on the
+   * argument that the panel is a reading list and not an archive, and that
+   * capping on the server keeps the page's payload flat as the corpus grows.
+   * The cost was that the clipped pieces were unreachable from the product at
+   * all: no "show more", no second page, nothing. The panel said `२४ / ७१` and
+   * then declined to produce the other forty-seven. Naming a number you will
+   * not show is worse than a long list, so the list is long.
+   *
+   * What this costs is real and worth knowing: the whole window ships to the
+   * browser, so the page's weight now tracks how much the state published
+   * rather than sitting at a constant. If that becomes the problem the cap was
+   * guessing at, the fix is paging the panel — not silently dropping rows.
+   */
   const districts: Record<string, DistrictNews> = {};
   const statewide: NewsArticle[] = [];
 
@@ -121,14 +166,13 @@ export async function loadNewsMap(
     bucket.latestAt = bucket.articles
       .map((article) => article.publishedAt)
       .reduce<string | null>((latest, at) => (!latest || at > latest ? at : latest), null);
-    bucket.articles = bucket.articles.slice(0, PER_DISTRICT);
   }
 
   statewide.sort(byProminenceThenTime);
 
   return {
     districts,
-    statewide: statewide.slice(0, STATEWIDE_LIMIT),
+    statewide,
     window: used,
     widened: used.id !== requested,
     totals: {
@@ -137,6 +181,8 @@ export async function loadNewsMap(
       statewide: statewide.length,
     },
     ceiling: Math.max(0, ...Object.values(districts).map((d) => d.count)),
+    ministers: board,
+    minister,
     collectedAt: lastCollectedAt(),
     sweptAt: lastSweptAt(),
   };
@@ -180,7 +226,7 @@ function articlesSince(cutoff: string | null): ArticleRow[] {
     `SELECT
        a.url, a.district_id, a.scope, a.article_section,
        a.headline, a.sitemap_title, a.description, a.image_url, a.author,
-       a.published_at, a.modified_at, a.word_count,
+       a.published_at, a.modified_at, a.word_count, a.keywords,
        (SELECT COUNT(*) FROM article_revisions r WHERE r.url = a.url) AS revisions
      FROM articles a
      WHERE a.fetch_status = 'ok' AND a.published_at IS NOT NULL ${bounded}

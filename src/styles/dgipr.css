@@ -193,10 +193,12 @@
   border-radius: var(--radius-xs);
   background: var(--color-official);
   color: var(--color-on-official);
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  /* Devanagari now, so the mono face (Latin-only, and tracked) would fall
+     back mid-word and prise the matras loose. */
+  font-family: var(--font-marathi);
+  font-size: 0.625rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: normal;
   text-transform: none;
 }
 
@@ -255,7 +257,7 @@
 .dgipr-label {
   font-size: var(--text-eyebrow);
   font-weight: var(--text-eyebrow--font-weight);
-  letter-spacing: var(--text-eyebrow--letter-spacing);
+  letter-spacing: normal;
   text-transform: uppercase;
   color: var(--color-text-subtle);
 }

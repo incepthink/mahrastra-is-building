@@ -10,7 +10,6 @@ import {
   districtNameMr,
   NEWS_MR,
   storyPlaceMr,
-  tierMr,
   toDevanagari,
 } from "@/lib/news/marathi";
 import type { Story, StoryStep } from "@/types/news";
@@ -98,16 +97,15 @@ export function StoryPanel({ story, now, onClose }: StoryPanelProps) {
               <p className="news-panel-eyebrow">{NEWS_MR.storyHint}</p>
               <h2 className="news-panel-title story-title">{story.titleMr}</h2>
 
-              {/* Where the story is pinned, and — in the same breath — how well
-                  that is known. The tier is printed rather than left to the
-                  shape of the mark: a reader who arrived by clicking a soft
-                  halo has seen the shape but has not been told what it means,
-                  and this is the one place it can be said in words. */}
+              {/* Where the story is pinned. The tier that used to be spelled
+                  out beside it is gone: the head is three lines over a
+                  chronology, and a reader who clicked a mark wants the story,
+                  not a note on how confidently it was placed. The precision is
+                  still readable where it is actually load-bearing — in the
+                  shape of the mark, and on a step that names the town it
+                  moved to. */}
               <p className="story-place">
                 <span className="story-place-name">{storyPlaceMr(story)}</span>
-                <span className="story-tier" data-tier={story.placeTier}>
-                  {tierMr(story.placeTier)}
-                </span>
               </p>
             </div>
 
@@ -120,28 +118,6 @@ export function StoryPanel({ story, now, onClose }: StoryPanelProps) {
               <X size={17} strokeWidth={2.2} aria-hidden />
             </button>
           </header>
-
-          {/* What put the pin here, in the article's own words, and which desks
-              filed into the story. The two together are the evidence for the
-              placement: six desks and one taluka is the whole argument for why
-              `district_id` could not have been used. */}
-          <div className="story-evidence">
-            <p className="story-evidence-line">
-              <span className="story-evidence-label">
-                {story.placeTier === "taluka" ? NEWS_MR.tierTalukaNote : NEWS_MR.tierDistrictNote}
-              </span>
-              {story.placeEvidence ? (
-                <span className="story-evidence-quote">{story.placeEvidence}</span>
-              ) : null}
-            </p>
-
-            {story.deskDistricts.length > 0 ? (
-              <p className="story-desks">
-                <span className="story-evidence-label">{NEWS_MR.storyDesks}</span>
-                {story.deskDistricts.map((id) => districtNameMr(id)).join(" · ")}
-              </p>
-            ) : null}
-          </div>
 
           <div className="news-panel-list story-flow" ref={listRef}>
             <p className="story-flow-head">

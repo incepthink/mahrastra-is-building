@@ -4,11 +4,13 @@ import { ChevronDown } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 
+import { MINISTER_TIERS } from "@/data/ministers";
 import { DGIPR_MR, releaseCountMr } from "@/lib/dgipr/marathi";
 import {
   agoMr,
   articleCountMr,
   districtCountMr,
+  ministerTierMr,
   NEWS_MR,
   toDevanagari,
 } from "@/lib/news/marathi";
@@ -16,6 +18,8 @@ import { WINDOWS } from "@/lib/news/window";
 import type { DgiprMap } from "@/types/dgipr";
 import type {
   MapMode,
+  MinisterFilter,
+  MinisterTier,
   NewsMap,
   NewsStories,
   WindowId,
@@ -47,6 +51,11 @@ type NewsPlateProps = {
    *  on `official` in `NewsMap`. */
   official: boolean;
   onOfficial: () => void;
+  /** Narrowing the whole map to one rank or one person. Server state, like the
+   *  window and for the same reason — it decides which rows exist. The current
+   *  selection is read off `map.minister` rather than passed separately, so the
+   *  chips can only ever show what the server actually filtered by. */
+  onMinister: (filter: MinisterFilter | null) => void;
   articles: number;
   districts: number;
   now: Date | null;
@@ -79,11 +88,52 @@ export function NewsPlate({
   dgipr,
   official,
   onOfficial,
+  onMinister,
   articles,
   districts,
   now,
 }: NewsPlateProps) {
-  const collected = agoMr(map.collectedAt ?? "", now);
+  /** When the story pass last ran, which is a different clock from the
+   *  collector's and is allowed to be behind it. Shown in pin mode only. */
+  const threaded = agoMr(stories?.runAt ?? "", now);
+  const board = map.ministers;
+  const filter = map.minister;
+
+  /**
+   * Which rank's names are shown, which is not the same as which chip is lit.
+   *
+   * Picking a person keeps their rank open underneath them — otherwise
+   * selecting हसन मुश्रीफ would fold away the list he was picked from and leave
+   * the reader with no way back to it except clearing the filter entirely.
+   */
+  const openTier: MinisterTier | null =
+    filter === null
+      ? null
+      : filter.kind === "tier"
+        ? filter.tier
+        : (board.ministers.find((minister) => minister.id === filter.id)?.tier ?? null);
+
+  const chosen =
+    filter?.kind === "one"
+      ? (board.ministers.find((minister) => minister.id === filter.id) ?? null)
+      : null;
+
+  /**
+   * The names offered inside an open rank.
+   *
+   * Only those with something in the window, plus whoever is currently chosen
+   * even when that is nothing — a chip that vanished the moment its own count
+   * reached zero would take the reader's own selection off the screen while
+   * leaving the map filtered by it. Ordered by coverage, because a rank of
+   * thirty-two in Gazette order is a list nobody reads to the end of.
+   */
+  const named = board.ministers
+    .filter(
+      (minister) =>
+        minister.tier === openTier &&
+        (minister.articles > 0 || minister.id === chosen?.id),
+    )
+    .sort((a, b) => b.articles - a.articles || a.nameMr.localeCompare(b.nameMr, "mr"));
 
   /**
    * Whether the folding half of the plate is showing.
@@ -134,16 +184,6 @@ export function NewsPlate({
       </div>
 
       <div className="brand-body">
-        {/* When the collector last wrote. The map's entire claim is that it is
-            current, and a claim like that has to carry its own timestamp or a
-            reader has no way to tell a live map from a screenshot. */}
-        {collected ? (
-          <motion.p className="news-plate-stamp" variants={RISE} transition={{ duration: 0.7 }}>
-            <span className="news-plate-live" aria-hidden />
-            {NEWS_MR.collectedAt} {collected}
-          </motion.p>
-        ) : null}
-
         {/* Everything marked `news-plate-fold` is what a phone puts away: the
             controls and the keys. What is left standing — the wordmark, the
             timestamp, the tally — is the plate's claim about the map, and a
@@ -211,6 +251,91 @@ export function NewsPlate({
             </div>
           </fieldset>
 
+          {/* Who the news is about. The one control on this plate backed by a
+              list this app asserts rather than one the corpus states — see the
+              header of `src/data/ministers.ts`, and the date printed under the
+              chips, which is that assertion carrying its source.
+
+              Ranks rather than names, because the corpus will not support
+              forty-one chips: over seven days the Chief Minister is named in 83
+              articles and the whole rest of the cabinet in single figures. The
+              names live inside a rank and appear only where there is something
+              to open. */}
+          <fieldset className="news-control">
+            <legend className="news-control-label">{NEWS_MR.ministers}</legend>
+
+            <div className="news-chips">
+              {MINISTER_TIERS.map((tier) => (
+                <button
+                  key={tier}
+                  type="button"
+                  className="news-chip"
+                  data-active={openTier === tier || undefined}
+                  aria-pressed={openTier === tier}
+                  // A second press on an open rank closes it, so the control
+                  // can undo itself without the reader hunting for the clear.
+                  onClick={() =>
+                    onMinister(
+                      openTier === tier && filter?.kind === "tier"
+                        ? null
+                        : { kind: "tier", tier },
+                    )
+                  }
+                >
+                  {ministerTierMr(tier)}
+                  <span className="news-chip-count">
+                    {toDevanagari(board.tiers[tier])}
+                  </span>
+                </button>
+              ))}
+
+              {filter ? (
+                <button
+                  type="button"
+                  className="news-chip news-chip-clear"
+                  onClick={() => onMinister(null)}
+                >
+                  {NEWS_MR.ministerAll}
+                </button>
+              ) : null}
+            </div>
+
+            {openTier && named.length > 0 ? (
+              <div className="news-chips news-chips-named">
+                {named.map((minister) => (
+                  <button
+                    key={minister.id}
+                    type="button"
+                    className="news-chip news-chip-named"
+                    data-active={chosen?.id === minister.id || undefined}
+                    aria-pressed={chosen?.id === minister.id}
+                    title={minister.portfolioMr}
+                    // Deselecting a person falls back to their rank rather than
+                    // to the whole press: the reader narrowed twice, and one
+                    // press back should undo one of those steps.
+                    onClick={() =>
+                      onMinister(
+                        chosen?.id === minister.id
+                          ? { kind: "tier", tier: minister.tier }
+                          : { kind: "one", id: minister.id },
+                      )
+                    }
+                  >
+                    {minister.nameMr}
+                    <span className="news-chip-count">
+                      {toDevanagari(minister.articles)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            {/* The portfolio, printed only once a person is chosen. It answers
+                "why is this minister's news all about drinking water", and it
+                is the Gazette's own wording rather than a summary of it. */}
+            {chosen ? <p className="news-plate-note">{chosen.portfolioMr}</p> : null}
+          </fieldset>
+
           {/* The source filter. Sits below the window rather than beside the
               mode, because it is not an alternative to anything: the mode chips
               choose between two readings of the press corpus, and this adds a
@@ -244,6 +369,20 @@ export function NewsPlate({
             so the map widened it rather than showing a blank state — but a map
             that silently answers a different question than the one asked is
             worse than one that shows nothing. */}
+        {/* Said when the filter, rather than the window, is what emptied the
+            map. The two look identical on the sheet and mean opposite things:
+            one is a quiet day in the state, the other is a minister who was not
+            in the news during a day that was not quiet at all. */}
+        {filter && articles === 0 ? (
+          <motion.p
+            className="news-plate-note news-plate-fold"
+            variants={RISE}
+            transition={{ duration: 0.7 }}
+          >
+            {NEWS_MR.ministerEmpty}
+          </motion.p>
+        ) : null}
+
         {map.widened ? (
           <motion.p className="news-plate-note news-plate-fold" variants={RISE} transition={{ duration: 0.7 }}>
             {NEWS_MR.windowWidened}
@@ -326,6 +465,15 @@ export function NewsPlate({
           <motion.div className="news-ramp news-plate-fold" variants={RISE} transition={{ duration: 0.7 }}>
             <p className="news-control-label">{NEWS_MR.precision}</p>
 
+            {/* The key explains two shapes, so it is drawn only when there are
+                shapes to explain. An empty window gets the sentence instead —
+                and the stamp below, which is the half that makes the emptiness
+                readable: "no developments" and "nothing has been threaded since
+                Sunday" look identical on the sheet and are entirely different
+                facts about the map. */}
+            {stories.total === 0 ? (
+              <p className="pin-key-empty">{NEWS_MR.noStories}</p>
+            ) : (
             <ul className="pin-key">
               <li className="pin-key-row">
                 <svg className="pin-key-mark" viewBox="-14 -24 28 28" aria-hidden>
@@ -334,7 +482,6 @@ export function NewsPlate({
                 </svg>
                 <span>
                   <span className="pin-key-name">{NEWS_MR.tierTaluka}</span>
-                  <span className="pin-key-note">{NEWS_MR.tierTalukaNote}</span>
                 </span>
               </li>
 
@@ -346,18 +493,25 @@ export function NewsPlate({
                 </svg>
                 <span>
                   <span className="pin-key-name">{NEWS_MR.tierDistrict}</span>
-                  <span className="pin-key-note">{NEWS_MR.tierDistrictNote}</span>
                 </span>
               </li>
             </ul>
+            )}
 
-            {/* Statewide stories have no place, so they get no mark. Said here
-                rather than left out, because a story that silently disappears
-                between two modes reads as the map having lost it. */}
-            {stories.statewide > 0 ? (
-              <p className="pin-key-statewide">
-                {toDevanagari(stories.statewide)} {NEWS_MR.storiesStatewide}
-              </p>
+            {/* The key names the two shapes and stops. The statewide count and
+                the threading timestamp used to be printed under it — the first
+                so statewide stories did not silently vanish between modes, the
+                second because `loadStories` does not widen its window the way
+                `loadNewsMap` widens the choropleth's, so the pin layer can be
+                older than the news underneath it. Two lines of provenance under
+                a two-row key read as the map explaining itself rather than
+                showing anything, and they are gone from the sheet.
+
+                The one case that still needs saying survives below: an empty
+                pin layer whose emptiness is the threading pass being behind,
+                which is otherwise indistinguishable from a quiet fortnight. */}
+            {stories.total === 0 && threaded ? (
+              <p className="pin-key-statewide">{NEWS_MR.storiesBehind}</p>
             ) : null}
           </motion.div>
         ) : null}
@@ -366,6 +520,15 @@ export function NewsPlate({
             bare gradient, because the ramp is quantile — the steps mean rank,
             not amount, and a legend that shows only colour would let a reader
             infer an absolute scale the map does not have. See `scale.ts`. */}
+        {/* The same ramp under a filter as without one. It used to be replaced
+            by a single flat swatch while a minister was chosen, on the argument
+            that a quantile scale over the ten districts one minister reaches
+            ranks counts of one against counts of two. The band numbers printed
+            beside each step answer that: they are recomputed from the narrowed
+            counts, so a reader who sees `१–२` under a minister can see for
+            themselves how thin the spread is rather than being told a rank
+            exists where it does not. Showing the small numbers beats hiding
+            them behind a tone that says only "somewhere here". */}
         {mode === "heat" && bands.length > 0 ? (
           <motion.div
             className="news-ramp news-plate-fold"
@@ -390,11 +553,6 @@ export function NewsPlate({
                 </div>
               ))}
             </div>
-
-            <p className="news-ramp-ends" aria-hidden>
-              <span>{NEWS_MR.fewer}</span>
-              <span>{NEWS_MR.more}</span>
-            </p>
           </motion.div>
         ) : null}
       </div>

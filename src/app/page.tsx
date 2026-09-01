@@ -1,7 +1,9 @@
 import { NewsMapShell } from "@/components/map";
 import { NewsTicker, type NewsItem } from "@/components/news";
+import { asMinisterFilter } from "@/data/ministers";
 import { loadDgipr } from "@/lib/dgipr/read";
 import { districtNameMr } from "@/lib/news/marathi";
+import { ministerIndex } from "@/lib/news/ministers";
 import { legendBands, loadNewsMap } from "@/lib/news/read";
 import { loadStories } from "@/lib/news/stories";
 import { DEFAULT_WINDOW, WINDOWS } from "@/lib/news/window";
@@ -12,15 +14,27 @@ import type { NewsArticle, NewsMap, WindowId } from "@/types/news";
 const TICKER_LENGTH = 40;
 
 type HomePageProps = {
-  searchParams: Promise<{ window?: string }>;
+  searchParams: Promise<{ window?: string; minister?: string }>;
 };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const { window } = await searchParams;
+  const { window, minister } = await searchParams;
+
+  /**
+   * Who the map is narrowed to, resolved once and shared by all three layers.
+   *
+   * The index behind it is the one read in this app that touches every article
+   * regardless of window — about 25 ms over the current corpus — so it is built
+   * here and handed down rather than rebuilt by each reader. All three layers
+   * must also agree on the answer: a choropleth showing the Chief Minister's
+   * districts under pins showing everybody's would be two maps on one sheet.
+   */
+  const ministerFilter = asMinisterFilter(minister);
+  const index = ministerIndex();
 
   const [geometry, map] = await Promise.all([
     buildMapGeometry(),
-    loadNewsMap(asWindow(window)),
+    loadNewsMap(asWindow(window), { minister: ministerFilter, index }),
   ]);
 
   // Read against the window the map actually settled on, not the one the query
@@ -28,7 +42,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   // one map disagreeing about which days they cover is worse than either being
   // narrow. Sequential rather than parallel because both are synchronous reads
   // of the same SQLite handle, and the second needs the first one's answer.
-  const stories = loadStories(map.window);
+  const stories = loadStories(map.window, { minister: ministerFilter, index });
 
   // The third layer, read from a committed snapshot rather than the corpus —
   // see `lib/dgipr/read.ts`. It is given the window the reader asked for and
@@ -36,7 +50,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   // terms: the collector adds hundreds of articles a day where the directorate
   // issues a handful of releases, and forcing an official layer onto a scraper's
   // clock shows an authoritative-looking zero for days at a time.
-  const dgipr = loadDgipr(asWindow(window));
+  const dgipr = loadDgipr(asWindow(window), { minister: ministerFilter });
 
   return (
     <main className="map-page">
@@ -54,6 +68,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           dgipr={dgipr}
           bands={legendBands(map)}
           window={asWindow(window)}
+          minister={ministerFilter}
         />
       </div>
     </main>

@@ -1,9 +1,11 @@
 import "server-only";
 
 import { storiesDb, storyQuery, storyQueryOne } from "./db";
+import { ministerIndex, type MinisterIndex } from "./ministers";
 import { snapshotStories } from "./snapshot";
 import { cutoffOf } from "./window";
 import type {
+  MinisterFilter,
   NewsStories,
   NewsWindow,
   PlaceTier,
@@ -14,10 +16,12 @@ import type {
 /**
  * How many stories are carried into the browser.
  *
- * The same argument as `PER_DISTRICT` in `read.ts`, applied to the other
- * layer: the cap belongs here rather than in the component, so the page's
- * payload stays flat as the corpus grows instead of every reader downloading
- * every story in the state to look at one of them. The current run produces
+ * The cap belongs here rather than in the component, so the page's payload
+ * stays flat as the corpus grows instead of every reader downloading every
+ * story in the state to look at one of them. The article lists in `read.ts`
+ * gave this argument up — a panel that names a count it will not show you is
+ * worse than a long list — but a story is not an article: the ceiling below has
+ * never actually bound. The current run produces
  * 124 pinnable stories over its whole fortnight, so nothing is dropped today —
  * this is the ceiling, not a filter.
  *
@@ -84,10 +88,22 @@ type StepRow = {
  * emptier than the choropleth beside it, and borrowing older pins to fill it
  * would put marks on the sheet the counts underneath do not account for.
  */
+export type LoadStoriesOptions = {
+  /** Which minister the pins are narrowed to, or null for every story. */
+  minister?: MinisterFilter | null;
+  /** Shared with `loadNewsMap` so the index is built once per request. */
+  index?: MinisterIndex;
+  now?: Date;
+};
+
 export function loadStories(
   window: NewsWindow,
-  now: Date = new Date(),
+  options: LoadStoriesOptions = {},
 ): NewsStories | null {
+  const { minister = null, now = new Date() } = options;
+  // Only built when a filter is actually set: a full-press map has no reason
+  // to pay for an index nothing will read.
+  const index = minister ? (options.index ?? ministerIndex()) : null;
   const source = storySource();
   if (!source) return null;
 
@@ -110,12 +126,29 @@ export function loadStories(
     (row) => row.last_at !== null && (!cutoff || row.last_at >= cutoff),
   );
 
+  /**
+   * The minister filter, applied to threads through the articles inside them.
+   *
+   * A story is shown under a minister when **any article in the thread names
+   * them**, not only its newest. A thread is a running story that a newsroom
+   * returns to, and the piece that named the Chief Minister is as often the
+   * first beat — the announcement — as the last; keeping only threads whose
+   * latest article names him would drop the story from the day after he
+   * announced it onwards.
+   *
+   * This is why `ministerIndex` is built over the whole corpus rather than over
+   * the window: those earlier steps are frequently older than the window the
+   * pins are drawn for, even though the thread itself is not.
+   */
+  const named = minister ? threadsNaming(source.steps, minister, index) : null;
+  const selected = named ? inWindow.filter((row) => named.has(row.id)) : inWindow;
+
   // The tier filter is the second half of the same restraint: a `state` story
   // is not in a place and gets no pin. Counted rather than dropped, so the
   // plate can say statewide stories exist instead of letting them vanish
   // between the two modes.
-  const pinnable = inWindow.filter((row) => row.place_tier !== "state");
-  const statewide = inWindow.length - pinnable.length;
+  const pinnable = selected.filter((row) => row.place_tier !== "state");
+  const statewide = selected.length - pinnable.length;
 
   const carried = [...pinnable]
     // Ranked by coverage for the cap, so what survives `STORY_LIMIT` is what
@@ -215,6 +248,29 @@ function storySource(): StorySource | null {
   );
 
   return { runId: Number(run.id), runAt: run.ended_at, threads, steps };
+}
+
+/**
+ * Which threads contain an article naming the filtered minister.
+ *
+ * Built from every step of every named thread rather than from the capped
+ * `steps` the panel receives, so a long story is judged on all of it and not on
+ * the first twelve beats that happen to fit in a payload.
+ */
+function threadsNaming(
+  rows: StepRow[],
+  minister: MinisterFilter,
+  index: MinisterIndex | null,
+): Set<string> {
+  const named = new Set<string>();
+  if (!index) return named;
+
+  for (const row of rows) {
+    if (named.has(row.thread_id)) continue;
+    if (index.matches(row.url, minister)) named.add(row.thread_id);
+  }
+
+  return named;
 }
 
 /** Each carried story's progression, oldest step first, capped at `PER_STORY`. */

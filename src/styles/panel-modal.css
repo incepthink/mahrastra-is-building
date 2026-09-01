@@ -187,6 +187,163 @@
   box-sizing: content-box;
 }
 
+/* --- The grid's search ----------------------------------------------------
+
+   A field in the header, not over the grid, because the body scrolls and the
+   filter must not scroll with the forty cards it is filtering. It sits between
+   the heading and the close button, takes what width is left, and stops
+   growing at a size where a Marathi headline's worth of query still fits.
+
+   The label is for screen readers only. A visible one would put a fourth line
+   of text in a header that already carries an eyebrow, a heading and a tally,
+   and the placeholder says the same words to everyone who can see the box. */
+
+.panel-modal-tools {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 14rem;
+  justify-content: flex-end;
+}
+
+.panel-search {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 22rem;
+  align-items: center;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  background: var(--color-surface-sunken);
+  transition:
+    border-color 160ms var(--ease-out-soft),
+    background 160ms var(--ease-out-soft),
+    box-shadow 160ms var(--ease-out-soft);
+}
+
+/* Focus is drawn on the ring rather than on the input, so the mark and the
+   clear button are inside the thing that lights up. `:focus-visible` on the
+   input itself would leave a rounded outline sitting inside a rounded pill. */
+.panel-search:focus-within {
+  border-color: var(--color-accent);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+/* Something in the box is a state worth seeing from across the header: it is
+   the reason the grid is short. */
+.panel-search[data-filled] {
+  border-color: var(--color-accent);
+  background: var(--color-surface);
+}
+
+.panel-search-label {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.panel-search-mark {
+  flex: 0 0 auto;
+  margin-left: 0.7rem;
+  color: var(--color-text-subtle);
+}
+
+.panel-search-input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.45rem 0.6rem;
+  border: 0;
+  background: none;
+  font-family: var(--font-marathi);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.panel-search-input:focus {
+  outline: none;
+}
+
+.panel-search-input::placeholder {
+  color: var(--color-text-subtle);
+}
+
+/* WebKit's own clear affordance, turned off in favour of the button: it is
+   invisible until the field has focus, which is exactly when a reader has
+   stopped looking for a way to empty it. */
+.panel-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.panel-search-clear {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  margin-right: 0.35rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  place-items: center;
+  transition:
+    background 140ms var(--ease-out-soft),
+    color 140ms var(--ease-out-soft);
+}
+
+.panel-search-clear:hover {
+  background: var(--color-line);
+  color: var(--color-text);
+}
+
+.panel-search-clear:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* A search that matched nothing, answered in words and with the way back in
+   the reader's hand. An empty grid on its own reads as a district that filed
+   nothing, which is the opposite of what happened. */
+.panel-modal-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(2rem, 8vh, 4rem) 1rem;
+  gap: 0.8rem;
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.panel-search-reset {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-family: var(--font-marathi);
+  font-size: var(--text-caption);
+  color: var(--color-accent-deep);
+  cursor: pointer;
+  transition:
+    background 140ms var(--ease-out-soft),
+    border-color 140ms var(--ease-out-soft);
+}
+
+.panel-search-reset:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.panel-search-reset:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 /* --- Narrow screens ------------------------------------------------------ */
 
 @media (max-width: 860px) {
@@ -196,6 +353,26 @@
 
   .panel-modal-sheet {
     border-radius: 0;
+  }
+
+  /* Three things do not fit on one line at this width, so the head wraps and
+     the field takes the row under the heading — full width, because a search
+     box squeezed against a close button is a search box nobody aims at. */
+  .panel-modal-head {
+    flex-wrap: wrap;
+  }
+
+  .panel-modal-heading {
+    flex: 1 1 12rem;
+  }
+
+  .panel-modal-tools {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .panel-search {
+    max-width: none;
   }
 
   /* One column, and the picture shrinks with it: a 9rem photograph on a phone

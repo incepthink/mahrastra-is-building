@@ -65,6 +65,15 @@ const OUT_JSON = path.join(ROOT, "src", "data", "news-snapshot.json");
  * A pending row has a URL and nothing else, and `read.ts` refuses to count one
  * for a stated reason; a snapshot that carried them would put rows in front of
  * that same filter having already changed what the corpus looks like.
+ *
+ * `keywords` is carried for the minister filter and is the one column here that
+ * costs real bytes — about 530 KB on a 1.5 MB file, roughly a third again. It
+ * is carried as the publisher's raw tag list rather than as a precomputed set
+ * of minister ids, for the reason this whole file is built on: it ships rows,
+ * not answers. Baking the match in would freeze it against whatever
+ * `src/data/ministers.ts` said on the day the snapshot ran, so a corrected
+ * alias or a reshuffle would need a re-snapshot instead of a code change. The
+ * rule is the same one that keeps prominence as four raw counts.
  */
 function articles(db) {
   return db
@@ -72,7 +81,7 @@ function articles(db) {
       `SELECT
          a.url, a.district_id, a.scope, a.article_section,
          a.headline, a.sitemap_title, a.description, a.image_url, a.author,
-         a.published_at, a.modified_at, a.word_count,
+         a.published_at, a.modified_at, a.word_count, a.keywords,
          (SELECT COUNT(*) FROM article_revisions r WHERE r.url = a.url) AS revisions
        FROM articles a
        WHERE a.fetch_status = 'ok' AND a.published_at IS NOT NULL

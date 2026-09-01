@@ -56,6 +56,9 @@ export type SnapshotArticleRow = {
   published_at: string | null;
   modified_at: string | null;
   word_count: number | null;
+  /** The publisher's own tag list, comma-separated and bilingual. Carried for
+   *  the minister matcher and for nothing else — see `lib/news/ministers.ts`. */
+  keywords: string | null;
   revisions: number;
 };
 

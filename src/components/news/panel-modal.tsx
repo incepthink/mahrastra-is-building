@@ -95,6 +95,17 @@ type PanelModalProps = {
   title: string;
   /** The count line under it. */
   tally?: React.ReactNode;
+  /**
+   * A control that belongs to the head rather than to the body — today, the
+   * grid's search field.
+   *
+   * In the head and not above the grid because it has to survive the body
+   * scrolling: a filter that scrolls away with the forty cards it is filtering
+   * is a filter the reader has to scroll back up to change. It sits between
+   * the heading and the close button and collapses under them when the sheet
+   * is too narrow to hold all three on one line.
+   */
+  tools?: React.ReactNode;
   /** The credit line at the bottom, which is the panel's footer verbatim. */
   foot?: React.ReactNode;
   /**
@@ -139,6 +150,7 @@ export function PanelModal({
   eyebrow,
   title,
   tally,
+  tools,
   foot,
   actions,
   className,
@@ -156,7 +168,20 @@ export function PanelModal({
     if (!open) return;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") (onEscape ?? onClose)();
+      if (event.key === "Escape") {
+        /* The panels underneath listen on `window`, which is the last stop in
+           the bubble path after `document` — and they suppress that listener
+           only while `expanded` is true. Closing the sheet flips that flag,
+           and React flushes a discrete event's state before the event has
+           finished propagating, so the panel's own handler could be attached
+           in time to catch the very press that closed the sheet: one Escape,
+           two things closed, and the reader back at the map instead of at the
+           list they were reading. Stopping it here is what makes the step
+           actually one step. */
+        event.stopPropagation();
+        (onEscape ?? onClose)();
+      }
+
       if (event.key === "Tab") keepFocusInside(event, sheetRef.current);
     };
 
@@ -214,6 +239,8 @@ export function PanelModal({
 
                 {tally ? <p className="news-panel-tally">{tally}</p> : null}
               </div>
+
+              {tools ? <div className="panel-modal-tools">{tools}</div> : null}
 
               <button
                 type="button"

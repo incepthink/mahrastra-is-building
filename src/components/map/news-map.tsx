@@ -15,13 +15,14 @@ import { useMapCamera } from "./use-map-camera";
 import { DgiprPanel } from "@/components/news/dgipr-panel";
 import { NewsPanel, type PanelSubject } from "@/components/news/news-panel";
 import { StoryPanel } from "@/components/news/story-panel";
-import { articleCountMr, NEWS_MR } from "@/lib/news/marathi";
+import { articleCountMr, ministerTierMr, NEWS_MR } from "@/lib/news/marathi";
 import { useNow } from "@/lib/news/use-now";
 import type { DgiprMap, DgiprRelease } from "@/types/dgipr";
 import type { DistrictShape, MapGeometry } from "@/types/map";
 import type {
   DistrictNews,
   MapMode,
+  MinisterFilter,
   NewsArticle,
   NewsMap,
   NewsStories,
@@ -57,6 +58,10 @@ type NewsMapProps = {
   /** What the reader asked for; the server may have widened it. */
   window: WindowId;
   onWindow: (id: WindowId) => void;
+  /** Who the map is narrowed to. Server state alongside the window — both
+   *  decide which rows exist, so both live in the URL. */
+  minister: MinisterFilter | null;
+  onMinister: (filter: MinisterFilter | null) => void;
   /** True while the server is fetching a different window. */
   pending: boolean;
 };
@@ -86,6 +91,8 @@ export function NewsMap({
   bands,
   window: requested,
   onWindow,
+  minister,
+  onMinister,
   pending,
 }: NewsMapProps) {
   const { svgRef, camera, isPanning, hasDragged, zoomBy, reset, surfaceProps } =
@@ -127,6 +134,17 @@ export function NewsMap({
   /** Null while the server renders, then the live minute. See `useNow`. */
   const now = useNow();
 
+  /**
+   * How each district is painted.
+   *
+   * Always the quantile step `read.ts` computed, filtered or not. Under a
+   * minister the scale is rebuilt from that minister's own counts — `read.ts`
+   * narrows the rows before it takes the quantiles — so the ramp keeps meaning
+   * the one thing it has ever meant: where this district ranks among the
+   * districts that have any news in the window at all. The bands beside it in
+   * the plate are recomputed from the same narrowed counts, so the reader is
+   * never shown a step whose number came from a corpus they filtered away.
+   */
   const levels = useMemo(
     () =>
       Object.fromEntries(
@@ -334,6 +352,22 @@ export function NewsMap({
       : [focusedRelease];
   }, [focusedRelease, dgipr]);
 
+  /**
+   * Whose news the panel is showing, when it is not showing everyone's.
+   *
+   * Resolved from the board rather than from the roster directly: the board is
+   * already in the payload and the roster is not, so this costs nothing and
+   * keeps the alias lists out of the browser. A tier filter has no one name, so
+   * the rank's own label stands in for it.
+   */
+  const ministerNameMr = useMemo(() => {
+    if (!minister) return null;
+
+    return minister.kind === "one"
+      ? (map.ministers.ministers.find((one) => one.id === minister.id)?.nameMr ?? null)
+      : ministerTierMr(minister.tier);
+  }, [minister, map.ministers]);
+
   /** The district panel's subject. */
   const openDistrict: DistrictNews | undefined =
     open?.kind === "district" ? map.districts[open.districtId] : undefined;
@@ -343,10 +377,10 @@ export function NewsMap({
       ? map.statewide
       : (openDistrict?.articles ?? []);
 
-  // The true figure, not the length of the list being shown. Both sets are
-  // capped on the server — see `PER_DISTRICT` and `STATEWIDE_LIMIT` — so a
-  // panel reporting its own length would tell a reader there are 30 statewide
-  // pieces while the badge two inches away says 56.
+  // The district's own figure rather than the length of the array. These are
+  // now the same number — `read.ts` ships both lists whole — but they are the
+  // same number by accident of the cap being gone, not by definition, and the
+  // tally is a claim about the place.
   const panelTotal =
     open?.kind === "state" ? map.totals.statewide : (openDistrict?.count ?? 0);
 
@@ -376,6 +410,7 @@ export function NewsMap({
         data-pending={pending || undefined}
         data-mode={mode}
         data-official={official || undefined}
+        data-minister={minister ? "" : undefined}
         onKeyDown={(event) => {
           // A panel's expanded reading is mounted on `<body>` through a
           // portal but is still a React child of this frame, so its
@@ -461,6 +496,7 @@ export function NewsMap({
             dgipr={dgipr}
             official={official}
             onOfficial={toggleOfficial}
+            onMinister={onMinister}
             articles={map.totals.articles}
             districts={map.totals.districts}
             now={now}
@@ -489,6 +525,7 @@ export function NewsMap({
           subject={panelSubject}
           articles={panelArticles}
           total={panelTotal}
+          ministerNameMr={ministerNameMr}
           now={now}
           onClose={clearSelection}
         />
