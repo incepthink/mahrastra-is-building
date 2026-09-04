@@ -189,6 +189,179 @@ export const SOURCES = [
       note: "Headlines and metadata read from the publisher's own news sitemap and schema.org markup. Full text is stored for analysis only and is not reproduced.",
     },
   },
+
+  /*
+   * ── The breadth sources ────────────────────────────────────────────────
+   *
+   * Everything above this line is a masthead the engine has watched since the
+   * beginning. Everything below was added for one purpose: CROSS-OUTLET
+   * CARRIAGE. `scripts/news/README.md` argues that "11 of 13 outlets carried
+   * it" is the strongest defensible sentence this project can produce, and
+   * with two mastheads the largest number it could ever print was 2.
+   *
+   * HOW THESE FIVE WERE CHOSEN, because it was not by reputation. Seventy
+   * distinct outlets were observed actually carrying Maharashtra stories, and
+   * each candidate was then checked against four gates in order:
+   *
+   *   1. its own robots.txt permits the feed path for `User-agent: *`
+   *   2. it does not name ClaudeBot / anthropic-ai / GPTBot & co. and refuse
+   *      them, the same signal Loksatta sends and this engine already respects
+   *   3. it publishes a machine-readable feed — a Google News sitemap or RSS
+   *   4. its article pages carry a schema.org NewsArticle the existing
+   *      `lib/jsonld.mjs` can read, and its URLs carry a section the existing
+   *      geography filter can read
+   *
+   * Four outlets that a reader would expect to see here failed a gate and are
+   * left out on purpose, recorded so nobody re-derives the same dead ends:
+   *
+   *   saamana.com          robots.txt disallows every feed path we would use
+   *   divyamarathi, etvbharat, aaplamahanagar, prahaar, news18marathi
+   *                        name and block ClaudeBot / anthropic-ai by name
+   *   dainikprabhat.com    flat URLs (`/pune-dahi-handi-traffic-changes/`) —
+   *                        the district exists only inside the headline slug,
+   *                        and reading geography out of a slug is guessing
+   *   lokshahi.com         a NewsArticle is present but half its pages did not
+   *                        yield one to the extractor; unresolved, not rejected
+   *
+   * NONE OF THESE CARRY `rankPages`, and that is the design rather than an
+   * omission. The rank pass exists to measure *position over time* on section
+   * pages, which is what feeds the velocity half of the fire score. These
+   * sources answer a different question — did anyone else carry this at all —
+   * and answering it costs one feed read, not fifty page reads. Adding five
+   * more mastheads to the rank sweep would multiply the request budget by
+   * three to sharpen a signal that is already the weaker of the two.
+   */
+
+  {
+    id: "tv9marathi",
+    label: "TV9 Marathi",
+    homepage: "https://www.tv9marathi.com/",
+    language: "mr",
+
+    /** Google News sitemap: 423 entries, titles and publication dates on all. */
+    discovery: [{ kind: "urlset", url: "https://www.tv9marathi.com/news-sitemap.xml" }],
+    archive: null,
+
+    /** `/<section>/<slug>-<numeric id>.html`. */
+    isArticleUrl: (url) => /-\d{5,}\.html$/.test(new URL(url).pathname),
+
+    rankPages: [],
+
+    attribution: {
+      label: "TV9 Marathi (tv9marathi.com)",
+      url: "https://www.tv9marathi.com/",
+      note: "Headlines and metadata read from the publisher's own news sitemap and schema.org markup. Full text is stored for analysis only and is not reproduced.",
+    },
+  },
+
+  {
+    id: "navarashtra",
+    label: "Navarashtra",
+    homepage: "https://navarashtra.com/",
+    language: "mr",
+
+    /** Google News sitemap: 344 entries. Files district stories under
+     *  `/maharashtra/<district>/`, which is why the geography filter had to
+     *  stop reading only the first path segment. */
+    discovery: [{ kind: "urlset", url: "https://navarashtra.com/news-sitemap.xml" }],
+    archive: null,
+
+    isArticleUrl: (url) => /-\d{5,}\.html$/.test(new URL(url).pathname),
+
+    rankPages: [],
+
+    attribution: {
+      label: "Navarashtra (navarashtra.com)",
+      url: "https://navarashtra.com/",
+      note: "Headlines and metadata read from the publisher's own news sitemap and schema.org markup. Full text is stored for analysis only and is not reproduced.",
+    },
+  },
+
+  /*
+   * The three Quintype outlets below publish `/feed` (RSS) rather than a news
+   * sitemap, handled by `parseRss` in lib/sitemap.mjs. Their feeds are short —
+   * about 20-85 items against TV9's 423 — so they depend on the fifteen-minute
+   * cadence to stay complete rather than on window size. A missed hour is a
+   * permanent hole in these three specifically.
+   */
+
+  {
+    id: "esakal",
+    label: "Esakal",
+    homepage: "https://www.esakal.com/",
+    language: "mr",
+
+    discovery: [{ kind: "rss", url: "https://www.esakal.com/feed" }],
+    archive: null,
+
+    /** Quintype slugs are long and hyphenated; section indexes are not. This is
+     *  a floor, not a proof — the geography filter is the real gate. */
+    isArticleUrl: (url) => {
+      const last = new URL(url).pathname.split("/").filter(Boolean).at(-1) ?? "";
+      return last.length >= 20 && (last.match(/-/g) ?? []).length >= 2;
+    },
+
+    rankPages: [],
+
+    attribution: {
+      label: "Esakal (esakal.com)",
+      url: "https://www.esakal.com/",
+      note: "Headlines and metadata read from the publisher's own feed and schema.org markup. Full text is stored for analysis only and is not reproduced.",
+    },
+  },
+
+  {
+    id: "sarkarnama",
+    label: "Sarkarnama",
+    homepage: "https://www.sarkarnama.esakal.com/",
+    language: "mr",
+
+    /** Politics desk of the same house. Kept separate from `esakal` because it
+     *  is a separate masthead to a reader, and carriage is counted per outlet —
+     *  folding them together would understate breadth, splitting them where a
+     *  reader sees one masthead would overstate it. A reader sees two. */
+    discovery: [{ kind: "rss", url: "https://www.sarkarnama.esakal.com/feed" }],
+    archive: null,
+
+    isArticleUrl: (url) => {
+      const last = new URL(url).pathname.split("/").filter(Boolean).at(-1) ?? "";
+      return last.length >= 20 && (last.match(/-/g) ?? []).length >= 2;
+    },
+
+    rankPages: [],
+
+    attribution: {
+      label: "Sarkarnama (sarkarnama.esakal.com)",
+      url: "https://www.sarkarnama.esakal.com/",
+      note: "Headlines and metadata read from the publisher's own feed and schema.org markup. Full text is stored for analysis only and is not reproduced.",
+    },
+  },
+
+  {
+    id: "pudhari",
+    label: "Pudhari",
+    homepage: "https://www.pudhari.news/",
+    language: "mr",
+
+    /** Files three levels deep — `/maharashtra/vidarbha/chandrapur/<slug>` —
+     *  so before the geography filter learned to take the deepest district,
+     *  every Pudhari district story classified as `scope='state'`. */
+    discovery: [{ kind: "rss", url: "https://www.pudhari.news/feed" }],
+    archive: null,
+
+    isArticleUrl: (url) => {
+      const last = new URL(url).pathname.split("/").filter(Boolean).at(-1) ?? "";
+      return last.length >= 20 && (last.match(/-/g) ?? []).length >= 2;
+    },
+
+    rankPages: [],
+
+    attribution: {
+      label: "Pudhari (pudhari.news)",
+      url: "https://www.pudhari.news/",
+      note: "Headlines and metadata read from the publisher's own feed and schema.org markup. Full text is stored for analysis only and is not reproduced.",
+    },
+  },
 ];
 
 export const sourceById = (id) => SOURCES.find((s) => s.id === id);

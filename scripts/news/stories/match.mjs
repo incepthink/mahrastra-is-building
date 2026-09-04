@@ -119,6 +119,14 @@ const DISTRICT_BONUS = 0.03;
  * are different questions — "what happened" against "when did our cron notice"
  * — and a section page carries evergreen links from 2023, so a corpus bounded
  * by discovery time would drag three-year-old articles into today's clusters.
+ *
+ * The bounds are annotated because this module is imported by TypeScript as
+ * well as by Node — `src/lib/news/attention.ts` scores broadcast titles against
+ * this corpus — and without them the checker infers the parameter type from the
+ * `= null` defaults alone and rejects the string every caller actually passes.
+ *
+ * @param {unknown} newsDb A read-only handle on `.data/news.db`.
+ * @param {{ fromIso?: string | null, toIso?: string | null }} [window]
  */
 export function loadCorpus(newsDb, { fromIso = null, toIso = null } = {}) {
   const clauses = ["a.fetch_status = 'ok'", "a.published_at IS NOT NULL"];
