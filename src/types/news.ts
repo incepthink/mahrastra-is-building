@@ -522,3 +522,137 @@ export type FireBoard = {
   runId: number | null;
   runCorpusTo: string | null;
 };
+
+/**
+ * One video's growth across the attention window.
+ *
+ * Every field is either something the API said at a named moment or the
+ * difference between two such things. `viewsFrom`/`viewsTo` and their two
+ * timestamps are carried beside the rate for the reason
+ * `scripts/news/README.md` sets as the standard: "41,203 views at 17:20, up
+ * from 38,664 at 14:20" is a sentence a reader can check against the store,
+ * where "2,539 views/hour" has to be taken on trust.
+ */
+export type VideoAttention = {
+  videoId: string;
+  /** The broadcaster's own title, unrewritten — the matching input. */
+  title: string;
+  handle: string;
+  /** The resolved channel title, which is the name a reader recognises. A
+   *  handle is squatted and renamed; see `yt_channels` on why ids are pinned. */
+  channel: string;
+  publishedAt: string;
+  /** ISO-8601. A 45s Short and a 22m bulletin are not the same object. */
+  duration: string;
+  viewsFrom: number;
+  viewsTo: number;
+  /** `viewsTo - viewsFrom`. The difference between two named observations, not
+   *  a sum of consecutive deltas — which is what makes it immune to the view
+   *  purges `yt_stats` documents. */
+  gain: number;
+  fromAt: string;
+  lastAt: string;
+  /** How many observations *with a view count* the window holds. Two is the
+   *  minimum a change can be seen in. */
+  observations: number;
+  /** The span those observations really covered, which is less than the window
+   *  for a video published inside it. */
+  observedHours: number;
+  /** How old the video was at the last observation. Carried because the level
+   *  rises monotonically with age — measured, average views run 8k at 0–6h and
+   *  63k at 48h — so a rate without an age beside it invites the wrong
+   *  reading. */
+  ageHours: number;
+  /** `min(gain, gain per hour)`. Speed may discount magnitude, never
+   *  manufacture it. */
+  viewsPerHour: number;
+  /** How well the title matched the article it was attributed to, or null when
+   *  the video was never put to the matcher. Never a threshold, always the
+   *  score, so a reader can see how close a call it was. */
+  matchScore: number | null;
+};
+
+/** Rows the arithmetic refused, counted so that a window which is mostly
+ *  exclusions cannot pass for a window in which nobody watched anything. Each
+ *  case is argued in `attention.ts`. */
+export type AttentionExclusions = {
+  hidden: number;
+  single: number;
+  live: number;
+  stream: number;
+  premiere: number;
+  flat: number;
+};
+
+/** One window of YouTube growth, with everything needed to say how much of it
+ *  was measurable at all. */
+export type AttentionReading = {
+  videos: VideoAttention[];
+  /** The newest capture the window is anchored on — not the wall clock. Null
+   *  when the YouTube pass has never run here. */
+  asOf: string | null;
+  windowHours: number;
+  /** The span the eligible captures actually covered. Smaller than
+   *  `windowHours` while the collector is filling its first window, and the
+   *  difference is the whole of what "not enough history yet" means. */
+  observedHours: number;
+  captures: number;
+  /** Videos the window held a curve for, before any exclusion. */
+  considered: number;
+  excluded: AttentionExclusions;
+  totalViewsPerHour: number;
+};
+
+/**
+ * A running story's share of the broadcast day, and the videos it is claimed
+ * from.
+ *
+ * `channels` is the sturdy figure and `viewsPerHour` is not: the first is a
+ * count of distinct broadcasters, the second a rate over a sample whose size
+ * is reported in `AttentionCoverage` and measured at 2.5%. Read them in that
+ * order.
+ */
+export type ThreadAttention = {
+  /** Null when the matched article has no thread yet — the story pipeline is a
+   *  snapshot, and the newest stories are the ones it predates. */
+  threadId: string | null;
+  titleMr: string | null;
+  /** The article the match was actually made against, so the attribution is
+   *  checkable rather than merely asserted. */
+  leadHeadline: string;
+  leadUrl: string;
+  videos: VideoAttention[];
+  /** Distinct broadcasters carrying it. A plain count of rows. */
+  channels: string[];
+  viewsPerHour: number;
+  /** The single hottest video, kept beside the total because one clip taking
+   *  30,000 views an hour and six clips taking 5,000 each are different
+   *  claims. */
+  peakViewsPerHour: number;
+  gain: number;
+  bestMatch: number;
+};
+
+/**
+ * How much of the window's measured attention a reading accounts for.
+ *
+ * Reported with every board rather than computed on request, because it is the
+ * figure that decides whether any of the rest may be used for anything. On the
+ * corpus this was built against it is **0.025** — two and a half percent — and
+ * a caller that ranks stories by `viewsPerHour` while ignoring that is ranking
+ * a phrasing coincidence rather than an audience.
+ */
+export type AttentionCoverage = {
+  matchedVideos: number;
+  matchedViewsPerHour: number;
+  totalViewsPerHour: number;
+  /** `matchedViewsPerHour / totalViewsPerHour`, 0–1. */
+  share: number;
+  /** The matcher line the attribution was made at, carried so a board states
+   *  the constant it was produced under. */
+  threshold: number;
+  /** Which story run supplied the threads, and how many articles the videos
+   *  were scored against. */
+  runId: number | null;
+  articles: number;
+};
