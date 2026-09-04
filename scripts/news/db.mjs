@@ -4,7 +4,7 @@
  * The district scrapers commit their output as JSON because a district
  * publishes a few hundred notices a year and every one of them is meant to be
  * read by a human before it goes live. News is the opposite shape — roughly
- * 1,500 articles a day across the two sources, plus a snapshot of every watched
+ * 1,500 articles a day across the seven sources, plus a snapshot of every watched
  * section page every half hour — so it goes into a database that can be queried
  * and thrown away rather than a file that gets committed.
  *
@@ -255,6 +255,18 @@ export function openDb({ file = DB_FILE } = {}) {
   mkdirSync(path.dirname(file), { recursive: true });
   const db = new DatabaseSync(file);
   db.exec("PRAGMA journal_mode = WAL");
+  /**
+   * Wait for a competing writer rather than failing the run.
+   *
+   * The scheduled task refuses to start a second collector while one is
+   * running, but it does not know about a hand-run `pnpm news:ingest` or a
+   * `news:stories` pass, and going from two sources to seven made every cycle
+   * long enough for that overlap to be ordinary rather than unlucky. Without a
+   * busy timeout the loser of the race throws SQLITE_BUSY and drops its whole
+   * capture — the one failure this store cannot absorb, because Lokmat keeps no
+   * archive and a lost fifteen minutes is lost for good.
+   */
+  db.exec("PRAGMA busy_timeout = 15000");
   db.exec("PRAGMA foreign_keys = ON");
   db.exec(SCHEMA);
 

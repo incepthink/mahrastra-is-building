@@ -58,6 +58,36 @@ export function parseUrlset(xml) {
   return entries;
 }
 
+/**
+ * Parse an RSS 2.0 `<channel>` into the same entry shape as `parseUrlset`.
+ *
+ * The outlets added after the first two mastheads mostly run on Quintype
+ * (Esakal, Sarkarnama, Pudhari), which publishes `/feed` rather than a Google
+ * News sitemap. The payload is the same information under different tags —
+ * headline, publication time, keywords — so it is normalised here and the
+ * discovery pass never learns there was a difference.
+ *
+ * A feed is a much shorter window than a news sitemap: ~20 items against
+ * TV9's 423. That is a cadence constraint rather than a coverage one, and the
+ * collector already re-reads every fifteen minutes.
+ */
+export function parseRss(xml) {
+  const entries = [];
+  for (const [block] of String(xml).matchAll(/<item[\s>][\s\S]*?<\/item>/gi)) {
+    const url = tagText(block, "link");
+    if (!url) continue;
+    entries.push({
+      url,
+      lastmod: tagText(block, "atom:updated"),
+      title: tagText(block, "title"),
+      publishedAt: tagText(block, "pubDate"),
+      keywords: tagText(block, "media:keywords"),
+      imageUrl: block.match(/<media:content[^>]*\burl="([^"]+)"/i)?.[1] ?? null,
+    });
+  }
+  return entries;
+}
+
 /** Parse a `<sitemapindex>` into its child sitemap URLs, newest first. */
 export function parseSitemapIndex(xml) {
   const entries = [];

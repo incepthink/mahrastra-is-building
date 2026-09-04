@@ -15,7 +15,7 @@
  */
 import { fetchText } from "../lib/http.mjs";
 import { classifyUrl } from "./geography.mjs";
-import { isSitemapIndex, parseSitemapIndex, parseUrlset } from "./lib/sitemap.mjs";
+import { isSitemapIndex, parseRss, parseSitemapIndex, parseUrlset } from "./lib/sitemap.mjs";
 import { toUtcIso } from "./lib/time.mjs";
 import { SOURCES } from "./sources.mjs";
 
@@ -39,10 +39,18 @@ ON CONFLICT(url) DO UPDATE SET
   published_at     = COALESCE(articles.published_at, excluded.published_at)
 `;
 
-/** Follow a sitemap index one level down, newest child first. */
-async function loadUrlset(url, { limitChildren = 1 } = {}) {
-  const { body } = await fetchText(url, { ttlHours: 0 });
+/**
+ * Read one discovery endpoint into entries.
+ *
+ * `kind: "rss"` is the Quintype outlets' `/feed`; everything else is a sitemap,
+ * and a sitemap index is followed one level down, newest child first. Both
+ * shapes normalise to the same entry, so nothing downstream branches on source.
+ */
+async function loadEndpoint(endpoint, { limitChildren = 1 } = {}) {
+  const { body } = await fetchText(endpoint.url, { ttlHours: 0 });
   if (!body) return [];
+
+  if (endpoint.kind === "rss") return parseRss(body);
 
   if (!isSitemapIndex(body)) return parseUrlset(body);
 
@@ -103,7 +111,7 @@ export async function discover(db, { sources = SOURCES, log = console.log } = {}
     const before = db.prepare("SELECT COUNT(*) AS n FROM articles WHERE source_id = ?").get(source.id).n;
 
     for (const endpoint of source.discovery) {
-      const entries = await loadUrlset(endpoint.url);
+      const entries = await loadEndpoint(endpoint);
       seen += entries.length;
       kept += recordEntries(db, source, entries, now);
     }
@@ -111,7 +119,7 @@ export async function discover(db, { sources = SOURCES, log = console.log } = {}
     const after = db.prepare("SELECT COUNT(*) AS n FROM articles WHERE source_id = ?").get(source.id).n;
     const added = after - before;
 
-    log(`  ${source.id.padEnd(9)} sitemap ${String(seen).padStart(5)} → Maharashtra ${String(kept).padStart(4)} → new ${added}`);
+    log(`  ${source.id.padEnd(12)} feed ${String(seen).padStart(5)} → Maharashtra ${String(kept).padStart(4)} → new ${added}`);
     totals.seen += seen;
     totals.kept += kept;
     totals.inserted += added;
@@ -130,7 +138,7 @@ export async function backfill(db, date, { sources = SOURCES, log = console.log 
       log(`  ${source.id}: no archive — history only exists from first run`);
       continue;
     }
-    const entries = await loadUrlset(source.archive(date));
+    const entries = await loadEndpoint({ kind: "urlset", url: source.archive(date) });
     const kept = recordEntries(db, source, entries, now);
     log(`  ${source.id}: ${date} → ${entries.length} urls, ${kept} Maharashtra`);
     inserted += kept;

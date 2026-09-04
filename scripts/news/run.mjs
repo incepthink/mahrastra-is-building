@@ -3,7 +3,7 @@
  *
  * Four passes, run separately or together:
  *
- *   discover   read both sitemaps, keep Maharashtra URLs          (~2 requests)
+ *   discover   read every source feed, keep Maharashtra URLs      (~7 requests)
  *   ingest     fetch pending articles, read their JSON-LD         (1 per article)
  *   rank       snapshot the order of 51 watched section pages     (51 requests)
  *   youtube    snapshot view counts on 8 Marathi news channels    (~16 quota units)
@@ -25,7 +25,7 @@
  *   pnpm news:backfill -- --date=2026-08-28    Loksatta only; Lokmat keeps no archive
  *
  * Flags
- *   --source=lokmat|loksatta   restrict to one masthead
+ *   --source=<id>              restrict to one masthead (see sources.mjs)
  *   --limit=N                  articles per ingest pass (default 200)
  *   --since-hours=N            recheck window (default 48)
  *   --plan                     youtube only: print the quota arithmetic and exit
