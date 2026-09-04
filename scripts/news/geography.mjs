@@ -87,9 +87,38 @@ const EXCLUDED_PATH_PARTS = new Set([
   "page", // section pagination: /ahilyanagar/page/3/
 ]);
 
+/** Resolve one path segment to a canonical district id, or null. */
+function districtFromSegment(segment) {
+  const section = segment.toLowerCase();
+  const districtId = SECTION_ALIASES[section] ?? CITY_TO_DISTRICT[section] ?? section;
+  return DISTRICT_IDS.includes(districtId) ? { section, districtId } : null;
+}
+
 /**
  * Resolve a URL to `{ section, scope, districtId }`, or `null` if it is not
  * Maharashtra geography. `null` is the normal answer for most of the sitemap.
+ *
+ * THE SECTION IS NOT ALWAYS THE FIRST SEGMENT. That was true of the two
+ * mastheads this filter was written for and is false of most of the outlets
+ * added since: Pudhari files `/maharashtra/vidarbha/chandrapur/<slug>`, Esakal
+ * `/uttar-maharashtra/nashik/<slug>`, Navarashtra `/maharashtra/mumbai/<slug>`.
+ * So every segment *before the article slug* is considered.
+ *
+ * Two rules make that safe rather than merely wider:
+ *
+ * The final segment is never examined. It is the headline slug, and slugs carry
+ * place names constantly — `pune-dahi-handi-traffic-changes` is a Pune story
+ * but the URL is not asserting that, the words are. Reading geography out of a
+ * slug is guessing; reading it out of a section path is quoting the newsroom's
+ * own filing. The same distinction `place.mjs` draws between a dateline and a
+ * word mid-paragraph.
+ *
+ * The DEEPEST district wins, and a statewide container does not outrank it.
+ * `/maharashtra/vidarbha/chandrapur/` is a Chandrapur story filed under the
+ * state desk's tree, not a statewide one; taking the first segment would file
+ * every Pudhari district story as `scope='state'` and strip its district
+ * outright. `scope='state'` is reserved for a path that names no district at
+ * all.
  */
 export function classifyUrl(rawUrl) {
   let parts;
@@ -102,16 +131,18 @@ export function classifyUrl(rawUrl) {
 
   if (parts.some((part) => EXCLUDED_PATH_PARTS.has(part))) return null;
 
-  const section = parts[0].toLowerCase();
+  // Everything except the article slug is filing structure we can quote.
+  const sections = parts.slice(0, -1);
 
-  if (STATEWIDE_SECTIONS.has(section)) {
-    return { section, scope: "state", districtId: null };
+  for (let i = sections.length - 1; i >= 0; i -= 1) {
+    const hit = districtFromSegment(sections[i]);
+    if (hit) return { section: hit.section, scope: "district", districtId: hit.districtId };
   }
 
-  const districtId = SECTION_ALIASES[section] ?? CITY_TO_DISTRICT[section] ?? section;
-  if (!DISTRICT_IDS.includes(districtId)) return null;
+  const statewide = sections.find((part) => STATEWIDE_SECTIONS.has(part.toLowerCase()));
+  if (statewide) return { section: statewide.toLowerCase(), scope: "state", districtId: null };
 
-  return { section, scope: "district", districtId };
+  return null;
 }
 
 /** Every section slug the filter accepts — used by the rank-snapshot pass to

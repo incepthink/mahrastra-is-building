@@ -26,6 +26,7 @@
     "news:stories": "node scripts/news/stories/run.mjs",
     "news:snapshot": "node scripts/news/snapshot.mjs",
     "news:fire": "node scripts/news/fire.mjs",
+    "news:attention": "node scripts/news/attention.mjs",
     "dgipr:pull": "node scripts/dgipr/pull.mjs",
     "dgipr:pull:live": "node scripts/dgipr/pull-mahasamvad.mjs",
     "dgipr:pdfs": "node scripts/dgipr/make-pdfs.mjs",
